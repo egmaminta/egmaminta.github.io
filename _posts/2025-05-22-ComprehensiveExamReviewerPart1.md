@@ -1,6 +1,6 @@
 ---
 title: "Artificial Intelligence Program Comprehensive Examination Reviewer (Part 1)"
-description: "A reviewer in preparation for the comprehensive examination of the graduate students enrolled in the Artificial Intelligence Program, which they are required to pass as part of the Master's of Engineering in Artificial Intelligence degree completion requirements. This part covers the following courses: Fundamentals of Artificial Intelligence (AI 201), Computational Linear Algebra for AI (AI 211), and Probability and Statistics for AI (AI 212)."
+description: "This reviewer prepares graduate students in the Artificial Intelligence Program for their comprehensive examination, a mandatory requirement for the Master of Engineering in Artificial Intelligence degree at the University of the Philippines Diliman - National Graduate School of Engineering. This first part covers: Fundamentals of Artificial Intelligence (AI 201), Computational Linear Algebra for AI (AI 211), and Probability and Statistics for AI (AI 212)."
 author: "egmaminta"
 date: 2025-05-22 14:06:00 +0800
 categories: [Study Materials]
@@ -9,8 +9,9 @@ math: true
 toc: true
 ---
 
-## Intelligent Agents
-### Agent and Environment
+## Fundamentals of Artificial Intelligence (AI 201)
+### Intelligent Agents
+#### Agent and Environment
 * What is an agent?
   * An agent is a system that **perceives its environment through its sensors and acts on that environment through its effectors**.
 * What are "percepts"?
@@ -49,8 +50,8 @@ toc: true
     * Environment: The room to be cleaned
     * Actuators: Motors, wheels, arms
     * Sensors: Cameras, ultrasonic sensors
-  
-### Types of Agents
+
+#### Types of Agents
 * What is a Table-Driven Agent?
   * This agent stores the entire percept sequence in memory and uses it to look up the appropriate action in a table that contains all possible sequences and their corresponding actions.
 * What are the drawbacks of Table-Driven Agents?
@@ -81,7 +82,7 @@ toc: true
 * What are the different types of agents?
   * There are 6 (six) main types of agents: table-driven agents, simple reflex agents, model-based reflex agents, model-based goal-based agents, model-based utility-based agents, and learning agents.
 
-### Properties of Environments
+#### Properties of Environments
 * What is the role of the environment?
   * The environment provides percepts to the agent and receives actions from the agent.
 * Describe the "Fully vs. Partially Observable" property of environments.
@@ -101,4 +102,35 @@ toc: true
 * What are the properties of environments?
   * The properties of environments include **fully vs. partially observable**, **single-agent vs. multi-agent**, **deterministic vs. stochastic**, **episodic vs. sequential**, **static vs. dynamic**, and **discrete vs. continuous**.
 
-## Problem Solving by Search
+#### Problem Solving by Search
+
+
+## Computational Linear Algebra for AI (AI 211)
+* Define the following concepts in your own words. Try not to use definitions from books, lectures, or other sources.
+  * Orthogonal matrices
+    * A square matrix whose columns (and thus rows) form a set of orthonormal vectors. This means the column vectors are all unit length and mutually perpendicular. When multiplied by its transpose, it yields the identity matrix.
+  * Projection matrices
+    * A matrix that, when multiplied by a vector, maps that vector onto a given subspace. It essentially "flattens" the vector onto a lower-dimensional space, removing any components that are orthogonal to that subspace.
+  * Subspace
+    * A subset of a vector space that itself satisfies the axioms of a vector space. Crucially, it must contain the zero vector, and be closed under vector addition and scalar multiplication.
+* Describe the following decompositions and what these decompositions accomplish. Add insights into how these decompositions can be applied to your field of expertise.
+  * $A=CR$
+    * Description: This is the **Column-Row Decomposition**, which expresses a matrix $A$ as the product of a matrix $C$ (consisting of a subset of columns of $A$) and a matrix $R$ (representing the row operations or relationships between rows). It essentially identifies a basis for the column space of $A$ within $A$'s own columns.
+    * Accomplishment: It provides a way to find a low-rank approximation of a matrix while preserving the interpretability of the original data's columns. It helps in identifying a representative subset of columns that can reconstruct the entire matrix.
+    * Application: In dimensionality reduction for large datasets (e.g., a data matrix $A$ where columns are features). $CR$ decomposition can select a subset of "exemplar" features $C$ that are most representative, allowing for efficient storage and processing, and potentially more interpretable results than methods like SVD, as the basis vectors are actual data points.
+  * $A=LU$
+    * Description: This is the **Lower-Upper Decomposition**, which factors a square matrix $A$ into the product of a lower triangular matrix $L$ (with ones on the diagonal) and an upper triangular matrix $U$. Often, a permutation matrix $P$ is included such that $PA=LU$ to handle row exchanges for numerical stability.
+    * Accomplishment: It efficiently solves systems of linear equations ($Ax=b$), computes matrix inverses, and calculates determinants. Once $A$ is decomposed, solving $Ax=b$ becomes two simpler triangular system solves ($Ly=b$ then $Ux=y$), which are computationally much faster than direct inversion.
+    * Application: Crucial for numerical stability and efficiency in many optimization algorithms. For instance, in second-order optimization methods used in training neural networks (e.g., Newton's method), solving linear systems involving the Hessian matrix (or its approximation) is required, and $LU$ decomposition provides a robust way to do this.
+  * $A=QR$
+    * Description: This is the **Orthogonal-Triangular Decomposition**, which factors a matrix $A$ into the product of an orthogonal matrix $Q$ (whose columns are orthonormal vectors) and an upper triangular matrix $R$.
+    * Accomplishment: It is particularly useful for solving least squares problems, computing eigenvalues, and finding orthonormal bases for subspaces. The orthogonality of $Q$ ensures numerical stability in these computations.
+    * Application: Widely used in machine learning for tasks involving linear regression, where finding the optimal parameters often boils down to solving linear least squares problems. $QR$ decomposition offers a numerically stable method for this. It's also foundational for iterative algorithms used in eigenvalue decomposition, which is central to techniques like PCA (Principal Component Analysis) for dimensionality reduction.
+* What are the four fundamental subspaces in linear algebra? Describe each.
+  * Column Space ($C(A)$): The span of the columns of a matrix $A$. It represents all possible linear combinations of the columns of $A$ and is the space of all vectors that can be expressed as $Ax$ for some vector $x$.
+  * Row Space ($C(A^T)$): The span of the rows of a matrix $A$. It represents all possible linear combinations of the rows of $A$ and is the space of all vectors that can be expressed as $y^TA$ for some vector $y$.
+  * Null Space ($N(A)$): The set of all solutions to $Ax=0$.
+  * Left Null Space ($N(A^T)$): The set of all solutions to $A^Ty=0$.
+* Differentiate between pivots used in Gaussian Elimination and the pivots in Column or Row pivoting.
+  * In Gaussian Elimination, a pivot is the diagonal element used to eliminate numbers below it. However, if this pivot is zero or very small, it causes numerical issues. Pivoting strategies (like row or column pivoting) address this by actively searching the column (or matrix) for the element with the largest absolute value, then swapping it into the pivot position. This ensures numerical stability and accuracy by avoiding problematic divisions and minimizing error propagation.
+  * The sequence of row swaps in pivoting can be represented by a permutation matrix $P$ that pre-multiplies the original matrix $A$ to yield a new matrix $PA$. The matrix $PA$ can the be decomposed into an $LU$ factorization ($PA=LU$). The sequence of column swaps is often used in the context of $QR$ factorization. When column pivoting is applied to $A$ and $P$ is a permutation matrix, it results in $AP=QR$.
