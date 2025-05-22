@@ -1,6 +1,6 @@
 ---
 title: "Artificial Intelligence Program Comprehensive Examination Reviewer (Part 1)"
-description: "A reviewer in preparation for the comprehensive examination of the graduate students enrolled in the Artificial Intelligence Program, which they are required to pass as part of the Master's of Engineering in Artificial Intelligence degree completion requirements. This part covers the following courses: Fundamentals of Artificial Intelligence (AI 201), Probability and Statistics (AI 211), and Linear Algebra (AI 212)."
+description: "A reviewer in preparation for the comprehensive examination of the graduate students enrolled in the Artificial Intelligence Program, which they are required to pass as part of the Master's of Engineering in Artificial Intelligence degree completion requirements. This part covers the following courses: Fundamentals of Artificial Intelligence (AI 201), Computational Linear Algebra for AI (AI 211), and Probability and Statistics for AI (AI 212)."
 author: "egmaminta"
 date: 2025-05-22 14:06:00 +0800
 categories: [Study Materials]
@@ -9,58 +9,96 @@ math: true
 toc: true
 ---
 
-# AI 201: Fundamentals of Artificial Intelligence
-## What is Artificial Intelligence?
-
 ## Intelligent Agents
-* **Agent**: A system that **perceives its environment through its sensors** and **acts on that environment through its effectors**. Examples of agents include humans, robots, and softbots.
-* **Generic Intelligent Agent**: A **rational agent** is an agent that **acts rationally** so as to achieve one's goals given one's beliefs.
-  * It is necessary to measure achievement of goals by evaluating: (1) **how** much successful the agent is in achieving its goals, and (2) **when** it was able to achieve its goals.
-* **Performance Measure**: A measure that indicates how successful an agent is in achieving its goals.
-  * Example: For a vacuum cleaner agent, the performance measure could be the amount of dirt cleaned up in a day, the electricity consumed, and the noise generated. Knowing when the agent was able to complete a task is also important. If the agent was able to perform the task correctly after 10 minutes, it is not as good as an agent that was able to do the same task in 5 minutes.
+### Agent and Environment
+* What is an agent?
+  * An agent is a system that **perceives its environment through its sensors and acts on that environment through its effectors**.
+* What are "percepts"?
+  * Percepts are the **sensory inputs** that an agent receives from its environment.
+* What are "effectors"?
+  * Effectors are the components an agent uses **to perform actions** in its environment.
+* Can you give examples of agents, their sensors, and effectors?
+  * Human agent
+    * Sensors: Eyes, ears, skin, etc.
+    * Effectors: Hands, legs, vocal cords, etc.
+  * Robot agent
+    * Sensors: Cameras, LIDAR, ultrasonic sensors, etc.
+    * Effectors: Motors, wheels, arms, etc.
+  * Software agent
+    * Sensors: Network interfaces, APIs, etc.
+    * Effectors: API calls, database updates, etc.
+* What defines a rational agent?
+  * A rational agent is one that **acts to achieve its goals, given its beliefs**.
+* What is a "performance measure"?
+  * A performance measure is a **criterion that indicates how successful an agent has been**. For example, for a vacuum cleaner agent, it could be the amout of dirt cleaned up in a day, also considering electricity consumed, noise generated, and time taken.
+* What factors influence what is rational for an agent at any given time?
+  * Rationality depends on (1) **the performance measuring defining success**, (2) **the agent's perceptual history** (i.e., the sequence of all percepts it has experienced so far), (3) **the agent's knowledge of the environment**, and (4) **the actions that the agent can perform**.
+* What is the difference between rationality and perfection?
+  * **Rationality aims to maximize the *expected* performance**, while **perfection aims to maximize the *actual* performance** (which is only achievable in an ideal, fully known environment).
+* What is "information gathering" in the context of rational agents?
+  * It refers to actions taken by an agent to modify its future percepts, like **exploration** to learn about an unknown environment. This is a part of rationality.
+* How is an "Ideal Rational Agent" defined?
+  * For **every possible percept sequence**, an ideal rational agent should **perform the action that is expected to maximize its performance measure**, based on the **evidence from the percept sequence and its built-in knowledge**.
+* What is "autonomy" in AI?
+  * In AI, autonomy is the **ability of an agent to adapt to its environment and be flexible**. A system is autonomous to the extent that **its behavior is determined by its own experience, rather than relying solely on built-in knowledge**. An agent that completely disregards its environment lacks autonomy (e.g., a simple clock).
+* What is the basic structure of an intelligent agent?
+  * An agent consists of an **architecture** (i.e., the computing device) and an **agent program** (i.e., the implementation of the mapping from percepts to actions). So, $\text{Agent} = \text{Architecture} + \text{Agent Program}$.
+* What does PEAS stand for, and can you give an example?
+  * PEAS stands for **Performance measure, Environment, Actuators, and Sensors**. For example, for a vacuum cleaner agent:
+    * Performance measure: Amount of dirt cleaned, electricity consumed, noise generated, time taken
+    * Environment: The room to be cleaned
+    * Actuators: Motors, wheels, arms
+    * Sensors: Cameras, ultrasonic sensors
+  
+### Types of Agents
+* What is a Table-Driven Agent?
+  * This agent stores the entire percept sequence in memory and uses it to look up the appropriate action in a table that contains all possible sequences and their corresponding actions.
+* What are the drawbacks of Table-Driven Agents?
+  * The table can be extremely large (e.g., chess has an estimated $10^{120}$ possible entries).
+  * It is very time-consuming, if not impossible, for the designer to create the table.
+  * It lacks autonomy as the knowledge is entirely built-in.
+  * It cannot act rationally if the environment changes in an unforeseen way.
+  * Learning all table entries would take an extremely long time.
+* What is a Simple Reflex Agent?
+  * This agent selects actions based only on the ***current*** percept, ignoring the rest of the percept history. It uses **condition-action rules** (e.g., "if `<condition>` then `<action>`") to determine its actions. It works efficiently but has limited applicability as it only reacts to the current percept.
+* What is a Model-Based Reflex Agent?
+  * This agent maintains an **internal state** to keep track of the parts of the world it cannot currently see. This internal state helps distinguish world states that might appear the same from current percepts but require different actions. It uses its perceptual history. It needs the following components:
+    * An **action model** (information about how the agent's actions affect the world).
+    * A **sensor model** (information about how the world's state is reflected in the percepts).
+    * A **transition model** (information about how the world changes independently of the agent).
+* What is a Model-Based Goal-Based Agent?
+  * This agent incorporates goal information to decide its actions, considering the future. Achieving a goal often requires considering long sequences of actions, which involves **planning** (finding action sequences to reach the goal).
+* How do Reflex Agents differ from Goal-Based Agents in achieving goals and flexibility?
+  * Reflex agents achieve goals because **the designer precomputed the correct actions**. They are **very efficient but lack flexibility**. In contrast, goal-based agents **consider the future outcomes of actions to select one that achieves the goal**. They are **more flexible but less efficient**.
+* What is a Model-Based Utility-Based Agent?
+  * This agent uses a **utility function** that maps a state to a real number, representing a degree of "happiness" or desirability. This is useful when there are multiple, possibly conflicting, goals (e.g., speed vs. safety in a taxi). The agent chooses the **action sequence that yields the maximum utility**.
+* What is a Learning Agent?
+  * Any type of agent (model-based, goal-based, utility-based, etc.) can incorporate learning capabilities. Components of a learning agent include:
+    * **Learning element**: Improves the performance element.
+    * **Performance element**: Selects actions based on the current percept and built-in knowledge.
+    * **Critic**: Provides feedback to the learning element about how well the agent is performing.
+    * **Problem generator**: Suggests actions that will lead to new and informative experiences.
+* What are the different types of agents?
+  * There are 6 (six) main types of agents: table-driven agents, simple reflex agents, model-based reflex agents, model-based goal-based agents, model-based utility-based agents, and learning agents.
 
-> Performance of a rational agent must be measured given what has been perceived.
-{: .prompt-tip }
-
-* What is rational at any given time depends on the following: (1) **performance measure**, (2) **perceptual history**, (3) **knowledge of the environment**, and (4) **actions available to the agent**.
-
-> Agent's choice of action at a given instant depends on all these, but not on anything that has not yet been perceived.
-{: .prompt-tip }
-
-* Design performance measures according to what the agent would want to achieve in the environment rather than according to how the designer thinks the agent should behave.
-  * Example: Maximize the amount of dirt collected vs. maintain a spotless floor by the end of the day. Beware of unintended consequences that might come up, a critical issue in Reinforcement Learning.
-* **Rationality vs. Perfection**: Rationality maximizes the expected performance measure, while perfection means achieving the best possible performance measure. Rationality is a more practical goal than perfection.
-* **Information Gathering**: Doing actions in order to modify future perceptions is part of rationality. **Exploration** is the process of probing unknown environment (e.g., a robot mapping the physical environment).
-* **Ideal Rational Agent**: For each possible percept sequence, an ideal rational agent should do whatever action is expected to maximize its performance measure, on the basis of the evidence provided by the percept sequence and whatever built-in knowledge the agent has.
-* **Autonomy**: The ability to make your own decisions without being controlled by anyone else. The ability to adapt to its environment; flexibility to change its behavior based on the environment.
-
-> If an agent relies solely on its built-in knowledge and completely disregards the environment, the agent lacks autonomy. For example, a clock has no autonomy.
-{: .prompt-tip }
-
-* A good rational agent acts according to: (1) **built-in knowledge**, which is often imperfect or partial, and (2) **percept sequence** (own experience).
-
-> A system is autonomous to the extent that its behavior is determined by its own experience.
-{: .prompt-tip }
-
-* **Structure of an Intelligent Agent**
-  * **Agent Program**: The implementation of the mapping from percepts to actions.
-  * **Architecture**: The computing device on which the agent program runs.
-  * $\textbf{Agent} = \textbf{Architecture} + \textbf{Agent Program}$
-  * **PEAS Description**: **P**erformance, **E**nvironment, **A**ctuators, and **S**ensors. A PEAS description is a concise way to specify the task environment of an agent. Example: For a vacuum cleaner agent, the PEAS description is as follows:
-    * **Performance Measure**: Amount of dirt cleaned up in a day, electricity consumed, noise generated.
-    * **Environment**: The room to be cleaned.
-    * **Actuators**: Wheels, brushes, vacuum cleaner.
-    * **Sensors**: Dirt sensor, distance sensor.
-* **Types of Agents**
-  * **Table-Driven Agent**: Store percept sequence in memory and use it as an index into a table which contains the appropriate action for all possible sequences.
-    * Disadvantages: Memory-intensive (table is extremely large e.g., $10^{123}$ entries for chess), slow (table lookup is time-consuming), no autonomy (since table is built-in knowledge).
-  * **Simple Reflex Agent**: Selects action on the basis of current percept, ignores percept history. It **maps percepts to actions using condition-action rules**. Example: if `car-in-front-is-braking`, then `initiate-braking`. A simple reflex agent looks for the rule whose condition matches the current situation as defined by the percept, and then does the action associated with that rule.
-    * Disadvantages: Limited applicability since it only uses the current percept, not the percept history.
-  * **Model-Based Reflex Agent**: A type of reflex agent but with an **internal state** that keeps track of the part of the world it cannot see now. This agent uses percept history as basis of its actions and maintains internal state information to distinguish between world states that generate the same perceptual input but requiring different actions.
-    * Two types of information are needed to maintain the internal state: (1) **how the world evolves** (i.e., information about how the world changes independently of the agent; must be built-in knowledge), and (2) **how the agent's actions affect the world**.
-  * **Goal-Based Agent**:
-  * **Utility-Based Agent**:
-  * **Learning Agent**:
-
+### Properties of Environments
+* What is the role of the environment?
+  * The environment provides percepts to the agent and receives actions from the agent.
+* Describe the "Fully vs. Partially Observable" property of environments.
+  * In a **fully observable environment**, an agent's sensors give it access to the complete state of the environment at each point in time. The agent doesn't need to maintain an internal state to track the world. In contrast, in a **partially observable environment**, part of the state is not measured by sensors, or sensors are noisy/inaccurate. The agent needs to maintain an internal state.
+* Describe the "Single-Agent vs. Multi-Agent" property of environments.
+  * In a **single-agent environment**, there is only one agent operating by itself in an environment. On the other hand, in a **multi-agent environment**, multiple agents are operating in the same environment, which can be cooperative or competitive (adversarial).
+* Describe the "Deterministic vs. Stochastic" property of environments.
+  * In a **deterministic environment**, the next state of the environment is completely determined by the current state and the agent's action. Chess is an example. In contrast, in a **stochastic environment**, there's uncertainty. A partially observable environment might appear stochastic even if it's technically deterministic. Poker is stochastic from the agent's view due to hidden cards. It's best to consider this from the agent's perspective.
+* Describe the "Episodic vs. Sequential" property of environments.
+  * In an **episodic environment**, the agent's experience is divided into atomic **episodes**. Each episode consists of the agent perceiving and then performing a single action. The choice of action in one episode only depends on that episode itself, as subsequent episodes don't depend on previous actions. These are easier to deal with as planning is limited to one episode. Example: A chest x-ray analyzer. While in a **sequential environment**, the current decision can affect all future decisions. Example: Chess.
+* Describe the "Static vs. Dynamic" property of environments.
+  * In a **static environment**, the environment does not change while the agent is deliberating. Example: Chess. In contrast, in a **dynamic environment**, the environment can change while the agent is deliberating. The agent needs to keep sensing. Example: Taxi driving. In a **semi-dynamic environment**, the environment itself doesn't change with time, but the agent's performance measure does. Example: Chess with a clock.
+* Describe the "Discrete vs. Continuous" property of environments.
+  * In a **discrete environment**, there is a limited, finite number of distinct, clearly defined percepts and actions. On the other hand, in a **continuous environment**, percepts and actions can take values from a continuous range (e.g., temperature, speed).
+* What is an "environment class"?
+  * An **agent should ideally be designed to work for a whole set of different environments**, referred to as an environment class. For instance, a chess program should be suited for a tournament, not just a single, specific opponent.
+* What are the properties of environments?
+  * The properties of environments include **fully vs. partially observable**, **single-agent vs. multi-agent**, **deterministic vs. stochastic**, **episodic vs. sequential**, **static vs. dynamic**, and **discrete vs. continuous**.
 
 ## Problem Solving by Search
