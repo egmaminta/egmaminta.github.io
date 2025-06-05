@@ -14,7 +14,7 @@ timezone: Asia/Manila
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: egmaminta # the main title
+title: Emmanuel Maminta # the main title
 
 tagline: AI PhD @ UP Diliman # it will display as the subtitle
 
@@ -28,8 +28,8 @@ url: "https://egmaminta.github.io"
 github:
   username: egmaminta # change to your GitHub username
 
-twitter:
-  username: egmaminta # change to your Twitter username
+# twitter:
+#   username: egmaminta # change to your Twitter username
 
 social:
   # Change to your full name.
