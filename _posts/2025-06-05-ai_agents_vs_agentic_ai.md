@@ -18,7 +18,7 @@ The main reference of this writing is [AI Agents vs. Agentic AI: A Conceptual Ta
 The development of autonomous and intelligent agents were multi-agent systems (MAS) and expert systems, which are a part of foundational paradigms of AI. These systems mimic the decision-making ability of a human expert. An example of an expert system (rule-based) in the 1970s is MYCIN, developed to diagnose bacterial infections. It was never deployed in real hospitals, but it demonstrated how expert systems could be used to assist doctors towards accurate diagnoses.
 
 ![MYCIN](https://specials-images.forbesimg.com/imageserve/5ea5f65911e2a700077f78af/Rule-Based-Expert-Systems--The-MYCIN-Experiments-of-the-Stanford-Heuristic/960x0.jpg?cropX1=0&cropX2=579&cropY1=2&cropY2=388){: width="448" height="448" }
-_Rule-Based Expert Systems: The MYCIN Experiments of the Stanford Heuristic Programming Project (Reprinted 1984)._
+_Rule-Based Expert Systems: The MYCIN Experiments of the Stanford Heuristic Programming Project (Reprinted 1984). Taken from [this story published by Forbes](https://www.forbes.com/sites/gilpress/2020/04/27/12-ai-milestones-4-mycin-an-expert-system-for-infectious-disease-therapy/)._
 
 Then emerged **distributed intelligence** where individual agents' actions and cognitive processes in a shared environment are coordinated to achieve a primary goal. **Goal delegation** formed the basis for organizational behavior. From distributed intelligence sprouted [**sociality (social action) for AI Agents**](https://www.ijcai.org/Proceedings/97-2/Papers/116.pdf), where the term "AI Agent" was first used in 1998. Another study provided a [comprehensive framework for MAS](https://dl.acm.org/doi/book/10.5555/520715), which characterized agents as entities with **autonomy**, **perception**, and **communication abilities**. Up to this day, these characteristics are <u>strict requirements in an autonomous software architecture</u>, and I experienced building one firsthand while working on my Capstone Project.
 
@@ -69,10 +69,11 @@ By late 2023, Agentic AI systems emerged as a more complex collaboration of mult
 
 Today, **AI Agents** and **Agentic AI systems** can be characterized as follows:
 - **AI Agents**: Typically designed as single-entity systems that perform goal-directed tasks by utilizing external tools, applying chain-of-thought reasoning, and integrating real-time information to complete well-defined functions. This highlights: **autonomy (minimal human intervention)**, **task-specificity (narrow, well-defined tasks)**, and **reactivity (responding to changes)**.
-- **Generative Agents**: Hybrid systems that blend generative modeling with modular task specialization. They inherit LLM-centric pretraining capabilites and excel in producing multimodal content creation, yet they lack the proactive orchestration and state persistence of Agentic AI systems.
 - **Agentic AI systems**: Composed of multiple, specialized agents that coordinate, communicate, and dynamically allocate sub-tasks within a broader workflow to achieve a common goal.
 
-Here's a table (that I got from the paper) that I think concisely compares the four technologies starting with Generative AI (baseline) to tool-augmented AI Agents, then to collaborative Agentic AI systems, and finally the most recent Generative Agents. We see a trend here **from passive content generation to interactive task execution and finally to autonomous, multi-agent orchestration**.
+I also need to highlight **generative agents**, which are hybrid systems that blend generative modeling with modular task specialization. They inherit LLM-centric pretraining capabilites and excel in producing multimodal content creation, yet they lack the proactive orchestration and state persistence of Agentic AI systems.
+
+Here's a table (from the main reference) that I think concisely compares the four technologies starting with Generative AI (baseline) to tool-augmented AI Agents, then to collaborative Agentic AI systems, and finally the most recent Generative Agents. We see a trend here **from passive content generation to interactive task execution and finally to autonomous, multi-agent orchestration**.
 
 <div align="center">
   Table 1: Comparison of Generative AI, AI Agents, Agentic AI, and Generative Agents.
