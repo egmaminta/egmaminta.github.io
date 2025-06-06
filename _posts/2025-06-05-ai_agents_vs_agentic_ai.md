@@ -59,7 +59,7 @@ graph TD
   Figure 1: BabyAGI autonomous software architecture.
 </div>
 
-By late 2023, Agentic AI systems emerged as a more complex collaboration of multiple AI agents, each with specialized roles that collectively decompose a primary goal into sub-goals (that are easily manageable by each agent). Based on my personal experience, whenever I build an agentic-driven app, I always start with a **goal decomposition** process. From a complex, vague goal, I work my way down to simple, specific sub-goals. Then, I create **roles** for each agent that will be responsible for achieving each sub-goal. Lastly, I design the **communication protocols** between agents via **hand-offs**. Recently, Google announced [**Agent-to-Agent (A2A) Protocol**](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/), a proposed standard developed for AI agent interoperability across different frameworks and vendors. This protocol is built around five core principles: **embracing agentic capabilitie**, **building on existing standards**, **securing interactions by default**, **supporting long-running tasks**, and **ensuring modality agnosticism**. I have to agree that these core principles are essential for a responsive and scalable agentic system.
+By late 2023, Agentic AI systems emerged as a more complex collaboration of multiple AI agents, each with specialized roles that collectively decompose a primary goal into sub-goals (that are easily manageable by each agent). Based on my personal experience, whenever I build an agentic-driven app, I always start with a **goal decomposition** process. From a complex, vague goal, I work my way down to simple, specific sub-goals. Then, I create **roles** for each agent that will be responsible for achieving each sub-goal. Lastly, I design the **communication protocols** between agents via **hand-offs**. Recently, Google announced [**Agent-to-Agent (A2A) Protocol**](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/), a proposed standard developed for AI agent interoperability across different frameworks and vendors. This protocol is built around five core principles: **embracing agentic capabilities**, **building on existing standards**, **securing interactions by default**, **supporting long-running tasks**, and **ensuring modality agnosticism**. I have to agree that these core principles are essential for a responsive and scalable agentic system.
 
 {%
   include embed/video.html
@@ -101,7 +101,27 @@ Here's a table (from the main reference) that I think concisely compares the fou
 ![Tavily Search Agent](https://mintlify.s3.us-west-1.amazonaws.com/tavilyai/images/chatbotgif.gif)
 _The Tavily Search Agent is an AI agent that enables LLMs to perform web searches and retrieve real-time information via search tool._
 
-However, I seem to notice that chatbots nowadays (ChatGPT, Gemini, etc.) are capable of tool use, function calling, and reasoning. I think it is not correct to consider them as AI agents because they can perform various tasks (e.g. asking ChatGPT to verify a math solution, write a poem, or generate hyperrealistic images all in one conversation or session). They act as a **generalist AI agent**, more specifically a **conversational AI agent** because they require a user to provide either a prompt (task) or feedback to its generated output. I think that these generalist AI agents should also be defined as a special class of AI agents, distinct from the more specialized AI agents that are designed for specific tasks or domains. Therefore, a generalist AI agent (**in my humble opinion**) is, at its core, a single intelligence (entity) engineered to execute nearly (virtually) any task or function. This is accomplished by building upon a foundation of general knowledge and emergent capabilities from pretraining, then adapting to preferred behaviors through fine-tuning, and critically, possessing the autonomy to determine if and when external tools are necessary. Shown below is [*Helix*](https://www.figure.ai/news/helix), a **humanoid generalist AI agent** powered by [Figure AI](https://www.figure.ai/about-us)'s pretrained vision-language-action (VLA) model, which can perform a wide range of tasks, from picking up objects to household chores.
+You know, it's pretty wild how much chatbots like [ChatGPT](https://openai.com/chatgpt/overview/) and [Gemini](https://deepmind.google/models/gemini/) have changed lately. I've noticed they're not just spitting out text anymore; they can actually use tools, call up functions, and even do some pretty impressive reasoning.
+
+Now, here's where I think we might need to adjust our thinking. When we talk about AI agents, it feels a bit off to lump these general-purpose chatbots in with the highly specialized ones. Why? Well, think about it: you can ask ChatGPT to check your math, then have it write a poem, and in the same breath, get it to generate some hyperrealistic images. All in one go!
+
+To me, that makes them something special: **generalist conversational AI agents**. They're "generalist" because they're not stuck doing just one thing, and "conversational" because, well, you talk to them. They need us to give them a prompt or tell them if their output hit the mark.
+
+I really believe we should define these generalist conversational AI agents as their own distinct class. They're clearly different from those more specialized AI agents built for super specific tasks or domains. It's an important distinction to make as AI keeps evolving!
+
+{%
+  include embed/video.html
+  src='https://deepmind.google/api/blob/website/media/gemini__native-audio_0519_AGame3G.mp4'
+  types='mp4'
+  title='Gemini 2.5 Flash and Pro, Google\'s frontier conversational AI agents, can now process audio input and output. This keeps the user experience seamless and natural, allowing for a more intuitive interaction with the AI.'
+  autoplay=true
+  loop=true
+  muted=true
+%}
+
+Therefore, a generalist AI agent (**in my humble opinion**) is, at its core, a single intelligence (entity) engineered to execute nearly (virtually) any task or function. This is accomplished by building upon a foundation of general knowledge and emergent capabilities from pretraining, then adapting to preferred behaviors through fine-tuning, and critically, possessing the autonomy to determine if and when external tools are necessary.
+
+Shown below is [*Helix*](https://www.figure.ai/news/helix), a **humanoid generalist AI agent** powered by [Figure AI](https://www.figure.ai/about-us)'s pretrained vision-language-action (VLA) model, which can perform a wide range of tasks, from picking up objects to household chores.
 
 {%
   include embed/video.html
