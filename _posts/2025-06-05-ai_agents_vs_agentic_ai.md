@@ -4,7 +4,7 @@ date: 2025-06-05 13:13:13 +0800
 categories: [Agents]
 tags: [ai agents, agentic ai]
 author: "egmaminta"
-description: "Knowing the difference between AI Agents and Agentic AI in under 8 minutes."
+description: "Knowing the difference between AI Agents and Agentic AI in under 11 minutes."
 math: true
 mermaid: true
 ---
@@ -22,17 +22,21 @@ _Rule-Based Expert Systems: The MYCIN Experiments of the Stanford Heuristic Prog
 
 Then emerged **distributed intelligence** where individual agents' actions and cognitive processes in a shared environment are coordinated to achieve a primary goal. **Goal delegation** formed the basis for organizational behavior. From distributed intelligence sprouted [**sociality (social action) for AI Agents**](https://www.ijcai.org/Proceedings/97-2/Papers/116.pdf), where the term "AI Agent" was first used in 1998. Another study provided a [comprehensive framework for MAS](https://dl.acm.org/doi/book/10.5555/520715), which characterized agents as entities with **autonomy**, **perception**, and **communication abilities**. Up to this day, these characteristics are <u>strict requirements in an autonomous software architecture</u>, and I experienced building one firsthand while working on my Capstone Project.
 
-These early studies laid the groundwork and set the stage for what we now refer to as AI Agents and Agentic AI systems. They underscored that **task delegation (distributed intelligence) and cognitive architectures (agent design) are fundamental to modeling collective phenomena (sociality).**
+These early studies laid the groundwork and set the stage for what we now refer to as AI Agents and Agentic AI systems. They underscored that **task delegation (distributed intelligence) and cognitive architectures (agent design) are fundamental to modeling collective phenomena (sociality).** A good example of sociality (but this time for humans) is depicted in the figure below. It illustrates the knowledge acquisition process for expert systems in the 1980s, demonstrating how knowledge bases were developed back then. It was a highly labor-intensive process that relied on expensive specialists. One primary method involved a **knowledge engineer** who would directly interview a **subject matter expert** to manually translate their expertise into a format the knowledge base system could understand. In parallel, a **computational linguist** worked on a more automated approach; they designed natural language tools that attempted to read documents, such as clerk's transcription of a doctor's handwritten notes, and automatically extract that information into the same structured knowledge base.
 
 ![Expert Systems](https://www.jfsowa.com/figs/knacq.gif)
 _How was a knowledge base being developed for Expert Systems? In the 1980s, the figure above shows one of the standard (now archaic) approaches to knowledge acquisition and natural language processing. Taken from [Architectures of Intelligent Systems, 2002](https://www.jfsowa.com/pubs/arch.htm)._
+
+Nowadays, subject matter experts are employed to correctly annotate data for training AI models often with the help of AI-assisted tools, as opposed to being directly interviewed by a knowledge engineer. Some approaches even use another specialist AI model and pose it as a synthetic subject matter expert in place of a human expert.
 
 The limitation of classical agent-like systems is that they were designed for specific tasks with predefined rules; hence, limiting their autonomy and adaptability to new tasks. In contrast to modern AI agents, they were primarily reactive that relied on symbolic reasoning, rule-based logic, and scripted behaviors rather than learning from experience (experiential learner) and being context-aware. To sum it up, **early AI agents** have the following limitations: **they lacked self-learning, generative reasoning, and adaptability to evolving environments.**
 
 ## Forward to Today (post ChatGPT release in 2022)
 Following the emergence of LLMs and large-scale generative models in late 2022, there has been a surge of interest in AI Agents and Agentic AI systems. Only this time, the newer generation of AI agents are built to counter the mentioned limitations above. These agents are learning-driven and designed based on adaptive architectures. See: [Why Do Multi-Agent LLM Systems Fail?](https://arxiv.org/pdf/2503.13657), [AI Agents and Agentic Systems: A Multi-Expert Analysis](https://www.tandfonline.com/doi/full/10.1080/08874417.2025.2483832), and [Agentic AI For Scientific Discovery: A Survey of Progress, Challenges, and Future Directions](https://arxiv.org/pdf/2503.08979v1).
 
-The global success of ChatGPT popularized **Generative Agents**, which are LLM-based systems designed to generate various forms of output (i.e. text, images, code) given a set of instructions or prompts from a user. One good example is [GitHub Copilot](https://github.com/copilot). The new class of AI agents enhanced LLMs with capabilities for external tool use (e.g. API-based tools), function calling, and chain-of-thought reasoning. These "next-gen" AI agents actively showcased how LLMs, when integrated into feedback loops, can dynamically plan, execute, and adapt in changing environments. Example: [BabyAGI](https://github.com/yoheinakajima/babyagi).
+The global success of ChatGPT popularized **Generative Agents**, which are LLM-based systems designed to generate various forms of output (i.e. text, images, code) given a set of instructions or prompts from a user. One good example is [GitHub Copilot](https://github.com/copilot). I remember using GitHub Copilot back then (when it had no access to tools) to help me write boiler plate code for my projects. All I did was to provide a prompt (e.g. "Create a Python class for data crawling") and it would generate the code for me. It outputs good quality code because a role or behavior is assigned to it. Now, it's more of an AI agent rather than a Generative Agent because it can use custom tools (i.e. tailored to ease the code development process, such as pushing code to GitHub).
+
+The term "AI Agent" evolved significantly with the rise of generative AI. The new class of AI agents enhanced LLMs with capabilities for external tool use (e.g. API-based tools), function calling, and chain-of-thought reasoning. These "next-gen" AI agents actively showcased how LLMs, when integrated into feedback loops, can dynamically plan, execute, and adapt in changing environments. Example: [BabyAGI](https://github.com/yoheinakajima/babyagi).
 
 ```mermaid
 graph TD
@@ -71,35 +75,68 @@ Today, **AI Agents** and **Agentic AI systems** can be characterized as follows:
 - **AI Agents**: Typically designed as single-entity systems that perform goal-directed tasks by utilizing external tools, applying chain-of-thought reasoning, and integrating real-time information to complete well-defined functions. This highlights: **autonomy (minimal human intervention)**, **task-specificity (narrow, well-defined tasks)**, and **reactivity (responding to changes)**.
 - **Agentic AI systems**: Composed of multiple, specialized agents that coordinate, communicate, and dynamically allocate sub-tasks within a broader workflow to achieve a common goal.
 
-I also need to highlight **generative agents**, which are hybrid systems that blend generative modeling with modular task specialization. They inherit LLM-centric pretraining capabilites and excel in producing multimodal content creation, yet they lack the proactive orchestration and state persistence of Agentic AI systems.
+I also need to highlight **Generative Agents**, which are hybrid systems that blend generative modeling with modular task specialization. They inherit LLM-centric pretraining capabilites and excel in producing multimodal content creation, yet they lack the proactive orchestration and state persistence of Agentic AI systems.
 
-Here's a table (from the main reference) that I think concisely compares the four technologies starting with Generative AI (baseline) to tool-augmented AI Agents, then to collaborative Agentic AI systems, and finally the most recent Generative Agents. We see a trend here **from passive content generation to interactive task execution and finally to autonomous, multi-agent orchestration**.
+Here's a table (from the main reference) that I think concisely compares the four technologies starting with Generative AI (baseline) to Generative Agents, then to tool-augmented AI Agents, and finally to collaborative Agentic AI systems. We see a trend here **from passive content generation to interactive task execution and finally to autonomous, multi-agent orchestration**.
 
 <div align="center">
-  Table 1: Comparison of Generative AI, AI Agents, Agentic AI, and Generative Agents.
+  Table 1: Comparison of Generative AI, Generative Agents, AI Agents, and Agentic AI.
 </div>
 
-| Feature/Mechanism    | Generative AI                                 | AI Agent                                                              | Agentic AI                                                                             | Generative Agent                                                |
-| -------------------- | --------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Core Function        | Content generation                            | Task-specific execution using tools                                   | Complex workflow automation                                                            | Simulated human-like behavior                                   |
-| Mechanism            | Prompt $\rightarrow$ LLM $\rightarrow$ Output | Prompt $\rightarrow$ Tool Call $\rightarrow$ LLM $\rightarrow$ Output | Goal $\rightarrow$ Agent Orchestra $\rightarrow$ Output                                | Prompt $\rightarrow$ LLM + Memory/Planning $\rightarrow$ Output |
-| Structure            | Single model                                  | LLM + tool(s)                                                         | Multi-agent system                                                                     | LLM + memory + behavior model                                   |
-| External Data Access | None (unless added)                           | Via external APIs                                                     | Coordinated multi-agent access                                                         | Typically closed-world (simulated inputs)                       |
-| Key Train            | Reactivity                                    | Tool use                                                              | Collaboration                                                                          | Autonomy                                                        |
-| Primary Driver       | Reactivity to prompt                          | Tool calling for task execution                                       | Inter-agent communication and collaboration                                            | Reactivity to input or sub-task prompt                          |
-| Interaction Mode     | User $\rightarrow$ LLM                        | User $\rightarrow$ Agent $\rightarrow$ Tool                           | User $\rightarrow$ Multi-Agent System $\rightarrow$ Agents                             | System/Agent $\rightarrow$ Agent $\rightarrow$ Output           |
-| Workflow Handling    | Single generation handling                    | Single task execution                                                 | Multi-step workflow coordination                                                       | Single step within workflow                                     |
-| Information Flow     | Input $\rightarrow$ Output                    | Input $\rightarrow$ Tool $\rightarrow$ Output                         | Input $\rightarrow$ Agent1 $\rightarrow$ Agent2 $\rightarrow$ ... $\rightarrow$ Output | Input (from System/Agent) $\rightarrow$ Output                  |
-| Task Scope           | Single piece of generated content             | Single, specific, defined task                                        | Complex, multi-faceted goal or workflow                                                | Specific sub-task (often generative)                            |
-| Example (Video)      | Chatbot                                       | Tavily Search Agent (see GIF below)                                   | YouTube-to-Blog Converter                                                              | YouTube Title/Description/Summary Generator                     |
-| -------------------- | --------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Feature/Mechanism    | Generative AI                                 | Generative Agent                                                | AI Agent                                                              | Agentic AI                                                                             |
+| -------------------- | --------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Core Function        | Content generation                            | Simulated human-like behavior                                   | Task-specific execution using tools                                   | Complex workflow automation                                                            |
+| Mechanism            | Prompt $\rightarrow$ LLM $\rightarrow$ Output | Prompt $\rightarrow$ LLM + Memory/Planning $\rightarrow$ Output | Prompt $\rightarrow$ Tool Call $\rightarrow$ LLM $\rightarrow$ Output | Goal $\rightarrow$ Agent Orchestra $\rightarrow$ Output                                |
+| Structure            | Single model                                  | LLM + memory + behavior model                                   | LLM + tool(s)                                                         | Multi-agent system                                                                     |
+| External Data Access | None (unless added)                           | Typically closed-world (simulated inputs)                       | Via external APIs                                                     | Coordinated multi-agent access                                                         |
+| Key Trait            | Reactivity                                    | Autonomy                                                        | Tool use                                                              | Collaboration                                                                          |
+| Primary Driver       | Reactivity to prompt                          | Reactivity to input or sub-task prompt                          | Tool calling for task execution                                       | Inter-agent communication and collaboration                                            |
+| Interaction Mode     | User $\rightarrow$ LLM                        | System/Agent $\rightarrow$ Agent $\rightarrow$ Output           | User $\rightarrow$ Agent $\rightarrow$ Tool                           | User $\rightarrow$ Multi-Agent System $\rightarrow$ Agents                             |
+| Workflow Handling    | Single generation handling                    | Single step within workflow                                     | Single task execution                                                 | Multi-step workflow coordination                                                       |
+| Information Flow     | Input $\rightarrow$ Output                    | Input (from System/Agent) $\rightarrow$ Output                  | Input $\rightarrow$ Tool $\rightarrow$ Output                         | Input $\rightarrow$ Agent1 $\rightarrow$ Agent2 $\rightarrow$ ... $\rightarrow$ Output |
+| Task Scope           | Single piece of generated content             | Specific sub-task (often generative)                            | Single, specific, defined task                                        | Complex, multi-faceted goal or workflow                                                |
+| Example (Video)      | Chatbot                                       | YouTube Title/Description/Summary Generator                     | Tavily Search Agent (see GIF below)                                   | YouTube-to-Blog Converter                                                              |
+| -------------------- | --------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 
 ![Tavily Search Agent](https://mintlify.s3.us-west-1.amazonaws.com/tavilyai/images/chatbotgif.gif)
 _The Tavily Search Agent is an AI agent that enables LLMs to perform web searches and retrieve real-time information via search tool._
 
-However, I seem to notice that chatbots nowadays (ChatGPT, Gemini, etc.) are capable of tool use, function calling, and reasoning. I think it is not correct to consider them as AI agents because they can perform various tasks (e.g. asking ChatGPT to verify a math solution, write a poem, or generate hyperrealistic images all in one conversation or session). They act as a **generalist AI agent**, more specifically a **conversational AI agent** because they require a user to provide either a prompt (task) or feedback to its generated output. I think that these generalist AI agents should also be defined as a special class of AI agents, distinct from the more specialized AI agents that are designed for specific tasks or domains.
+However, I seem to notice that chatbots nowadays (ChatGPT, Gemini, etc.) are capable of tool use, function calling, and reasoning. I think it is not correct to consider them as AI agents because they can perform various tasks (e.g. asking ChatGPT to verify a math solution, write a poem, or generate hyperrealistic images all in one conversation or session). They act as a **generalist AI agent**, more specifically a **conversational AI agent** because they require a user to provide either a prompt (task) or feedback to its generated output. I think that these generalist AI agents should also be defined as a special class of AI agents, distinct from the more specialized AI agents that are designed for specific tasks or domains. Therefore, a generalist AI agent (**in my humble opinion**) is, at its core, a single intelligence (entity) engineered to execute nearly (virtually) any task or function. This is accomplished by building upon a foundation of general knowledge and emergent capabilities from pretraining, then adapting to preferred behaviors through fine-tuning, and critically, possessing the autonomy to determine if and when external tools are necessary. Shown below is [*Helix*](https://www.figure.ai/news/helix), a **humanoid generalist AI agent** powered by [Figure AI](https://www.figure.ai/about-us)'s pretrained vision-language-action (VLA) model, which can perform a wide range of tasks, from picking up objects to household chores.
+
+{%
+  include embed/video.html
+  src='https://videos.ctfassets.net/qx5k8y1u9drj/4wf95VTvc50PrNLOrxqJgD/3b73d98fcc80efa5b25ca6e714ae087c/KETCHUP.mp4'
+  types='mp4'
+  title='A fine-grained VLA controls Helix\'s full humanoid upper body.'
+  autoplay=true
+  loop=true
+  muted=true
+%}
+
+{%
+  include embed/video.html
+  src='https://videos.ctfassets.net/qx5k8y1u9drj/1Xb3IbRlWHGT0weCRRNtjf/e5de4605f6ed5467889519ab6ffafa64/COOKIE.mp4'
+  types='mp4'
+  title='Zero-shot multi-robot coordination performing a grocery storage task (putting novel groceries, or items never encountered during training, into a fridge).'
+  autoplay=true
+  loop=true
+  muted=true
+%}
+
+{%
+  include embed/video.html
+  src='https://videos.ctfassets.net/qx5k8y1u9drj/5FDXDLlij51hccnRIbeVm1/3e62d60c24b5ee9bc0938a77634e1208/Quad_-_1.mp4'
+  types='mp4'
+  title='Helix can virtually pick up any small household object.'
+  autoplay=true
+  loop=true
+  muted=true
+%}
 
 ## Why do we need to differentiate AI Agents and Agentic AI?
 1. Enables more precise system design by aligning computational frameworks with problem complexity ensuring that **AI Agents are deployed for modular, tool-assisted tasks**, while **Agentic AI** is employed for orchestrated multi-agent operations.
 2. **Allows for appropriate benchmarking and evaluation**. Performance metrics, safety protocols, and resource requirements differ significantly between single-agent and multi-agent systems. Understanding these distinctions helps in setting realistic expectations and standards for each type of system.
 3. **Reduces development inefficiencies** by preventing the misapplication of design principles. For instance, using Agentic AI frameworks for simple tasks can lead to unnecessary complexity, while applying single-agent architectures to complex workflows can result in bottlenecks and inefficiencies.
+
+## Conclusion
+The leap from individual AI Agents handling single tasks to Agentic AI systems where agents collaborate on big projects marks a huge shift in what AI can achieve. Knowing the difference is key because it’s really about using the right tool for the job, ensuring we build smarter solutions without overcomplicating things. Ultimately, this understanding paves the way for creating truly autonomous systems that can tackle the messy, complex challenges of the real world.
