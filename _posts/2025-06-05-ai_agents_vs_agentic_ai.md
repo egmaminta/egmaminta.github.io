@@ -4,7 +4,7 @@ date: 2025-06-05 13:13:13 +0800
 categories: [Agents]
 tags: [ai agents, agentic ai]
 author: "egmaminta"
-description: "Knowing the difference between AI Agents and Agentic AI in under 11 minutes."
+description: "Knowing the difference between AI Agents and Agentic AI in under 12 minutes."
 math: true
 mermaid: true
 ---
@@ -101,13 +101,13 @@ Here's a table (from the main reference) that I think concisely compares the fou
 ![Tavily Search Agent](https://mintlify.s3.us-west-1.amazonaws.com/tavilyai/images/chatbotgif.gif)
 _The Tavily Search Agent is an AI agent that enables LLMs to perform web searches and retrieve real-time information via search tool._
 
-You know, it's pretty wild how much chatbots like [ChatGPT](https://openai.com/chatgpt/overview/) and [Gemini](https://deepmind.google/models/gemini/) have changed lately. I've noticed they're not just spitting out text anymore; they can actually use tools, call up functions, and even do some pretty impressive reasoning.
+You know, it's pretty wild how much chatbots like [ChatGPT](https://openai.com/chatgpt/overview/), [Claude](https://www-cdn.anthropic.com/4263b940cabb546aa0e3283f35b686f4f3b2ff47.pdf), and [Gemini](https://deepmind.google/models/gemini/) have changed lately. I've noticed they're not just spitting out text anymore; they can actually use tools, call up functions, and even do some pretty impressive reasoning. Since late of 2022, we have been calling them Generative AI.
 
-Now, here's where I think we might need to adjust our thinking. When we talk about AI agents, it feels a bit off to lump these general-purpose chatbots in with the highly specialized ones. Why? Well, think about it: you can ask ChatGPT to check your math, then have it write a poem, and in the same breath, get it to generate some hyperrealistic images. All in one go!
+Now, here's where I think we might need to adjust our thinking. When we talk about these general-purpose chatbots, it feels a bit off to lump them in with the *less capable* ones (i.e. those that operate in one mode---text in, text out). Why? Well, think about it: you can ask ChatGPT or Claude or Gemini to check your math, then have it write a poem, and in the same breath, get it to generate some hyperrealistic images. All in one go! However, I'm *being careful* here because these "less capable" ones are also great in performing various tasks for you (e.g. write emails, create summaries, plan itineraries).
 
-To me, that makes them something special: **generalist conversational AI agents**. They're "generalist" because they're not stuck doing just one thing, and "conversational" because, well, you talk to them. They need us to give them a prompt or tell them if their output hit the mark.
+To me, that makes ChatGPT, Claude, Gemini, and the likes, something special: **generalist conversational AI**. They're "generalist" because they're not stuck doing just one thing, and "conversational" because, well, you talk to them. They need us to give them a prompt or tell them if their output hit the mark.
 
-I really believe we should define these generalist conversational AI agents as their own distinct class. They're clearly different from those more specialized AI agents built for super specific tasks or domains. It's an important distinction to make as AI keeps evolving!
+I really believe we should define these **generalist AI** as their own distinct class. They're clearly different from those more specialized AI agents built for super specific tasks or domains, or those simpler chatbots that only handle text-based interactions. It's an important distinction to make as AI keeps evolving!
 
 {%
   include embed/video.html
@@ -119,9 +119,9 @@ I really believe we should define these generalist conversational AI agents as t
   muted=true
 %}
 
-Therefore, a generalist AI agent (**in my humble opinion**) is, at its core, a single intelligence (entity) engineered to execute nearly (virtually) any task or function. This is accomplished by building upon a foundation of general knowledge and emergent capabilities from pretraining, then adapting to preferred behaviors through fine-tuning, and critically, possessing the autonomy to determine if and when external tools are necessary.
+Therefore, a generalist AI (**in my humble opinion**) is, at its core, a single intelligence engineered to execute nearly (virtually) any task or function. It can process and understand context from multiple modalities (text, speech, audio, image, video, robotic actions) making it omni-intelligent. This is accomplished by building upon a foundation of general knowledge and emergent capabilities from pretraining on hybrid mixture of data, then adapting to preferred behaviors through fine-tuning or improving context generation through reinforcement learning, and critically, possessing the autonomy to determine if and when external tools are necessary.
 
-Shown below is [*Helix*](https://www.figure.ai/news/helix), a **humanoid generalist AI agent** powered by [Figure AI](https://www.figure.ai/about-us)'s pretrained vision-language-action (VLA) model, which can perform a wide range of tasks, from picking up objects to household chores.
+Shown below is [*Helix*](https://www.figure.ai/news/helix), a **humanoid generalist AI** powered by [Figure AI](https://www.figure.ai/about-us)'s pretrained vision-language-action (VLA) model, which can perform a wide range of tasks, from picking up objects to household chores.
 
 {%
   include embed/video.html
