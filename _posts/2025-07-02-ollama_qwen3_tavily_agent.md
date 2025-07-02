@@ -153,7 +153,7 @@ async def setup_session_and_runner() -> tuple[Session, Runner]:
 ```
 {: file="tavily_search_ollama_agent/async_session.py" }
 
-Session is alike the idea of a "conversation thread". Agents require context about the ongoing interaction. Hence, `Session` is the ADK object designed specifically to track and manage various conversation threads. The `SessionService` is required to create and manage a `Session`. This object acts as the container holding everything related to a conversation thread. Keep in mind of the following properties: `session_id`, `app_name`, and `user_id`. The `session_id` is a unique identifier for a specific conversation thread. This is because a `SessionService` object can contain multiple `Session` objects. This ID is useful for retrieving or resuming a conversation later. The `app_name` identifies which agent application this conversation thread belongs to. The `user_id` identifies the user who is interacting with the agent. This is useful in scenarios where a user have predefined preferences or history that the agent can leverage. There are three types of `SessionService`. The table below summarizes the differences between them:
+Session is alike the idea of a "conversation thread". Agents require context about the ongoing interaction. Hence, `Session` is the ADK object designed specifically to track and manage various conversation threads. The `SessionService` is required to create and manage a `Session`. This object acts as the container holding everything related to a conversation thread. Keep in mind of the following properties: `session_id`, `app_name`, and `user_id`. The `session_id` is a unique identifier for a specific conversation thread. This is because a `SessionService` object can contain multiple `Session` objects. This ID is useful for retrieving or resuming a conversation later. The `app_name` identifies which agent application this conversation thread belongs to. The `user_id` identifies the user who is interacting with the agent. This is useful in scenarios where a user has predefined preferences or history that the agent can leverage. There are three types of `SessionService`. The table below summarizes the differences between them:
 
 | Session service          | How it works                                                                                   | Persistence                                              | Best for                                                                                                              |
 | ------------------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -161,7 +161,25 @@ Session is alike the idea of a "conversation thread". Agents require context abo
 | `DatabaseSessionService` | Connects to a relational database (e.g., PostgreSQL, MySQL, SQLite) to store session data.     | Yes. Data persists across application restarts.          | Applications requiring reliable, self-managed persistent storage.                                                     |
 | `VertexAiSessionService` | Leverages Google Cloud's Vertex AI infrastructure and its Agent Engine for session management. | Yes. Data is managed reliably and scalably by Vertex AI. | Scalable production applications deployed on Google Cloud, especially when integrating with other Vertex AI features. |
 
-In this example, we will use the `InMemorySessionService` for simplicity. The `Runner` is responsible for managing the execution flow of the agent. It requires the `agent`, `app_name`, and `session_service` as parameters.
+In this example, we will use the `InMemorySessionService` for simplicity. The `Runner` is responsible for managing the execution flow of the agent. It requires the `agent`, `app_name`, and `session_service` as parameters. Figure 1 below illustrates a simplified session lifecycle in the Google ADK:
+
+```mermaid
+graph LR
+    subgraph s_id1[Agent Development Kit Runtime]
+    id2[Runner<br><br>Event Processor] -->|Ask|id3[Execution Logic<br><br>Agent, LLM innovation, <br>Callbacks, Tools, <br>etc.]
+    id3 -->|Yield| id2
+    id2 <-.-> id4[Services<br><br>Session, Artifact, <br>Memory, etc.]
+    end
+    id4 <-.-> id5[(Storage)]
+    id1[User] -->|Send query| id2
+    id2 --> |Stream event| id1
+```
+<div align="left">
+  Figure 1: The session lifecycle. This cycle highlights how the <tt>SessionService</tt> ensures conversational continuity by managing the history and state associated with each <tt>Session</tt> object.
+</div>
+<br>
+
+The `Runner` utilizes the `SessionService` to either establish a new `Session` via `create_session` or retrieve an existing one using `get_session`. This grants the agent access to the session's `state` and `events`. Upon receiving a user query, the agent analyzes it, along with the `state` and `events` history, to determine a response and potentially flag data for `state` updates. The `Runner` then packages this into an `Event` and invokes `SessionService.append_event(session, event)`. The `SessionService` subsequently appends the new `Event` to the history, updates the session's `state` in storage based on event information, and refreshes the session's `last_update_time`. The agent's response is then delivered to the user. The updated `Session` is stored by the `SessionService` for subsequent interactions, restarting the cycle with the conversation's continuation. Once the conversation concludes, `SessionService.delete_session(...)` is called to clear unnecessary stored session data.
 
 ## Building the async function to call the agent
 Next, we will create an asynchronous function to call the agent. This function will handle user input, pass it to the agent, and return the agent's response. Intermediate steps will be printed to the console for demonstration purposes.
