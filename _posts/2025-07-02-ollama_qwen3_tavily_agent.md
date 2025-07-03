@@ -52,7 +52,7 @@ pip install google-adk
 
 Other libraries we need to install are the following:
 ```bash
-pip install langchain-tavily colorama
+pip install litellm langchain-tavily colorama
 ```
 
 ### Directory Structure
