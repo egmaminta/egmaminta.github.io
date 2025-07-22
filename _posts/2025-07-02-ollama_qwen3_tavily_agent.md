@@ -4,7 +4,7 @@ date: 2025-07-02 13:13:13 +0800
 categories: [Agents]
 tags: [google-adk, ollama, qwen3, tavily, ai agents]
 author: "egmaminta"
-description: ""
+description: "A step-by-step guide to building a lightweight AI agent using Ollama, Tavily Search, and Google ADK."
 math: true
 mermaid: true
 ---
