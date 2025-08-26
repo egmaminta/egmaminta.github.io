@@ -14,9 +14,9 @@ order: 4
 
 #### Short Bio
 
-I am a fourth-year Ph.D. student at the [Ubiquitous Computing Laboratory](https://eee.upd.edu.ph/research/research-laboratories/ubiquitous-computing-laboratory/) (UCL) in the [University of the Philippines Diliman](https://upd.edu.ph/), advised by Prof. [Rowel O. Atienza, Ph.D.](https://eee.upd.edu.ph/about/faculty/rowel-atienza/)
+I am a fourth-year Artificial Intelligence Ph.D. student at the [Ubiquitous Computing Laboratory](https://eee.upd.edu.ph/research/research-laboratories/ubiquitous-computing-laboratory/) (UCL) in the [University of the Philippines Diliman](https://upd.edu.ph/), advised by Prof. [Rowel O. Atienza, Ph.D.](https://eee.upd.edu.ph/about/faculty/rowel-atienza/)
 
-I obtained my Bachelor of Science in Electrical Engineering (B.S. EE) with honors in 2022, and my Master of Engineering in Artificial Intelligence (M.Eng. AI) in 2025, both from the University of the Philippines Diliman. I have gained more than half a decade of experience in research and development, software engineering, and project management, with a focus on the space of Artificial Intelligence (AI) and Machine Learning (ML).
+I obtained my Bachelor of Science in Electrical Engineering (B.S. EE) with honors in 2022, and my Master of Engineering in Artificial Intelligence (M.Eng. AI) in 2025, both from the University of the Philippines Diliman. I have gained more than half a decade of experience in research and development, software engineering, and project management, with a focus on the space of AI and Machine Learning (ML).
 
 My **primary** research interests are the following:
 - Embodied AI agents or agentic AI, and their applications in the retail industry (I coined as *Retail Intelligence*)
