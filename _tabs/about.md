@@ -1,24 +1,16 @@
 ---
 layout: page
-title: Blog
-permalink: /blog/
-icon: fas fa-blog
+title: Writing
 order: 1
+permalink: /blog/
+description: Notes on AI research, engineering, and building intelligent agents.
 ---
 
+{% include post-list.html posts=site.posts descriptions=true %}
 
-<nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="post-list">
-	{% for post in site.posts %}
-	<article class="col">
-		<a class="post-preview card h-100" href="{{ post.url | relative_url }}">
-			<div class="card-body">
-				<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
-				<h4 class="pt-0 my-2">{{ post.title }}</h4>
-				<div class="text-muted">
-					<p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
-				</div>
-			</div>
-		</a>
-	</article>
-	{% endfor %}
+<nav class="writing-archive-nav" aria-label="Browse writing">
+  <a href="{{ '/archives/' | relative_url }}">Archive</a>
+  <a href="{{ '/categories/' | relative_url }}">Categories</a>
+  <a href="{{ '/tags/' | relative_url }}">Topics</a>
+  <a href="{{ '/feed.xml' | relative_url }}">RSS feed</a>
 </nav>

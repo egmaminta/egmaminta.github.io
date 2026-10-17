@@ -1,0 +1,9 @@
+---
+layout: page
+---
+<ul class="taxonomy-list">
+  {% assign tags = site.tags | sort %}
+  {% for tag in tags %}
+  <li><a href="{{ tag[0] | slugify | prepend: '/tags/' | append: '/' | relative_url }}">{{ tag[0] | escape }}</a><span>{{ tag[1].size }} posts</span></li>
+  {% endfor %}
+</ul>

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Keep gems in the writable workspace instead of the image-owned gem directory.
+bundle config set --local path vendor/bundle || exit "$?"
+bundle install || exit "$?"
+
 if [ -f package.json ]; then
   bash -i -c "nvm install --lts && nvm install-latest-npm"
   npm i

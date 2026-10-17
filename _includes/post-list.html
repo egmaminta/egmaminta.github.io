@@ -1,0 +1,9 @@
+<ul class="writing-list">
+  {% assign post_limit = include.limit | default: include.posts.size %}
+  {% for post in include.posts limit: post_limit %}
+  <li>
+    <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%b %Y' }}</time>
+    <div><h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }} <span aria-hidden="true">↗</span></a></h3>{% if include.descriptions %}<p>{{ post.description | default: post.excerpt | strip_html | truncate: 200 }}</p>{% endif %}</div>
+  </li>
+  {% endfor %}
+</ul>

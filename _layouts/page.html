@@ -1,0 +1,9 @@
+---
+layout: default
+---
+<header class="page-heading">
+  <a class="back-link" href="{{ '/' | relative_url }}">← Back to profile</a>
+  <h1>{{ page.title | default: 'Page' | escape }}</h1>
+  {% if page.description %}<p>{{ page.description | escape }}</p>{% endif %}
+</header>
+<div class="page-content prose">{{ content }}</div>

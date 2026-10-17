@@ -14,12 +14,19 @@ timezone: Asia/Manila
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Emmanuel Maminta # the main title
+title: Emmanuel G. Maminta # the main title
 
 tagline: AI PhD @ UP Diliman # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
-  A minimal, responsive and feature-rich Jekyll theme for technical writing.
+  Emmanuel G. Maminta is an AI Developer at OpenText Philippines and an
+  Artificial Intelligence Ph.D. student at the University of the Philippines
+  Diliman, researching embodied AI, multimodal AI,
+  and vision-language models (VLMs), with a strong focus on retail applications
+  (RetailVision). His broader interests include hand-object interaction,
+  egocentric and exocentric computer vision, robotics, and world models.
+  His applied work focuses on
+  parameter-efficient fine-tuning (PEFT), agentic AI, and harness engineering.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
@@ -34,7 +41,7 @@ github:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Emmanuel Maminta # change to your name
+  name: Emmanuel G. Maminta
   email: egmaminta@up.edu.ph # change to your email address
   links:
     # The first element serves as the copyright owner's link
@@ -88,7 +95,7 @@ analytics:
 #     light — Use the light color scheme
 #     dark — Use the dark color scheme
 #
-theme_mode: # [light | dark]
+theme_mode: light
 
 # The CDN endpoint for media resources.
 # Notice that once it is assigned, the CDN url
@@ -102,7 +109,7 @@ avatar: assets/profile_photo.jpg
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
-social_preview_image: # string, local or CORS resources
+social_preview_image: /assets/profile_photo.jpg
 
 # boolean type, the global switch for TOC in posts.
 toc: true
@@ -138,9 +145,9 @@ assets:
     env: # [development | production]
 
 pwa:
-  enabled: true # The option for PWA feature (installable)
+  enabled: false # The academic layout does not register an offline service worker.
   cache:
-    enabled: true # The option for PWA offline cache
+    enabled: false
     # Paths defined here will be excluded from the PWA cache.
     # Usually its value is the `baseurl` of another website that
     # shares the same domain name as the current website.

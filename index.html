@@ -1,85 +1,131 @@
 ---
-layout: page
-title: "About"
-permalink: /
-icon: fas fa-info-circle
+layout: default
+title: Emmanuel G. Maminta
+description: AI Developer at OpenText Philippines and Artificial Intelligence Ph.D. student at UP Diliman. Research in embodied AI, multimodal AI, and VLMs for retail applications.
+image: /assets/profile_photo.jpg
+home: true
 ---
-{% capture about_content %}
-### 👋 Hi, nice to meet you! I'm Emmanuel G. Maminta.
 
-* 🎓 Artificial Intelligence Ph.D. student (*ongoing; expected 2027*)
-* 👨‍💻 NVIDIA-Certified Professional: Agentic AI & NVIDIA-Certified Associate: Generative AI LLMs
-* 🏫 University of the Philippines
-* 📍 Metro Manila, Philippines
-* 📧 egmaminta [at] up.edu.ph
-* 💼 [LinkedIn](https://www.linkedin.com/in/egmaminta/) / [Google Scholar](https://scholar.google.com/citations?user=zGVoxRMAAAAJ&hl=en)
+<section class="profile" id="about" aria-labelledby="profile-name">
+  <div class="profile-intro">
+    <p class="eyebrow">Artificial Intelligence · Ph.D. student</p>
+    <h1 id="profile-name">Emmanuel G. Maminta<span class="name-period">.</span></h1>
+    <p class="affiliation">University of the Philippines Diliman</p>
+    <p class="profile-location">Metro Manila, Philippines</p>
+    <div class="bio">
+      <p>I am a Ph.D. student in Artificial Intelligence at the <a href="https://eee.upd.edu.ph/research/research-laboratories/ubiquitous-computing-laboratory/">Ubiquitous Computing Laboratory</a>, advised by Prof. <a href="https://eee.upd.edu.ph/about/faculty/rowel-atienza/">Rowel O. Atienza</a>. I currently work as an <strong>AI Developer at OpenText Philippines</strong>.</p>
+      <p>My research focuses on <strong>embodied AI, multimodal AI, and vision-language models (VLMs)</strong>, with a strong emphasis on <strong>retail applications (RetailVision)</strong>. My broader interests include hand–object interaction, egocentric and exocentric computer vision, robotics, and world models.</p>
+    </div>
+    <ul class="profile-links" aria-label="Contact and academic profiles">
+      <li><a href="mailto:egmaminta@up.edu.ph">Email <span aria-hidden="true">↗</span></a></li>
+      <li><a href="https://scholar.google.com/citations?user=zGVoxRMAAAAJ&amp;hl=en">Google Scholar <span aria-hidden="true">↗</span></a></li>
+      <li><a href="https://github.com/egmaminta">GitHub <span aria-hidden="true">↗</span></a></li>
+      <li><a href="https://www.linkedin.com/in/egmaminta/">LinkedIn <span aria-hidden="true">↗</span></a></li>
+    </ul>
+  </div>
+  <figure class="portrait">
+    <img src="{{ '/assets/profile_photo.jpg' | relative_url }}" alt="Portrait of Emmanuel G. Maminta" width="1280" height="1920" fetchpriority="high">
+  </figure>
+</section>
 
-#### Short Bio
+<section class="profile-section" id="news" aria-labelledby="news-heading">
+  <div class="section-label"><p class="eyebrow">Updates</p><h2 id="news-heading">Recent news</h2></div>
+  <div class="section-body">
+    <ul class="news-list">
+      {% for item in site.data.news limit: 5 %}
+      <li{% if item.highlight %} class="news-highlight"{% endif %}>
+        <span class="news-date">{{ item.label | escape }}</span>
+        <div>{{ item.text | markdownify }}{% if item.badge %}<span class="badge badge-accent">{{ item.badge | escape }}</span>{% endif %}</div>
+      </li>
+      {% endfor %}
+    </ul>
+    <details class="older-news">
+      <summary>Earlier updates <span aria-hidden="true">+</span></summary>
+      <ul class="news-list">
+        {% for item in site.data.news offset: 5 %}
+        <li><span class="news-date">{{ item.label | escape }}</span><div>{{ item.text | markdownify }}</div></li>
+        {% endfor %}
+      </ul>
+    </details>
+  </div>
+</section>
 
-I am a fourth-year Artificial Intelligence Ph.D. student at the [Ubiquitous Computing Laboratory](https://eee.upd.edu.ph/research/research-laboratories/ubiquitous-computing-laboratory/) (UCL) in the [University of the Philippines](https://upd.edu.ph/), advised by Prof. [Rowel O. Atienza](https://eee.upd.edu.ph/about/faculty/rowel-atienza/).
+<section class="profile-section" id="research" aria-labelledby="research-heading">
+  <div class="section-label"><p class="eyebrow">Retail applications</p><h2 id="research-heading">Research</h2></div>
+  <div class="section-body">
+    <div class="research-grid">
+      <div><span class="research-number" aria-hidden="true">01</span><h3>Multimodal AI &amp; VLMs</h3><p>Vision-language models and multimodal learning for fine-grained grocery product retrieval and open-vocabulary recognition in retail environments.</p></div>
+      <div><span class="research-number" aria-hidden="true">02</span><h3>Embodied AI</h3><p>Agents that perceive, reason, and act in retail environments, with interests in robotics, world models, and simulation.</p></div>
+      <div><span class="research-number" aria-hidden="true">03</span><h3>Hand–object interaction</h3><p>Hand–object interaction and visual understanding from egocentric and exocentric perspectives, especially in retail settings.</p></div>
+    </div>
+    <div class="work-focus"><h3>Applied work</h3><p>My work focuses on <strong>parameter-efficient fine-tuning (PEFT)</strong>, <strong>agentic AI</strong>, and <strong>harness engineering</strong>.</p></div>
+    <p class="research-note">Additional interests: resource-efficient pre-training, reinforcement learning for LLMs, reward modeling, preference learning, AI safety and alignment, chain-of-thought monitoring, and prompt optimization.</p>
+  </div>
+</section>
 
-I obtained my Bachelor of Science in Electrical Engineering (B.S. EE) with honors in 2022, and my Master of Engineering in Artificial Intelligence (M.Eng. AI) in 2025, both from the University of the Philippines. I have gained more than half a decade of experience in research and development, software engineering, and project management, with a focus on the field of AI and Machine Learning (ML).
+<section class="profile-section" id="publications" aria-labelledby="publications-heading">
+  <div class="section-label"><p class="eyebrow">Research output</p><h2 id="publications-heading">Publications</h2><a class="small-link" href="https://scholar.google.com/citations?user=zGVoxRMAAAAJ&amp;hl=en">Google Scholar <span aria-hidden="true">↗</span></a></div>
+  <div class="section-body publication-list">
+    {% for paper in site.data.publications %}
+    <article class="publication">
+      <div class="publication-meta"><span class="venue">{{ paper.venue | escape }}</span>
+        {% if paper.badge %}{% if paper.badge_url %}<a class="badge" href="{{ paper.badge_url }}">{{ paper.badge | escape }} <span aria-hidden="true">↗</span></a>{% else %}<span class="badge badge-accent">{{ paper.badge | escape }}</span>{% endif %}{% endif %}
+      </div>
+      <h3>{% if paper.url %}<a href="{{ paper.url }}">{{ paper.title | escape }}</a>{% else %}{{ paper.title | escape }}{% endif %}</h3>
+      {% if paper.authors %}<p class="authors">{{ paper.authors | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>{% endif %}
+      <p class="publication-context">{{ paper.context | escape }}</p>
+      {% if paper.links %}<ul class="paper-links" aria-label="Resources for {{ paper.title | escape }}">{% for link in paper.links %}<li><a href="{{ link.url }}">{{ link.label | escape }} <span aria-hidden="true">↗</span></a></li>{% endfor %}</ul>{% endif %}
+    </article>
+    {% endfor %}
+    <div class="preprint-note"><span class="eyebrow">Also available</span><p><a href="{{ '/preprints/' | relative_url }}">Scalable Early Detection of Mental Health Signals in Social Media Text</a><br><span class="muted">2025 · Preprint, not peer reviewed</span></p></div>
+  </div>
+</section>
 
-My **primary** research interests are the following:
-- Embodied AI agents or agentic AI, and their applications in the retail industry (Retail Intelligence)
-- Multimodal deep learning (vision & language) including fusion techniques, foundation models (FMs), and vision language models (VLMs)
-- Pre-training methods and how to efficiently utilize single GPU resource for such methods
-- Reinforcement learning-based post-training methods in large language models (LLMs), specifically reward modeling, preference learning, and policy optimization algorithms
-- Computer vision including out-of-vocabulary (or in-the-wild) object detection and image segmentation
+<section class="profile-section" aria-labelledby="projects-heading">
+  <div class="section-label"><p class="eyebrow">Open source</p><h2 id="projects-heading">Software</h2></div>
+  <div class="section-body project-grid">
+    <article><h3><a href="https://github.com/egmaminta/GEPA-Lite">GEPA-Lite <span aria-hidden="true">↗</span></a></h3><p>A lightweight implementation of Genetic-Pareto prompt optimization, released under the MIT License.</p></article>
+    <article><h3><a href="https://github.com/gepa-ai/gepa">GEPA · AnyMaths <span aria-hidden="true">↗</span></a></h3><p>A custom adapter contributed to GEPA for optimizing prompts on mathematical word problems and LLM reasoning.</p></article>
+  </div>
+</section>
 
-Other research interests include: AI safety and alignment, Chain-of-Thought (CoT) monitoring, prompt optimization.
+<section class="profile-section" aria-labelledby="background-heading">
+  <div class="section-label"><p class="eyebrow">Background</p><h2 id="background-heading">Education &amp;<br>experience</h2></div>
+  <div class="section-body">
+    <ul class="education-list">
+      <li><span class="education-year">Current</span><div><h3>AI Developer</h3><p>OpenText Philippines</p><p>I build enterprise artificial intelligence products, agentic systems, and LLMOps/MLOps infrastructure.</p></div></li>
+      <li><span class="education-year">Ongoing</span><div><h3>Ph.D. in Artificial Intelligence</h3><p>University of the Philippines Diliman · Expected 2027</p></div></li>
+      <li><span class="education-year">2025</span><div><h3>Master of Engineering in Artificial Intelligence</h3><p>University of the Philippines Diliman</p></div></li>
+      <li><span class="education-year">2022</span><div><h3>B.S. in Electrical Engineering, with honors</h3><p>University of the Philippines Diliman</p></div></li>
+    </ul>
+    <p class="experience-note">My background spans research and development, software engineering, and project management. I have collaborated with Samsung Research &amp; Development Institute Philippines on open-vocabulary object detection and co-taught introductory programming and data structures at UP Diliman.</p>
+  </div>
+</section>
 
----
-### News
-* **[Winter 2025]** I passed two NVIDIA Certification examinations: [NVIDIA-Certified Professional: Agentic AI](https://www.credly.com/badges/a943bd5f-ed61-4b07-a075-87da03784f15/public_url) and [NVIDIA-Certified Associate: Generative AI LLMs](https://www.credly.com/badges/3f1e97c7-4dec-4b21-8a13-5d1bab379a80/public_url).
-* **[Autumn 2025]** Conferred as one of the **Best of ICCV 2025** by Voxel51. [[event]](https://voxel51.com/events/best-of-iccv-november-20-2025) [[recording]](https://www.youtube.com/watch?v=1WRKzF4Zukw)
-* **[Autumn 2025]** Presented our *Sari Sandbox* work in the ICCV 2025 Workshop on RetailVision held in Hawai'i Convention Center, Honolulu, Hawai'i, USA on October 19.
-* **[Summer 2025]** Contributed a customized adapter (`AnyMaths`) in the GEPA (Genetic-Pareto) framework for optimizing prompts and other text components specifically in word problems (mathematics) and LLM reasoning. [[code:gepa]](https://github.com/gepa-ai/gepa) [[paper]](https://arxiv.org/pdf/2507.19457)
-* **[Summer 2025]** Published GEPA-Lite, a lightweight version of GEPA under the MIT License via GitHub. Project is starred and endorsed by one of the paper's original authors, Lakshya A. Agrawal. [[gepa-lite]](https://github.com/egmaminta/GEPA-Lite)
-* **[Summer 2025]** Our paper titled, "Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents," is accepted in [ICCV 2025 Workshop on RetailVision](https://retailvisionworkshop.github.io/). [[arXiv]](https://arxiv.org/abs/2508.00400) [[webpage]](https://sarisandbox.github.io/) [[paper]](https://sarisandbox.github.io/static/gajo2025sari.pdf)
-* **[Summer 2025]** Presented research findings in a closed-door technical workshop with Analog Devices (ADI) Philippines. [[arXiv]](https://arxiv.org/abs/2508.00400) [[webpage]](https://sarisandbox.github.io/) [[paper]](https://sarisandbox.github.io/static/gajo2025sari.pdf)
-* **[Summer 2025]** Completed all coursework for M.Eng. AI program. [[capstone project]](https://sarisandbox.github.io/)
-* **[Summer 2024]** Presented research findings (with Nikko Carlo A. Yabut and SRPH) in the 1st National Electrical, Electronics, and Computer Engineering Conference (NEECECon). [[abstract]](https://www.canva.com/design/DAGJBCFJaUY/u9SYW8juIql_xMgPoooEyA/view?utm_content=DAGJBCFJaUY&utm_campaign=designshare&utm_medium=embeds&utm_source=link#24)
-* **[Spring 2023]** Affiliated with UCL, rostered as one of the graduate researchers for a collaborative project with Samsung Research & Development Institute Philippines (SRPH) about out-of-vocabulary object detection in VLMs.
-* **[Autumn 2022]** Co-taught EEE 111 Introduction to Programming and Computation and EEE 121 Data Structures and Algorithms with Prof. Jhoanna Rhodette I. Pedrasa at the Electrical and Electronics Engineering Institute (EEEI) of the University of the Philippines.
-* **[Autumn 2022]** Began M.Eng-Ph.D. studies as part of the pioneering "Turing Batch" in the Philippines’ first AI graduate program.
+<section class="profile-section" aria-labelledby="certifications-heading">
+  <div class="section-label"><p class="eyebrow">Credentials</p><h2 id="certifications-heading">Certifications</h2></div>
+  <div class="section-body">
+    <ul class="certification-grid">
+      <li><a class="certification" href="https://www.credly.com/badges/a943bd5f-ed61-4b07-a075-87da03784f15/public_url">
+        <img src="{{ '/assets/img/certifications/nvidia-agentic-ai.png' | relative_url }}" alt="NVIDIA Certified Professional: Agentic AI badge" width="917" height="917" loading="lazy" decoding="async">
+        <span class="certification-title">NVIDIA-Certified Professional<br><strong>Agentic AI</strong></span>
+        <span class="certification-verify">Verify credential <span aria-hidden="true">↗</span></span>
+      </a></li>
+      <li><a class="certification" href="https://www.credly.com/badges/3f1e97c7-4dec-4b21-8a13-5d1bab379a80/public_url">
+        <img src="{{ '/assets/img/certifications/nvidia-generative-ai-llms.png' | relative_url }}" alt="NVIDIA Certified Associate: Generative AI LLMs badge" width="917" height="917" loading="lazy" decoding="async">
+        <span class="certification-title">NVIDIA-Certified Associate<br><strong>Generative AI LLMs</strong></span>
+        <span class="certification-verify">Verify credential <span aria-hidden="true">↗</span></span>
+      </a></li>
+    </ul>
+  </div>
+</section>
 
----
-## Certifications
+<section class="profile-section" id="writing" aria-labelledby="writing-heading">
+  <div class="section-label"><p class="eyebrow">Notes &amp; ideas</p><h2 id="writing-heading">Writing</h2><a class="small-link" href="{{ '/blog/' | relative_url }}">All posts <span aria-hidden="true">→</span></a></div>
+  <div class="section-body">{% include post-list.html posts=site.posts limit=3 %}</div>
+</section>
 
-<style>
-	/* Keep badges proportional while shrinking */
-	.badge-card {
-		max-width: 180px;
-		margin: 0 auto;
-		padding: 0.25rem;
-		border: 0;
-		box-shadow: none;
-		background: transparent;
-	}
-	.badge-card iframe {
-		width: 100% !important;
-		height: auto !important;
-		aspect-ratio: 150 / 270;
-		display: block;
-	}
-</style>
-
-<div class="row g-2">
-	<div class="col-auto">
-		<div class="badge-card">
-			<div data-iframe-width="100%" data-iframe-height="270" data-share-badge-id="a943bd5f-ed61-4b07-a075-87da03784f15" data-share-badge-host="https://www.credly.com"></div>
-		</div>
-	</div>
-	<div class="col-auto">
-		<div class="badge-card">
-			<div data-iframe-width="100%" data-iframe-height="270" data-share-badge-id="3f1e97c7-4dec-4b21-8a13-5d1bab379a80" data-share-badge-host="https://www.credly.com"></div>
-		</div>
-	</div>
-</div>
-
-<script async src="https://cdn.credly.com/assets/utilities/embed.js"></script>
-
-{% endcapture %}
-
-{{ about_content | markdownify }}
+<section class="contact-section" id="contact" aria-labelledby="contact-heading">
+  <div><p class="eyebrow">Get in touch</p><h2 id="contact-heading">Let’s talk research.</h2><p>For research inquiries and collaboration, you can reach me by email.</p></div>
+  <a class="contact-email" href="mailto:egmaminta@up.edu.ph">egmaminta@up.edu.ph <span aria-hidden="true">↗</span></a>
+</section>

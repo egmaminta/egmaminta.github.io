@@ -1,0 +1,38 @@
+# Add verified paper/project URLs under links as they become available.
+# Omit authors when the complete author list has not yet been supplied.
+- title: A Transferable Variant Signal That Grocery Retrieval Cannot Reach
+  venue: ACCV 2026
+  badge: Oral presentation
+  context: Accepted for an oral presentation · Osaka, Japan · December 2026
+
+- title: Late Interaction Ranking for Effective Closed-Catalog Grocery Product Retrieval
+  venue: ECCV 2026
+  context: Presented in Malmö, Sweden · September 2026
+
+- title: What Matters For Grocery Product Retrieval With Open Source Vision Language Models
+  venue: ICPR 2026
+  badge: RRPR reproducibility badge
+  badge_url: https://iapr-tc22-rrl.github.io/icpr2026/results/
+  authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
+  context: Presented in Lyon, France · August 2026
+  url: https://arxiv.org/abs/2605.18029
+  links:
+    - label: Paper
+      url: https://arxiv.org/abs/2605.18029
+    - label: PDF
+      url: https://arxiv.org/pdf/2605.18029
+    - label: Code
+      url: https://github.com/upeee/openmpr
+
+- title: "Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents"
+  venue: ICCV 2025 · RetailVision Workshop
+  authors: "Janika Deborah Gajo, Gerarld Paul Merales, Jerome Escarcha, Brenden Ashley Molina, Gian Nartea, **Emmanuel G. Maminta**, Juan Carlos Roldan, Rowel O. Atienza"
+  context: Presented in Honolulu, Hawai‘i, USA · October 2025
+  url: https://arxiv.org/abs/2508.00400
+  links:
+    - label: Paper
+      url: https://arxiv.org/abs/2508.00400
+    - label: Project
+      url: https://sarisandbox.github.io/
+    - label: Code
+      url: https://github.com/upeee/sari-sandbox-env

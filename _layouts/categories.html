@@ -1,0 +1,9 @@
+---
+layout: page
+---
+<ul class="taxonomy-list">
+  {% assign categories = site.categories | sort %}
+  {% for category in categories %}
+  <li><a href="{{ category[0] | slugify | prepend: '/categories/' | append: '/' | relative_url }}">{{ category[0] | escape }}</a><span>{{ category[1].size }} posts</span></li>
+  {% endfor %}
+</ul>

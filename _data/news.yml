@@ -1,0 +1,50 @@
+# Newest first. Labels describe when an update occurred, not a future event date.
+- label: "2026"
+  text: 'Joined the **Cohere Labs Open Science Community**, where my focus will be on **multimodal AI and world models**.'
+
+- label: "2026"
+  highlight: true
+  badge: Oral presentation
+  text: 'Our paper, *A Transferable Variant Signal That Grocery Retrieval Cannot Reach*, has been accepted for an **oral presentation at [ACCV 2026](https://accv2026.org/)** in Osaka, Japan, this December.'
+
+- label: "Sep 2026"
+  text: 'Presented *Late Interaction Ranking for Effective Closed-Catalog Grocery Product Retrieval* at **[ECCV 2026](https://eccv.ecva.net/)** in Malmö, Sweden.'
+
+- label: "Aug 2026"
+  text: 'Presented *What Matters For Grocery Product Retrieval With Open Source Vision Language Models* at **[ICPR 2026](https://icpr2026.org/)** in Lyon, France. The work also earned the **[RRPR reproducibility badge](https://iapr-tc22-rrl.github.io/icpr2026/results/)**.'
+
+- label: "2025"
+  text: 'Earned the NVIDIA-Certified Professional: Agentic AI and NVIDIA-Certified Associate: Generative AI LLMs certifications.'
+
+- label: "Nov 2025"
+  text: 'Our *Sari Sandbox* work was featured in Voxel51’s **[Best of ICCV 2025](https://voxel51.com/events/best-of-iccv-november-20-2025)**. [Watch the recording](https://www.youtube.com/watch?v=1WRKzF4Zukw).'
+
+- label: "Oct 2025"
+  text: 'Presented *Sari Sandbox* at the [ICCV 2025 Workshop on RetailVision](https://retailvisionworkshop.github.io/) in Honolulu, Hawai‘i, USA.'
+
+- label: "2025"
+  text: 'Contributed the AnyMaths adapter to [GEPA](https://github.com/gepa-ai/gepa) for prompt optimization in mathematical word problems and LLM reasoning.'
+
+- label: "2025"
+  text: 'Released [GEPA-Lite](https://github.com/egmaminta/GEPA-Lite), a lightweight implementation of GEPA under the MIT License.'
+
+- label: "2025"
+  text: 'Our paper, *Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents*, was accepted at the [ICCV 2025 Workshop on RetailVision](https://retailvisionworkshop.github.io/). [Paper](https://arxiv.org/abs/2508.00400) · [Project](https://sarisandbox.github.io/)'
+
+- label: "2025"
+  text: 'Presented research findings in a technical workshop with Analog Devices Philippines. [Project](https://sarisandbox.github.io/)'
+
+- label: "2025"
+  text: 'Completed the M.Eng. in Artificial Intelligence program at the University of the Philippines. [Capstone project](https://sarisandbox.github.io/)'
+
+- label: "2024"
+  text: 'Presented research with Nikko Carlo A. Yabut and Samsung Research & Development Institute Philippines at the first National Electrical, Electronics, and Computer Engineering Conference (NEECECon).'
+
+- label: "2023"
+  text: 'Joined UCL as a graduate researcher on a collaborative project with Samsung Research & Development Institute Philippines on open-vocabulary object detection in vision-language models.'
+
+- label: "2022"
+  text: 'Co-taught EEE 111 (Introduction to Programming and Computation) and EEE 121 (Data Structures and Algorithms) with Prof. Jhoanna Rhodette I. Pedrasa at UP Diliman.'
+
+- label: "2022"
+  text: 'Began M.Eng.–Ph.D. studies as part of the pioneering Turing Batch in the University of the Philippines AI graduate program.'

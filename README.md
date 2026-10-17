@@ -1,43 +1,54 @@
-# Chirpy Starter
+# Emmanuel G. Maminta · Academic profile
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+Personal academic website at <https://egmaminta.github.io>, built with Jekyll and deployed to GitHub Pages. The custom layouts provide a consistent profile, publication list, writing archive, and article view. The Chirpy gem supplies the existing Jekyll plugins and feed.
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+## Local development
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
+Use Ruby 3.3 and Bundler, matching the GitHub Actions workflow.
 
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
-
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
+```sh
+bundle install
+bash tools/run.sh
 ```
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+Open <http://127.0.0.1:4000>. Restart the server after editing `_config.yml`.
 
-## Usage
+### Inside a development container
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+From the repository root in the container terminal:
 
-## Contributing
+```sh
+export BUNDLE_APP_CONFIG="$PWD/.bundle"
+bundle config set --local path vendor/bundle
+bundle install
+bash tools/run.sh --host 0.0.0.0
+```
 
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
+Forward port **4000** and open <http://localhost:4000>. Port **35729** enables automatic browser refresh.
 
-## License
+The container configuration sets writable paths for Bundler's configuration and installed gems, and forwards both ports. Its creation script installs the gems automatically. After changing `.devcontainer/devcontainer.json`, use **Dev Containers: Rebuild Container** to apply those defaults. The commands above also fix an existing container session without rebuilding.
 
-This work is published under [MIT][mit] License.
+If Bundler reports a permission error under `/usr/local/bundle`, rerun the `export` and `bundle config` commands above before installing. Both `.bundle/` and `vendor/` are ignored by Git.
 
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+## Updating content
+
+- **Profile and research:** edit `index.html`.
+- **News:** add entries to `_data/news.yml`, newest first. The first five are visible; the rest appear under “Earlier updates.” Use the actual announcement date when known.
+- **Publications:** edit `_data/publications.yml`. Each entry supports `title`, `venue`, `context`, `authors` (Markdown), `url`, `badge`, `badge_url`, and a list of `links` with `label` and `url`. Add verified author lists and paper links for the ECCV and ACCV entries when available.
+- **Writing:** add Markdown posts to `_posts/` using the existing front matter. The writing archive and homepage update automatically. Existing post URLs are preserved.
+- **Preprints:** edit `_tabs/preprints.md`; PDFs live in `assets/preprints/`.
+- **Certifications:** badge images are stored in `assets/img/certifications/` and displayed in `index.html`, with links to the public Credly verification pages.
+- **Appearance:** `assets/css/academic.css` and `_layouts/`. The homepage uses local assets only. Posts with math or diagrams load MathJax or Mermaid as needed.
+- **Metadata and social profiles:** edit `_config.yml` and the links in `_layouts/default.html` / `index.html`.
+
+## Validation and deployment
+
+```sh
+bash tools/test.sh
+```
+
+This performs a production build and checks internal links, images, and scripts with HTML-Proofer. External destinations are excluded from this check.
+
+Push to `main` or `master` to run the existing `.github/workflows/pages-deploy.yml` workflow. It builds, validates, and deploys the site to GitHub Pages. Local build output and installed dependencies are ignored by Git.
+
+The layout supports narrow screens, keyboard navigation, reduced motion, and printing. The news archive and certification badges work without JavaScript.
