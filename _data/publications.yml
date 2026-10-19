@@ -1,14 +1,14 @@
 # Add verified paper/project URLs under links as they become available.
 # Omit authors when the complete author list has not yet been supplied.
 - title: A Transferable Variant Signal That Grocery Retrieval Cannot Reach
-  venue: ACCV 2026 · Main Conference
+  venue: Asian Conference on Computer Vision (ACCV 2026) · Main Conference
   authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
   badge: Oral presentation
   highlight: true
   context: Accepted for an oral presentation · Osaka, Japan · December 2026
 
 - title: Late Interaction Ranking for Effective Closed-Catalog Grocery Product Retrieval
-  venue: ECCV 2026 · RetailVision Workshop
+  venue: European Conference on Computer Vision (ECCV 2026) · RetailVision Workshop
   authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
   context: Presented at the RetailVision Workshop in Malmö, Sweden · September 2026
   url: https://openreview.net/pdf?id=wpk11NhwiH
@@ -17,7 +17,7 @@
       url: https://openreview.net/pdf?id=wpk11NhwiH
 
 - title: What Matters For Grocery Product Retrieval With Open Source Vision Language Models
-  venue: ICPR 2026
+  venue: International Conference on Pattern Recognition (ICPR 2026)
   badge: RRPR reproducibility badge
   badge_url: https://iapr-tc22-rrl.github.io/icpr2026/results/
   authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
@@ -32,7 +32,7 @@
       url: https://github.com/upeee/openmpr
 
 - title: "Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents"
-  venue: ICCV 2025 · RetailVision Workshop
+  venue: IEEE/CVF International Conference on Computer Vision (ICCV 2025) · RetailVision Workshop
   authors: "Janika Deborah Gajo, Gerarld Paul Merales, Jerome Escarcha, Brenden Ashley Molina, Gian Nartea, **Emmanuel G. Maminta**, Juan Carlos Roldan, Rowel O. Atienza"
   context: Presented in Honolulu, Hawai‘i, USA · October 2025
   url: https://arxiv.org/abs/2508.00400

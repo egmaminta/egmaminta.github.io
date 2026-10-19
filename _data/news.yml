@@ -1,15 +1,15 @@
 # Current news uses Mon YYYY, newest event first. Keep unknown historical months unspecified.
 - label: "Dec 2026"
-  text: 'Our paper was accepted for an **oral presentation at the [ACCV 2026](https://accv2026.org/) main conference** in Osaka, Japan (December 2026).'
+  text: 'Our paper was accepted for an **oral presentation at the [Asian Conference on Computer Vision (ACCV 2026)](https://accv2026.org/) main conference** in Osaka, Japan (December 2026).'
 
 - label: "Sep 2026"
   text: 'Joined the **Cohere Labs Open Science Community**, where my focus will be on **multimodal AI and world models**.'
 
 - label: "Sep 2026"
-  text: 'Presented our grocery product retrieval research at the **[ECCV 2026](https://eccv.ecva.net/) RetailVision Workshop** in Malmö, Sweden.'
+  text: 'Presented our grocery product retrieval research at the **[European Conference on Computer Vision (ECCV 2026)](https://eccv.ecva.net/) RetailVision Workshop** in Malmö, Sweden.'
 
 - label: "Aug 2026"
-  text: 'Presented at **[ICPR 2026](https://icpr2026.org/)** in Lyon, France, and received the **[RRPR reproducibility badge](https://iapr-tc22-rrl.github.io/icpr2026/results/)**.'
+  text: 'Presented at the **[International Conference on Pattern Recognition (ICPR 2026)](https://icpr2026.org/)** in Lyon, France, and received the **[RRPR reproducibility badge](https://iapr-tc22-rrl.github.io/icpr2026/results/)**.'
 
 - label: "2025"
   text: 'Earned the NVIDIA-Certified Professional: Agentic AI and NVIDIA-Certified Associate: Generative AI LLMs certifications.'
@@ -18,7 +18,7 @@
   text: 'Our *Sari Sandbox* work was featured in Voxel51’s **[Best of ICCV 2025](https://voxel51.com/events/best-of-iccv-november-20-2025)**. [Watch the recording](https://www.youtube.com/watch?v=1WRKzF4Zukw).'
 
 - label: "Oct 2025"
-  text: 'Presented *Sari Sandbox* at the [ICCV 2025 Workshop on RetailVision](https://retailvisionworkshop.github.io/) in Honolulu, Hawai‘i, USA.'
+  text: 'Presented *Sari Sandbox* at the [RetailVision Workshop at the IEEE/CVF International Conference on Computer Vision (ICCV 2025)](https://retailvisionworkshop.github.io/) in Honolulu, Hawai‘i, USA.'
 
 - label: "2025"
   text: 'Contributed the AnyMaths adapter to [GEPA](https://github.com/gepa-ai/gepa) for prompt optimization in mathematical word problems and LLM reasoning.'
@@ -27,7 +27,7 @@
   text: 'Released [GEPA-Lite](https://github.com/egmaminta/GEPA-Lite), a lightweight implementation of GEPA under the MIT License.'
 
 - label: "2025"
-  text: 'Our paper, *Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents*, was accepted at the [ICCV 2025 Workshop on RetailVision](https://retailvisionworkshop.github.io/). [Paper](https://arxiv.org/abs/2508.00400) · [Project](https://sarisandbox.github.io/)'
+  text: 'Our paper, *Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents*, was accepted at the [RetailVision Workshop at the IEEE/CVF International Conference on Computer Vision (ICCV 2025)](https://retailvisionworkshop.github.io/). [Paper](https://arxiv.org/abs/2508.00400) · [Project](https://sarisandbox.github.io/)'
 
 - label: "2025"
   text: 'Presented research findings in a technical workshop with Analog Devices Philippines. [Project](https://sarisandbox.github.io/)'
