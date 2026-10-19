@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#faf9f6">
+    <meta name="theme-color" content="#7b1113">
     {% seo %}
     <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ '/assets/css/academic.css' | relative_url }}">
@@ -20,20 +20,19 @@
   </head>
   <body{% if page.home %} class="home-page"{% endif %}>
     <a class="skip-link" href="#main-content">Skip to content</a>
+    {% unless page.home %}
     <header class="site-header"><div class="header-inner">
-      <a class="site-name" href="{{ '/' | relative_url }}" aria-label="Emmanuel Maminta, home">Emmanuel Maminta</a>
       <nav class="site-nav" aria-label="Main navigation">
-        <a href="{{ '/#about' | relative_url }}"{% if page.home %} aria-current="location"{% endif %}>About</a>
-        <a href="{{ '/#research' | relative_url }}">Research</a>
+        <a href="{{ '/' | relative_url }}">Home</a>
         <a href="{{ '/#publications' | relative_url }}">Publications</a>
-        <a href="{{ '/#news' | relative_url }}">News</a>
         <a href="{{ '/blog/' | relative_url }}"{% if page.url == '/blog/' or page.layout == 'post' %} aria-current="page"{% endif %}>Writing</a>
       </nav>
     </div></header>
+    {% endunless %}
     <main class="site-main{% unless page.home %} inner-page{% endunless %}" id="main-content">{{ content }}</main>
     <footer class="site-footer"><div class="footer-inner">
       <p>© {{ 'now' | date: '%Y' }} Emmanuel G. Maminta</p>
-      <div><a href="mailto:egmaminta@up.edu.ph">Email</a><a href="https://scholar.google.com/citations?user=zGVoxRMAAAAJ&amp;hl=en">Scholar</a><a href="{{ '/feed.xml' | relative_url }}">RSS</a><a href="#main-content">Back to top <span aria-hidden="true">↑</span></a></div>
+      <div><a href="{{ '/feed.xml' | relative_url }}">RSS</a><a href="#main-content">Back to top ↑</a></div>
     </div></footer>
   </body>
 </html>

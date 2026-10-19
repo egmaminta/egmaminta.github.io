@@ -3,15 +3,13 @@
   text: 'Joined the **Cohere Labs Open Science Community**, where my focus will be on **multimodal AI and world models**.'
 
 - label: "2026"
-  highlight: true
-  badge: Oral presentation
-  text: 'Our paper, *A Transferable Variant Signal That Grocery Retrieval Cannot Reach*, has been accepted for an **oral presentation at [ACCV 2026](https://accv2026.org/)** in Osaka, Japan, this December.'
+  text: 'Our paper was accepted for an **oral presentation at [ACCV 2026](https://accv2026.org/)** in Osaka, Japan (December 2026).'
 
 - label: "Sep 2026"
-  text: 'Presented *Late Interaction Ranking for Effective Closed-Catalog Grocery Product Retrieval* at **[ECCV 2026](https://eccv.ecva.net/)** in Malmö, Sweden.'
+  text: 'Presented our grocery product retrieval research at **[ECCV 2026](https://eccv.ecva.net/)** in Malmö, Sweden.'
 
 - label: "Aug 2026"
-  text: 'Presented *What Matters For Grocery Product Retrieval With Open Source Vision Language Models* at **[ICPR 2026](https://icpr2026.org/)** in Lyon, France. The work also earned the **[RRPR reproducibility badge](https://iapr-tc22-rrl.github.io/icpr2026/results/)**.'
+  text: 'Presented at **[ICPR 2026](https://icpr2026.org/)** in Lyon, France, and received the **[RRPR reproducibility badge](https://iapr-tc22-rrl.github.io/icpr2026/results/)**.'
 
 - label: "2025"
   text: 'Earned the NVIDIA-Certified Professional: Agentic AI and NVIDIA-Certified Associate: Generative AI LLMs certifications.'

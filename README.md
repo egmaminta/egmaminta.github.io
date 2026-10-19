@@ -33,12 +33,12 @@ If Bundler reports a permission error under `/usr/local/bundle`, rerun the `expo
 ## Updating content
 
 - **Profile and research:** edit `index.html`.
-- **News:** add entries to `_data/news.yml`, newest first. The first five are visible; the rest appear under “Earlier updates.” Use the actual announcement date when known.
-- **Publications:** edit `_data/publications.yml`. Each entry supports `title`, `venue`, `context`, `authors` (Markdown), `url`, `badge`, `badge_url`, and a list of `links` with `label` and `url`. Add verified author lists and paper links for the ECCV and ACCV entries when available.
+- **News:** add entries to `_data/news.yml`, newest first. The first four are visible; the rest appear under “Earlier updates.” Use the actual announcement date when known.
+- **Publications:** edit `_data/publications.yml`. Each entry supports `title`, `venue`, `context`, `authors` (Markdown), `url`, `badge`, `badge_url`, and a list of `links` with `label` and `url`. Add paper links for the ECCV and ACCV entries when available.
 - **Writing:** add Markdown posts to `_posts/` using the existing front matter. The writing archive and homepage update automatically. Existing post URLs are preserved.
 - **Preprints:** edit `_tabs/preprints.md`; PDFs live in `assets/preprints/`.
 - **Certifications:** badge images are stored in `assets/img/certifications/` and displayed in `index.html`, with links to the public Credly verification pages.
-- **Appearance:** `assets/css/academic.css` and `_layouts/`. The homepage uses local assets only. Posts with math or diagrams load MathJax or Mermaid as needed.
+- **Appearance:** `assets/css/academic.css` and `_layouts/`. The homepage uses a simple document layout, local assets, and UP maroon (`#7b1113`) for links. Posts with math or diagrams load MathJax or Mermaid as needed.
 - **Metadata and social profiles:** edit `_config.yml` and the links in `_layouts/default.html` / `index.html`.
 
 ## Validation and deployment

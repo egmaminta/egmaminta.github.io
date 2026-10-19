@@ -2,11 +2,13 @@
 # Omit authors when the complete author list has not yet been supplied.
 - title: A Transferable Variant Signal That Grocery Retrieval Cannot Reach
   venue: ACCV 2026
+  authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
   badge: Oral presentation
   context: Accepted for an oral presentation · Osaka, Japan · December 2026
 
 - title: Late Interaction Ranking for Effective Closed-Catalog Grocery Product Retrieval
   venue: ECCV 2026
+  authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
   context: Presented in Malmö, Sweden · September 2026
 
 - title: What Matters For Grocery Product Retrieval With Open Source Vision Language Models
