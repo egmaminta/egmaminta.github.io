@@ -1,0 +1,115 @@
+% Academic content with formatting based solely on the supplied Stanford guide.
+% XeLaTeX; no URL commands, hyperlinks, tables, columns, or graphic elements.
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{fontspec}
+\setmainfont{texgyretermes}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic,Ligatures=NoCommon]
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{enumitem,titlesec,needspace}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=12pt,itemsep=2pt,topsep=3pt,parsep=0pt,partopsep=0pt}
+\titleformat{\section}{\normalfont\bfseries\fontsize{10.5}{12.2}\selectfont}{}{0pt}{}
+\titlespacing*{\section}{0pt}{10pt}{5pt}
+\pagestyle{plain}
+\setlength{\emergencystretch}{2em}
+\newcommand{\entry}[3]{\Needspace{3\baselineskip}\textbf{#1}\hfill #2\par #3\par\vspace{4pt}}
+\newcommand{\paper}[4]{\begin{samepage}#1. #2. #3. #4\par\end{samepage}\vspace{6pt}}
+\newcommand{\me}{\mbox{\textbf{Emmanuel G. Maminta}}}
+\begin{document}
+\fontsize{10.5}{12.2}\selectfont
+\raggedright
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\special{pdf:docinfo << /Author (Emmanuel G. Maminta) /Title (Emmanuel G. Maminta - Curriculum Vitae) /Subject (Academic research and professional experience) >>}
+{\bfseries\fontsize{17}{20}\selectfont EMMANUEL G. MAMINTA}\par
+\vspace{4pt}
+Metro Manila, Philippines\par
++63 945 113 2524\quad |\quad egmaminta@up.edu.ph\quad |\quad mnlmmnt@gmail.com
+
+\section{EDUCATION}
+\textbf{University of the Philippines Diliman}, Quezon City, Philippines\par
+Ph.D. in Artificial Intelligence, Sep 2022–Present; expected completion 2027\par
+Adviser: Prof. Rowel O. Atienza; Ubiquitous Computing Laboratory\par
+M.Eng. in Artificial Intelligence, Sep 2022–Jul 2025\par
+B.S. in Electrical Engineering, with honors, Aug 2018–Jul 2022
+
+\section{RESEARCH INTERESTS}
+Embodied AI, multimodal AI, and vision-language models for retail applications (RetailVision and Physical Retail AI); fine-grained grocery product retrieval and embodied agents in virtual retail environments. Additional areas of study: hand–object interaction, egocentric and exocentric computer vision, robotics, and world models.
+
+\section{RESEARCH EXPERIENCE}
+\textbf{Doctoral Researcher, Ubiquitous Computing Laboratory}\hfill Sep 2022–Present\par
+University of the Philippines Diliman, Quezon City, Philippines
+\begin{itemize}
+  \item Co-authored a zero-shot evaluation of \textbf{190 open-source vision-language models} for grocery product retrieval, studying pre-training data, architecture, and input resolution (ICPR 2026).
+  \item Led research on an agentic framework for embodied AI in virtual retail; co-authored Sari Sandbox, a simulation with over 250 interactive grocery items for benchmarking embodied agents.
+  \item Investigated open-vocabulary object detection in vision-language models through research supported by Samsung Research \& Development Institute Philippines.
+\end{itemize}
+
+\section{PUBLICATIONS}
+\paper{\me{} and Rowel O. Atienza}
+{2026}
+{A Transferable Variant Signal That Grocery Retrieval Cannot Reach}
+{Asian Conference on Computer Vision (ACCV 2026), \textbf{Main Conference}. \textbf{Accepted for oral presentation}, Osaka, Japan, December 2026.}
+
+\paper{\me{} and Rowel O. Atienza}
+{2026}
+{Late Interaction Ranking for Effective Closed-Catalog Grocery Product Retrieval}
+{European Conference on Computer Vision (ECCV 2026), RetailVision Workshop. Presented in Malmö, Sweden, September 2026.}
+
+\paper{\me{} and Rowel O. Atienza}
+{2026}
+{What Matters for Grocery Product Retrieval with Open Source Vision Language Models}
+{International Conference on Pattern Recognition (ICPR 2026). Presented in Lyon, France, August 2026. \textbf{RRPR reproducibility badge}.}
+
+\paper{Janika Deborah Gajo, Gerarld Paul Merales, Jerome Escarcha, Brenden Ashley Molina, Gian Nartea, \me, Juan Carlos Roldan, and Rowel O. Atienza}
+{2025}
+{Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents}
+{IEEE/CVF International Conference on Computer Vision (ICCV 2025), RetailVision Workshop. Presented in Honolulu, Hawai‘i, USA, October 2025.}
+
+\section{HONORS AND AWARDS}
+\entry{Most Active Contributor Award, Microsoft Research Asia}{Aug 2026}{Awarded during the AI Summer School at the National University of Singapore. Submitted the most contributions to the Global AI Value Challenge during the summer school.}
+\entry{Best of ICCV 2025, Voxel51 feature}{Nov 2025}{Sari Sandbox was featured in Voxel51’s Best of ICCV 2025 research event.}
+
+\newpage
+\section{PROFESSIONAL EXPERIENCE}
+\textbf{AI Developer, OpenText Philippines}\hfill Jan 2025–Present
+\begin{itemize}
+  \item Build enterprise AI products, agentic systems, and LLMOps/MLOps infrastructure; apply parameter-efficient fine-tuning (PEFT) and harness engineering.
+  \item Developed an in-house small language model to automate proprietary coding tasks for teams in the Philippines and the United States.
+  \item Engineered knowledge graph-guided retrieval-augmented generation (RAG) with a unified data model for internal applications.
+\end{itemize}
+\vspace{3pt}
+\textbf{Data Scientist, Bank of the Philippine Islands}\hfill Nov 2023–Dec 2024
+\begin{itemize}
+  \item Engineered personalized product recommendations for high-net-worth clients and Jobs-to-Be-Done-based unsupervised clustering to identify customer segments.
+\end{itemize}
+\vspace{3pt}
+\textbf{Software Engineer, Samsung Research \& Development Institute Philippines}\par
+Apr–Oct 2023
+\begin{itemize}
+  \item Built a proprietary library for efficient, scalable deep learning experimentation.
+\end{itemize}
+
+\section{OPEN-SOURCE CONTRIBUTIONS}
+\begin{itemize}
+  \item \textbf{OpenMPR, Initiator.} Started an open-source project sharing recipes and evaluation resources for fine-grained grocery product retrieval.
+  \item \textbf{stable-worldmodel, Contributor.} Contributed to a platform for reproducible world model research and evaluation.
+  \item \textbf{GEPA-Lite, Creator.} Released a lightweight implementation of Genetic-Pareto prompt optimization under the MIT License.
+  \item \textbf{GEPA, Contributor.} Added the AnyMaths adapter for prompt optimization on mathematical word problems and LLM reasoning.
+\end{itemize}
+
+\section{TEACHING AND RESEARCH COMMUNITY}
+\entry{Cohere Labs Open Science Community, Member}{Sep 2026–Present}{Focus on multimodal AI and world models.}
+\entry{Teaching contributions, University of the Philippines Diliman}{2022}{Co-taught EEE 111 (Introduction to Programming and Computation) and EEE 121 (Data Structures and Algorithms) with Prof. Jhoanna Rhodette I. Pedrasa.}
+
+\section{CERTIFICATIONS AND TRAINING}
+NVIDIA-Certified Professional: Agentic AI\par
+NVIDIA-Certified Associate: Generative AI LLMs\par
+Oxford Machine Learning Summer School, Jun–Jul 2024; enrolled in representation learning and generative AI courses.
+
+\section{TECHNICAL SKILLS}
+\textbf{Modeling:} Python, PyTorch, Transformers (Hugging Face), OpenCLIP, PEFT, OpenCV.\par
+\textbf{Agent systems and evaluation:} DSPy, LangGraph, LlamaIndex, FastAPI, MLflow, Weights \& Biases, Langfuse.\par
+\textbf{Inference and compute:} vLLM, NVIDIA Triton, ONNX, Slurm, NVIDIA Jetson, AWS, Azure, Google Cloud.
+\end{document}
