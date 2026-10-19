@@ -1,4 +1,5 @@
 ---
+archived: true
 title: "60 Lessons in Building AI Agents"
 date: 2025-07-31 13:13:13 +0800
 categories: [Agents]

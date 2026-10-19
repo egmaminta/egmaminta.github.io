@@ -33,13 +33,14 @@ If Bundler reports a permission error under `/usr/local/bundle`, rerun the `expo
 ## Updating content
 
 - **Profile and research:** edit `index.html`.
-- **News:** add entries to `_data/news.yml`, newest first. The first four are visible; the rest appear under “Earlier updates.” Use the actual announcement date when known.
-- **Publications:** edit `_data/publications.yml`. Each entry supports `title`, `venue`, `context`, `authors` (Markdown), `url`, `badge`, `badge_url`, and a list of `links` with `label` and `url`. Add paper links for the ECCV and ACCV entries when available.
-- **Writing:** add Markdown posts to `_posts/` using the existing front matter. The writing archive and homepage update automatically. Existing post URLs are preserved.
+- **News:** add entries to `_data/news.yml`, newest event first, using `Mon YYYY` labels (for example, `Sep 2026`). The first four are visible; the rest appear under “Earlier updates.” Use the supplied event month for upcoming conference presentations; leave unknown historical months unspecified.
+- **Publications:** edit `_data/publications.yml`. Each entry supports `title`, `venue`, `context`, `authors` (Markdown), `url`, `badge`, `badge_url`, `highlight`, and a list of `links` with `label` and `url`. `highlight: true` emphasizes the ACCV main-conference oral presentation. Add the ACCV paper link when available.
+- **Archived writing:** the four existing posts remain in `_posts/` with `archived: true`, preserving their URLs. They are listed at `/archives/` and marked as archived on article pages. Writing is absent from the homepage and main navigation; `/blog/` points visitors to the archive. When ready to publish new writing, add a post without `archived: true` and restore the writing index/navigation.
 - **Preprints:** edit `_tabs/preprints.md`; PDFs live in `assets/preprints/`.
 - **Certifications:** badge images are stored in `assets/img/certifications/` and displayed in `index.html`, with links to the public Credly verification pages.
 - **Appearance:** `assets/css/academic.css` and `_layouts/`. The homepage uses a simple document layout, local assets, and UP maroon (`#7b1113`) for links. Posts with math or diagrams load MathJax or Mermaid as needed.
-- **Metadata and social profiles:** edit `_config.yml` and the links in `_layouts/default.html` / `index.html`.
+- **Browser tab icon:** `assets/img/favicon.ico` contains the official UP Diliman site's 32px and 192px favicon artwork. The original 192px PNG is saved as `assets/img/up-diliman-logo.png`. Source: [UP Diliman](https://upd.edu.ph/wp-content/uploads/2020/06/cropped-upd-favicon-192x192.png).
+- **Email and social profiles:** edit the contact details in `index.html`. Personal and academic email addresses are listed separately. The primary metadata email is set in `_config.yml`.
 
 ## Validation and deployment
 

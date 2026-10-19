@@ -1,4 +1,5 @@
 ---
+archived: true
 title: "Agent Carpentry: The Great AI Engineering Shift (2022–2026)"
 date: 2026-04-08 13:13:13 +0800
 categories: [Agents]

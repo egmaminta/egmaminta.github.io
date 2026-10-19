@@ -2,9 +2,10 @@
 layout: default
 ---
 <article class="blog-post">
+  {% if page.archived %}{% assign writing_url = '/archives/' %}{% assign writing_label = 'Writing archive' %}{% else %}{% assign writing_url = '/blog/' %}{% assign writing_label = 'All writing' %}{% endif %}
   <header class="page-heading">
-    <a class="back-link" href="{{ '/blog/' | relative_url }}">← All writing</a>
-    <p class="eyebrow post-date"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time> · {{ content | number_of_words | divided_by: 200 | at_least: 1 }} min read</p>
+    <a class="back-link" href="{{ writing_url | relative_url }}">← {{ writing_label }}</a>
+    <p class="eyebrow post-date">{% if page.archived %}Archived · {% endif %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time> · {{ content | number_of_words | divided_by: 200 | at_least: 1 }} min read</p>
     <h1>{{ page.title | escape }}</h1>
     <p class="post-byline">Emmanuel G. Maminta</p>
   </header>
@@ -12,6 +13,6 @@ layout: default
   <footer class="post-footer">
     <p class="eyebrow">Filed under</p>
     <div class="post-tags">{% for tag in page.tags %}<a href="{{ tag | slugify | prepend: '/tags/' | append: '/' | relative_url }}">{{ tag | escape }}</a>{% endfor %}</div>
-    <a class="back-link" href="{{ '/blog/' | relative_url }}">← All writing</a>
+    <a class="back-link" href="{{ writing_url | relative_url }}">← {{ writing_label }}</a>
   </footer>
 </article>

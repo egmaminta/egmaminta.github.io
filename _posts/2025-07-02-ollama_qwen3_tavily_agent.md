@@ -1,4 +1,5 @@
 ---
+archived: true
 title: "Build a Lightweight, Web-Enabled AI Agent with Ollama and Tavily Search using Google Agent Development Kit (ADK)"
 date: 2025-07-02 13:13:13 +0800
 categories: [Agents]

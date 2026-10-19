@@ -1,4 +1,5 @@
 ---
+archived: true
 title: AI Agents vs. Agentic AI
 date: 2025-06-05 13:13:13 +0800
 categories: [Agents]

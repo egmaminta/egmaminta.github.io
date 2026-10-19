@@ -14,8 +14,11 @@ home: true
       <p id="research">My research focuses on <strong>embodied AI, multimodal AI, and vision-language models</strong> for <strong>retail applications (RetailVision)</strong>. I am interested in hand–object interaction, egocentric and exocentric computer vision, robotics, and world models.</p>
       <p>I also work as an <strong>AI Developer at OpenText Philippines</strong>, building enterprise AI products, agentic systems, and LLMOps/MLOps infrastructure. My applied work includes parameter-efficient fine-tuning (PEFT) and harness engineering.</p>
     </div>
-    <ul class="profile-links" id="contact" aria-label="Contact and academic profiles">
-      <li><a href="mailto:egmaminta@up.edu.ph">Email</a></li>
+    <dl class="contact-emails" id="contact">
+      <div><dt>Personal</dt><dd><a href="mailto:mnlmmnt@gmail.com">mnlmmnt@gmail.com</a></dd></div>
+      <div><dt>Academic</dt><dd><a href="mailto:egmaminta@up.edu.ph">egmaminta@up.edu.ph</a><a href="mailto:emmanuel.maminta@eee.upd.edu.ph">emmanuel.maminta@eee.upd.edu.ph</a></dd></div>
+    </dl>
+    <ul class="profile-links" aria-label="Academic and professional profiles">
       <li><a href="https://scholar.google.com/citations?user=zGVoxRMAAAAJ&amp;hl=en">Google Scholar</a></li>
       <li><a href="https://github.com/egmaminta">GitHub</a></li>
       <li><a href="https://www.linkedin.com/in/egmaminta/">LinkedIn</a></li>
@@ -31,7 +34,6 @@ home: true
   <a href="#publications">Publications</a>
   <a href="#news">News</a>
   <a href="#software">Software</a>
-  <a href="{{ '/blog/' | relative_url }}">Writing</a>
 </nav>
 
 <section class="profile-section" id="news" aria-labelledby="news-heading">
@@ -60,7 +62,7 @@ home: true
   <h2 id="publications-heading">Publications</h2>
   <div class="section-body publication-list">
     {% for paper in site.data.publications %}
-    <article class="publication">
+    <article class="publication{% if paper.highlight %} publication-highlight{% endif %}">
       <h3>{% if paper.url %}<a href="{{ paper.url }}">{{ paper.title | escape }}</a>{% else %}{{ paper.title | escape }}{% endif %}</h3>
       {% if paper.authors %}<p class="authors">{{ paper.authors | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>{% endif %}
       <div class="publication-meta"><span class="venue">{{ paper.venue | escape }}</span>
@@ -110,9 +112,4 @@ home: true
       </a></li>
     </ul>
   </div>
-</section>
-
-<section class="profile-section" id="writing" aria-labelledby="writing-heading">
-  <h2 id="writing-heading">Writing <a class="section-link" href="{{ '/blog/' | relative_url }}">All posts</a></h2>
-  <div class="section-body">{% include post-list.html posts=site.posts limit=3 %}</div>
 </section>
