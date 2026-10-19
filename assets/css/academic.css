@@ -4,15 +4,15 @@
   --ink: #222;
   --secondary: #444;
   --muted: #666;
-  --accent: #7b1113;
-  --accent-hover: #500b0d;
+  --accent: #00356b;
+  --accent-hover: #00264d;
   --line: #e4e4e4;
   --sans: Arial, Helvetica, sans-serif;
 }
 * { box-sizing: border-box; }
 html { scroll-padding-top: 20px; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.7 var(--sans); -webkit-font-smoothing: antialiased; }
-::selection { background: #ecd6d7; }
+::selection { background: #d9e5f2; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
 a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
@@ -55,13 +55,13 @@ details summary > span[aria-hidden] { display: none; }
 .older-news[open] { margin-left: 0; }
 .older-news[open] > summary { margin: 0 0 12px 90px; }
 .publication + .publication { margin-top: 20px; }
-.publication-highlight { padding: 14px 18px; border-left: 4px solid var(--accent); background: #fbf3f3; }
+.publication-highlight { padding: 14px 18px; background: #f1f5fa; }
 .publication-highlight .badge { padding: 2px 8px; border-color: var(--accent); background: var(--accent); color: white; font-size: .88rem; font-weight: 700; }
 .publication h3 { font-size: 1rem; }
 .publication h3 a { color: var(--accent); }
 .authors { margin-top: 3px; font-size: .94rem; }
 .publication-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 3px; font-size: .92rem; }
-.badge { padding: 0 5px; border: 1px solid #ddc0c0; border-radius: 2px; color: var(--accent); font-size: .8rem; line-height: 1.7; }
+.badge { padding: 0 5px; border: 1px solid #bdcddd; border-radius: 2px; color: var(--accent); font-size: .8rem; line-height: 1.7; }
 .paper-links { display: flex; flex-wrap: wrap; gap: 16px; padding: 0; margin-top: 3px; list-style: none; font-size: .9rem; }
 .preprint-note { margin-top: 22px; font-size: .94rem; }
 .project-list, .education-list { display: grid; gap: 7px; padding-left: 19px; }
