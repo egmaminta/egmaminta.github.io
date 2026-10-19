@@ -33,7 +33,7 @@ If Bundler reports a permission error under `/usr/local/bundle`, rerun the `expo
 ## Updating content
 
 - **Profile and research:** edit `index.html`.
-- **News:** add entries to `_data/news.yml`, newest event first, using `Mon YYYY` labels (for example, `Sep 2026`). The first four are visible; the rest appear under “Earlier updates.” Use the supplied event month for upcoming conference presentations; leave unknown historical months unspecified.
+- **News:** add entries to `_data/news.yml`, newest event first, using `Mon YYYY` labels (for example, `Sep 2026`). The first five are visible; the rest appear under “Earlier updates.” Use the supplied event month for upcoming conference presentations; leave unknown historical months unspecified.
 - **Publications:** edit `_data/publications.yml`. Each entry supports `title`, `venue`, `context`, `authors` (Markdown), `url`, `badge`, `badge_url`, `highlight`, and a list of `links` with `label` and `url`. `highlight: true` emphasizes the ACCV main-conference oral presentation. Add the ACCV paper link when available.
 - **Archived writing:** the four existing posts remain in `_posts/` with `archived: true`, preserving their URLs. They are listed at `/archives/` and marked as archived on article pages. Writing is absent from the homepage and main navigation; `/blog/` points visitors to the archive. When ready to publish new writing, add a post without `archived: true` and restore the writing index/navigation.
 - **Preprints:** edit `_tabs/preprints.md`; PDFs live in `assets/preprints/`.

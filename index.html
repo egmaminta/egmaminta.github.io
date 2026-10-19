@@ -41,7 +41,7 @@ home: true
   <h2 id="news-heading">News</h2>
   <div class="section-body">
     <ul class="news-list">
-      {% for item in site.data.news limit: 4 %}
+      {% for item in site.data.news limit: 5 %}
       <li>
         <span class="news-date">{{ item.label | escape }}</span>
         <div>{{ item.text | markdownify }}</div>
@@ -51,7 +51,7 @@ home: true
     <details class="older-news">
       <summary>Earlier updates</summary>
       <ul class="news-list">
-        {% for item in site.data.news offset: 4 %}
+        {% for item in site.data.news offset: 5 %}
         <li><span class="news-date">{{ item.label | escape }}</span><div>{{ item.text | markdownify }}</div></li>
         {% endfor %}
       </ul>
