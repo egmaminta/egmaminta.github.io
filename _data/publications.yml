@@ -10,7 +10,7 @@
 - title: Late Interaction Ranking for Effective Closed-Catalog Grocery Product Retrieval
   venue: European Conference on Computer Vision (ECCV 2026) · RetailVision Workshop
   authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
-  context: Presented at the RetailVision Workshop in Malmö, Sweden · September 2026
+  context: Attended and presented at the RetailVision Workshop · Malmö, Sweden · September 2026
   url: https://openreview.net/pdf?id=wpk11NhwiH
   links:
     - label: PDF
@@ -21,7 +21,7 @@
   badge: RRPR reproducibility badge
   badge_url: https://iapr-tc22-rrl.github.io/icpr2026/results/
   authors: "**Emmanuel G. Maminta**, Rowel O. Atienza"
-  context: Presented in Lyon, France · August 2026
+  context: Attended and presented · Lyon, France · August 2026
   url: https://arxiv.org/abs/2605.18029
   links:
     - label: Paper
@@ -34,7 +34,7 @@
 - title: "Sari Sandbox: A Virtual Retail Store Environment for Embodied AI Agents"
   venue: IEEE/CVF International Conference on Computer Vision (ICCV 2025) · RetailVision Workshop
   authors: "Janika Deborah Gajo, Gerarld Paul Merales, Jerome Escarcha, Brenden Ashley Molina, Gian Nartea, **Emmanuel G. Maminta**, Juan Carlos Roldan, Rowel O. Atienza"
-  context: Presented in Honolulu, Hawai‘i, USA · October 2025
+  context: Workshop paper · Honolulu, Hawai‘i, USA · October 2025
   url: https://arxiv.org/abs/2508.00400
   links:
     - label: Paper

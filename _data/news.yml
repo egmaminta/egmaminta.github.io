@@ -6,10 +6,10 @@
   text: 'Joined the **Cohere Labs Open Science Community**, where my focus will be on **multimodal AI and world models**.'
 
 - label: "Sep 2026"
-  text: 'Presented our grocery product retrieval research at the **[European Conference on Computer Vision (ECCV 2026)](https://eccv.ecva.net/) RetailVision Workshop** in Malmö, Sweden.'
+  text: 'Attended the **[European Conference on Computer Vision (ECCV 2026)](https://eccv.ecva.net/)** in Malmö, Sweden, and presented our grocery product retrieval research at its **RetailVision Workshop**.'
 
 - label: "Aug 2026"
-  text: 'Presented at the **[International Conference on Pattern Recognition (ICPR 2026)](https://icpr2026.org/)** in Lyon, France, and received the **[RRPR reproducibility badge](https://iapr-tc22-rrl.github.io/icpr2026/results/)**.'
+  text: 'Attended and presented our research at the **[International Conference on Pattern Recognition (ICPR 2026)](https://icpr2026.org/)** in Lyon, France, and received the **[RRPR reproducibility badge](https://iapr-tc22-rrl.github.io/icpr2026/results/)**.'
 
 - label: "Aug 2026"
   text: 'Attended the [AI Summer School at the National University of Singapore (NUS)](https://ai.nus.edu.sg/ai-summer-school/), where I received the **Most Active Contributor Award** from Microsoft Research Asia. I submitted the most contributions to the [Global AI Value Challenge](https://www.microsoft.com/en-us/research/event/global-ai-value-challenge/) during the summer school.'
@@ -21,7 +21,7 @@
   text: 'Our *Sari Sandbox* work was featured in Voxel51’s **[Best of ICCV 2025](https://voxel51.com/events/best-of-iccv-november-20-2025)**. [Watch the recording](https://www.youtube.com/watch?v=1WRKzF4Zukw).'
 
 - label: "Oct 2025"
-  text: 'Presented *Sari Sandbox* at the [RetailVision Workshop at the IEEE/CVF International Conference on Computer Vision (ICCV 2025)](https://retailvisionworkshop.github.io/) in Honolulu, Hawai‘i, USA.'
+  text: 'Our *Sari Sandbox* paper was included in the [RetailVision Workshop at the IEEE/CVF International Conference on Computer Vision (ICCV 2025)](https://retailvisionworkshop.github.io/) in Honolulu, Hawai‘i, USA.'
 
 - label: "2025"
   text: 'Contributed the AnyMaths adapter to [GEPA](https://github.com/gepa-ai/gepa) for prompt optimization in mathematical word problems and LLM reasoning.'
