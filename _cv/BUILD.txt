@@ -1,0 +1,26 @@
+CV build instructions
+
+FILES
+Emmanuel_G_Maminta_Academic_CV.tex — editable XeLaTeX source
+../assets/cv/Maminta_Emmanuel_CV.pdf — published PDF
+build.sh — reproducible build command
+
+BUILD
+From the repository root, run:
+  bash _cv/build.sh
+
+The script runs XeLaTeX twice in a temporary directory and fails on layout
+warnings. It writes the public PDF and an ignored local copy in _cv/.
+TeX Live must include XeLaTeX, TeX Gyre Termes, fontspec, microtype, enumitem,
+titlesec, needspace, and geometry. The build also uses ripgrep.
+
+FORMAT
+Single column, 11-point text throughout, and margins of at least one inch.
+The PDF contains searchable text and embedded fonts, with no embedded links.
+The formatting reference is the Stanford Career Center guide:
+https://careered.stanford.edu/sites/g/files/sbiybj22801/files/media/file/resume-and-cover-letter-examples.pdf
+
+PUBLICATION
+The homepage links to assets/cv/Maminta_Emmanuel_CV.pdf. Jekyll omits _cv/ from
+site output, but tracked source and build files are visible in this repository.
+Store private correspondence and editorial working notes outside the repository.
