@@ -11,8 +11,8 @@
 \setlength{\parskip}{0pt}
 \setlength{\emergencystretch}{2em}
 \setlist[itemize]{leftmargin=12pt,labelsep=5pt,itemsep=3pt,topsep=4pt,parsep=0pt,partopsep=0pt}
-\titleformat{\section}{\normalfont\bfseries\fontsize{11.5}{13.5}\selectfont}{}{0pt}{}
-\titlespacing*{\section}{0pt}{13pt}{6pt}
+\titleformat{\section}{\normalfont\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{11pt}{5pt}
 \pagestyle{empty}
 \newcommand{\dated}[2]{\textbf{#1}\hfill #2\par}
 \newcommand{\role}[3]{\Needspace{4\baselineskip}\dated{#1}{#2}\textit{#3}\par}
@@ -31,15 +31,34 @@
 \special{pdf:docinfo << /Author (Emmanuel G. Maminta) /Title (Emmanuel G. Maminta - Curriculum Vitae) /Subject (Vision-language models, embodied AI, and professional experience) >>}
 
 \begin{center}
-  {\bfseries\fontsize{22}{26}\selectfont Emmanuel G. Maminta}\par
-  \vspace{4pt}
-  Vision-Language Models\enspace ·\enspace Multimodal \& Embodied AI\enspace ·\enspace Physical Retail AI\par
-  \vspace{5pt}
-  {\fontsize{10.5}{12.5}\selectfont
+  \textbf{Emmanuel G. Maminta}\par
   Metro Manila, Philippines\enspace |\enspace +63 945 113 2524\par
-  egmaminta@up.edu.ph\enspace |\enspace mnlmmnt@gmail.com\par}
+  Academic: emmanuel.maminta@eee.upd.edu.ph\enspace \&\enspace egmaminta@up.edu.ph\par
+  Personal: mnlmmnt@gmail.com\par
 \end{center}
 \vspace{-3pt}
+
+\section{EDUCATION}
+\dated{University of the Philippines Diliman}{Quezon City, Philippines}
+\textbf{Ph.D. in Artificial Intelligence}\hfill Sep 2022–Present\par
+Expected completion: 2027. Adviser: Prof. Rowel O. Atienza.\par
+\vspace{3pt}
+\textbf{M.Eng. in Artificial Intelligence}\hfill Sep 2022–Jul 2025\par
+\textbf{B.S. in Electrical Engineering}, with honors\hfill Aug 2018–Jul 2022\par
+
+\section{ACADEMIC EXPERIENCE}
+\role{University of the Philippines Diliman}{Sep 2022–Present}
+{Doctoral Researcher, Ubiquitous Computing Laboratory}
+\begin{itemize}
+  \item Research embodied AI, multimodal AI, and vision-language models for \textbf{Physical Retail AI}, including ongoing projects in 3D computer vision.
+  \item Evaluated \textbf{190 open-source vision-language models} for zero-shot grocery retrieval, examining pre-training data, architecture, and input resolution (ICPR 2026).
+  \item Led research on an agentic framework for embodied AI in virtual retail; co-authored Sari Sandbox, a benchmark environment with \textbf{over 250 interactive grocery items}.
+  \item Investigated open-vocabulary object detection in vision-language models with support from Samsung Research \& Development Institute Philippines.
+\end{itemize}
+
+\vspace{3pt}
+\dated{Teaching contributions, University of the Philippines Diliman}{2022}
+Co-taught EEE 111 (Introduction to Programming and Computation) and EEE 121 (Data Structures and Algorithms) with Prof. Jhoanna Rhodette I. Pedrasa.\par
 
 \section{PROFESSIONAL EXPERIENCE}
 \role{OpenText Philippines}{Jan 2025–Present}{AI Developer}
@@ -60,30 +79,7 @@
   \item Built a proprietary library for \textbf{efficient, scalable deep learning experimentation}.
 \end{itemize}
 
-\section{RESEARCH EXPERIENCE}
-\role{University of the Philippines Diliman}{Sep 2022–Present}
-{Doctoral Researcher, Ubiquitous Computing Laboratory}
-\begin{itemize}
-  \item Investigate \textbf{3D computer vision for retail}, alongside multimodal and embodied AI.
-  \item Evaluated \textbf{190 open-source vision-language models} for zero-shot grocery retrieval, examining pre-training data, architecture, and input resolution (ICPR 2026).
-  \item Led research on an agentic framework for embodied AI in virtual retail; co-authored Sari Sandbox, a benchmark environment with \textbf{over 250 interactive grocery items}.
-  \item Investigated open-vocabulary object detection in vision-language models with support from Samsung Research \& Development Institute Philippines.
-\end{itemize}
-
-\section{EDUCATION}
-\dated{University of the Philippines Diliman}{Quezon City, Philippines}
-\textbf{Ph.D. in Artificial Intelligence}\hfill Sep 2022–Present\par
-Expected completion: 2027. Adviser: Prof. Rowel O. Atienza.\par
-\vspace{3pt}
-\textbf{M.Eng. in Artificial Intelligence}\hfill Sep 2022–Jul 2025\par
-\textbf{B.S. in Electrical Engineering}, with honors\hfill Aug 2018–Jul 2022\par
-
-\section{HONORS}
-\dated{Most Active Contributor Award, Microsoft Research Asia}{Aug 2026}
-National University of Singapore AI Summer School. Submitted the most contributions to the Global AI Value Challenge during the school.\par
-
 \newpage
-{\fontsize{10.5}{12.5}\selectfont\textbf{Emmanuel G. Maminta}\hfill Curriculum vitae · 2\par}
 
 \section{PUBLICATIONS}
 \paper{A Transferable Variant Signal That Grocery Retrieval Cannot Reach}
@@ -108,30 +104,29 @@ National University of Singapore AI Summer School. Submitted the most contributi
 Featured in Voxel51’s Best of ICCV 2025 research event · November 2025.}
 \vspace{-8pt}
 
-\section{OPEN-SOURCE SOFTWARE}
+\section{TECHNICAL SKILLS}
+Python, PyTorch, scikit-learn, NumPy, pandas, Hugging Face Transformers, OpenCLIP, OpenCV.\par
+LLM/VLM fine-tuning (PEFT, TRL); prompt optimization; DSPy, LangGraph, LlamaIndex.\par
+Retrieval-augmented generation (RAG), knowledge graph-guided RAG, vector search; Qdrant, Weaviate, ChromaDB.\par
+Agent tool integration, Model Context Protocol (MCP), Agent-to-Agent (A2A), harness engineering.\par
+Model evaluation, experiment tracking, LLMOps/MLOps; MLflow, Weights \& Biases, Langfuse.\par
+Model serving and APIs: vLLM, TensorRT, NVIDIA Triton, ONNX, FastAPI.\par
+Cloud and compute: AWS, Azure, Google Cloud, Slurm, NVIDIA Jetson.\par
+
+\section{CERTIFICATIONS AND TRAINING}
+NVIDIA-Certified Professional: Agentic AI\par
+NVIDIA-Certified Associate: Generative AI LLMs\par
+\vspace{3pt}
+\dated{AI Summer School, National University of Singapore}{Aug 2026}
+\textbf{Oxford Machine Learning Summer School}, Jun–Jul 2024. Enrolled in representation learning and generative AI courses.\par
+
+\section{EXTRACURRICULAR ACTIVITIES}
 \begin{itemize}
+  \item \textbf{Cohere Labs Open Science Community, Member} (Sep 2026–Present). Focus: multimodal AI and world models.
+  \item \textbf{Most Active Contributor Award, Microsoft Research Asia} (Aug 2026). Submitted the most contributions to the Global AI Value Challenge during the NUS AI Summer School.
   \item \textbf{OpenMPR · Initiator.} Started a project sharing grocery retrieval recipes and evaluation resources.
   \item \textbf{stable-worldmodel · Contributor.} Contributed to a reproducible world model research platform.
   \item \textbf{GEPA-Lite · Creator.} Released a lightweight, MIT-licensed Genetic-Pareto prompt optimizer.
   \item \textbf{GEPA · Contributor.} Added AnyMaths for prompt optimization on mathematical word problems.
 \end{itemize}
-
-\section{RESEARCH COMMUNITY}
-\dated{Cohere Labs Open Science Community, Member}{Sep 2026–Present}
-Focus: multimodal AI and world models.\par
-
-\section{CERTIFICATIONS, TRAINING, AND TEACHING}
-NVIDIA-Certified Professional: Agentic AI\par
-NVIDIA-Certified Associate: Generative AI LLMs\par
-\vspace{4pt}
-\textbf{Blender}, online course. Currently enrolled.\par
-\textbf{Oxford Machine Learning Summer School}, Jun–Jul 2024. Enrolled in representation learning and generative AI courses.\par
-\vspace{4pt}
-\textbf{Teaching, UP Diliman}, 2022. Co-taught EEE 111 (Introduction to Programming and Computation) and EEE 121 (Data Structures and Algorithms) with Prof. Jhoanna Rhodette I. Pedrasa.\par
-
-\section{TECHNICAL SKILLS}
-\textbf{Modeling:} Python, PyTorch, Transformers (Hugging Face), OpenCLIP, PEFT, OpenCV.\par
-\textbf{Agents and evaluation:} DSPy, LangGraph, LlamaIndex, MLflow, Weights \& Biases, Langfuse.\par
-\textbf{Inference:} vLLM, NVIDIA Triton, ONNX, FastAPI.\par
-\textbf{Infrastructure:} Slurm, NVIDIA Jetson, AWS, Azure, Google Cloud.
 \end{document}
