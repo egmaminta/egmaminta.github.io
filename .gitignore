@@ -32,3 +32,7 @@ _cv/*.aux
 _cv/*.log
 _cv/*.out
 _cv/*.synctex.gz
+
+# Private application drafts and original CV upload.
+/_cv/applications/
+/Updated_2026_CV_Emmanuel_Maminta_compressed.pdf
