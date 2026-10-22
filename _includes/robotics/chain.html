@@ -1,9 +1,9 @@
 <figure class="robotics-figure" id="local-world-figure">
-  <div class="figure-heading"><span class="figure-number">02</span><strong>The same elbow bend, a different place</strong><span class="figure-kind">Explore</span></div>
+  <div class="figure-heading"><span class="figure-number">02</span><strong>Move the shoulder while holding the elbow angle</strong><span class="figure-kind">Geometry illustration</span></div>
   <div class="chain-layout">
     <svg viewBox="0 0 440 390" role="img" aria-labelledby="chain-title chain-desc">
       <title id="chain-title">Joint coordinates and world coordinates</title>
-      <desc id="chain-desc">A simplified planar arm with two links. The shoulder is at 60 degrees and the elbow's relative angle is minus 45 degrees. Moving the shoulder carries the elbow and tool tip, even with a fixed elbow angle.</desc>
+      <desc id="chain-desc">An arm moving in a plane. Moving the shoulder carries the elbow and tool tip while the elbow angle stays fixed. The displayed coordinates are calculated from the illustration's geometry.</desc>
       <defs><marker id="tool-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#00356b"/></marker></defs>
       <path d="M28 270H422M220 365V30" class="diagram-guide"/>
       <path d="M415 265L423 270L415 275M215 38L220 30L225 38" class="diagram-guide"/>
@@ -25,7 +25,7 @@
         <input id="shoulder-angle" type="range" min="20" max="140" step="1" value="60" aria-describedby="chain-control-hint">
         <label for="elbow-angle">Relative elbow angle <output id="elbow-value" for="elbow-angle">−45°</output></label>
         <input id="elbow-angle" type="range" min="-120" max="120" step="1" value="-45" aria-describedby="chain-control-hint">
-        <p id="chain-control-hint" class="interaction-hint">Move just the shoulder first. With keyboard focus, use the arrow keys.</p>
+        <p id="chain-control-hint" class="interaction-hint">Start with the shoulder. Use the arrow keys when a slider has keyboard focus.</p>
         <button id="chain-reset" type="button" class="text-button">Reset angles</button>
       </div>
       <dl class="figure-readout" aria-live="polite" aria-atomic="true">
@@ -34,6 +34,6 @@
       </dl>
     </div>
   </div>
-  <figcaption><strong>Joint angles are relative; the tip position is in the world frame.</strong> This is a two-link, planar teaching model with lengths 1 and 0.8 arbitrary units, not an SO101 simulation. Tool direction is the sum of the two angles. Changing the sliders edits the configuration directly; it does not simulate actuator dynamics.</figcaption>
-  <noscript><p class="interaction-hint">The static view uses a 60° shoulder and −45° relative elbow angle. JavaScript enables the sliders.</p></noscript>
+  <figcaption><strong>The elbow can keep its bend while the tool moves.</strong> This illustration calculates geometry for links of length 1 and 0.8 in arbitrary units. Tool direction is measured from the horizontal axis and equals the sum of the joint angles. The displayed values are calculations for this drawing. They are separate from the pending MuJoCo measurements. The sliders set the configuration without simulating forces.</figcaption>
+  <noscript><p class="interaction-hint">JavaScript enables the joint-angle controls.</p></noscript>
 </figure>

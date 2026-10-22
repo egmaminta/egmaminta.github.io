@@ -1,5 +1,5 @@
-// Progressive enhancements for Chapter 1. All explanations and observations
-// remain in the HTML. These diagrams do not run MuJoCo or a physics model.
+// Interactive illustrations for Chapter 1. Explanations remain in the HTML.
+// Geometry is calculated for teaching. These diagrams do not run MuJoCo.
 (() => {
   'use strict';
   const revealControls = (figure) => {
@@ -52,7 +52,7 @@
       const y = ((origin[1] - tip[1]) / 100).toFixed(2);
       get('chain-position').textContent = `(${x}, ${y})`;
       get('chain-orientation').textContent = degrees(a + b);
-      get('chain-desc').textContent = `Planar two-link arm: shoulder ${a} degrees; relative elbow ${b} degrees. Tool position (${x}, ${y}) in arbitrary world units; tool direction ${a + b} degrees from the positive x axis.`;
+      get('chain-desc').textContent = `Geometry illustration. Shoulder angle ${a} degrees. Relative elbow angle ${b} degrees. Calculated tool position (${x}, ${y}) in arbitrary units. Tool direction ${a + b} degrees from the positive x axis.`;
     };
     shoulder.addEventListener('input', update);
     elbow.addEventListener('input', update);
@@ -61,31 +61,25 @@
     revealControls(chain);
   }
 
-  const snapshots = document.getElementById('target-snapshots');
-  if (snapshots) {
-    // Approximate observations transcribed from the October 17–18 lesson notes.
-    // No interpolated samples or unrecorded trajectory are generated.
-    const observations = [
-      { time: '0 s', angle: 0, label: '0 rad', velocity: '0 rad/s', explanation: 'The target is set, but no physics step has run. The actual angle is still zero.' },
-      { time: '0.005 s', angle: -0.00152, label: '≈ −0.00152 rad', velocity: '≈ −0.304 rad/s', explanation: 'After one physics step, the angle has changed only slightly. The nonzero velocity shows that movement has begun; the target is still −1.3 rad.' },
-      { time: '≈ 1 s', angle: -1.3, label: '≈ −1.3 rad', velocity: '≈ −9.04 × 10⁻⁸ rad/s', explanation: 'At the final snapshot, the angle is near the target and velocity is near zero. These snapshots do not establish whether overshoot occurred between observations.' }
-    ];
-    const buttons = [...snapshots.querySelectorAll('[data-snapshot]')];
+  const command = document.getElementById('paused-command-figure');
+  if (command) {
+    // Drawing coordinates for alternative requests while the joint stays fixed.
+    const targets = {
+      below: { x: 190.495, y: 249.846, labelX: 207, labelY: 259 },
+      above: { x: 258.727, y: 83, labelX: 270, labelY: 80 }
+    };
+    const buttons = [...command.querySelectorAll('[data-command]')];
     const get = (id) => document.getElementById(id);
     buttons.forEach((button) => button.addEventListener('click', () => {
-      const sample = observations[Number(button.dataset.snapshot)];
-      const x = 160 + 100 * Math.cos(sample.angle);
-      const y = 140 - 100 * Math.sin(sample.angle);
-      get('snapshot-actual').setAttribute('d', `M160 140L${x} ${y}`);
-      get('snapshot-tip').setAttribute('cx', x);
-      get('snapshot-tip').setAttribute('cy', y);
-      get('snapshot-time').textContent = sample.time;
-      get('snapshot-angle').textContent = sample.label;
-      get('snapshot-velocity').textContent = sample.velocity;
-      get('snapshot-explanation').textContent = sample.explanation;
-      get('snapshot-desc').textContent = `Simulation time ${sample.time}. Target −1.3 rad; actual ${sample.label}; angular velocity ${sample.velocity}. Dashed amber is the target; solid blue is actual.`;
+      const direction = button.dataset.command;
+      const target = targets[direction];
+      get('command-target').setAttribute('d', `M160 140L${target.x} ${target.y}`);
+      get('command-target-label').setAttribute('x', target.labelX);
+      get('command-target-label').setAttribute('y', target.labelY);
+      get('command-request').textContent = `Turn ${direction} the starting direction`;
+      get('command-desc').textContent = `The amber target points ${direction} the blue joint direction. The joint stays at its starting angle while physics is paused.`;
       buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
     }));
-    revealControls(snapshots);
+    revealControls(command);
   }
 })();

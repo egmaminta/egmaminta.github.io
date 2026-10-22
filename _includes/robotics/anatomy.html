@@ -1,8 +1,8 @@
 <figure class="robotics-figure" id="arm-anatomy">
-  <div class="figure-heading"><span class="figure-number">01</span><strong>Six joints, different jobs</strong><span class="figure-kind">Anatomy</span></div>
+  <div class="figure-heading"><span class="figure-number">01</span><strong>Joints and movement</strong><span class="figure-kind">Anatomy</span></div>
   <svg class="anatomy-diagram" viewBox="0 0 620 360" role="img" aria-labelledby="anatomy-title anatomy-desc">
-    <title id="anatomy-title">The six joints of the SO101 arm</title>
-    <desc id="anatomy-desc">A schematic chain from a fixed base through shoulder pan, shoulder lift, elbow flex, wrist flex, wrist roll, and the gripper jaw. Numbers correspond to the descriptions below. Dimensions and perspective are simplified.</desc>
+    <title id="anatomy-title">Joints of the SO101 arm</title>
+    <desc id="anatomy-desc">The arm extends from the base through the shoulder, elbow, and wrist to the gripper. Numbers identify the joints in the descriptions below. The drawing shows their order and roles.</desc>
     <path d="M60 324H555" class="diagram-guide"/>
     <path d="M116 320L128 283H177L189 320Z" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
     <path d="M152 288V246L247 104L384 169L434 150" fill="none" stroke="#d4dce6" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
@@ -25,12 +25,12 @@
   </svg>
   <p class="interaction-hint" data-interactive-only hidden>Select a joint to locate it in the diagram.</p>
   <div class="joint-key" role="group" aria-label="Locate an arm joint">
-    <button type="button" data-joint="0" aria-pressed="true" disabled><span class="joint-key-title"><span>1</span><code>shoulder_pan</code></span><span>Turns the arm around its base.</span></button>
-    <button type="button" data-joint="1" aria-pressed="false" disabled><span class="joint-key-title"><span>2</span><code>shoulder_lift</code></span><span>Raises or lowers the upper arm.</span></button>
-    <button type="button" data-joint="2" aria-pressed="false" disabled><span class="joint-key-title"><span>3</span><code>elbow_flex</code></span><span>Bends the elbow.</span></button>
-    <button type="button" data-joint="3" aria-pressed="false" disabled><span class="joint-key-title"><span>4</span><code>wrist_flex</code></span><span>Bends the wrist.</span></button>
-    <button type="button" data-joint="4" aria-pressed="false" disabled><span class="joint-key-title"><span>5</span><code>wrist_roll</code></span><span>Rotates the gripper assembly.</span></button>
-    <button type="button" data-joint="5" aria-pressed="false" disabled><span class="joint-key-title"><span>6</span><code>gripper</code></span><span>Opens or closes the moving jaw.</span></button>
+    <button type="button" data-joint="0" aria-pressed="true" disabled><span class="joint-key-title"><span>1</span>Shoulder pan</span><span>Turns the arm around its base.</span></button>
+    <button type="button" data-joint="1" aria-pressed="false" disabled><span class="joint-key-title"><span>2</span>Shoulder lift</span><span>Raises or lowers the upper arm.</span></button>
+    <button type="button" data-joint="2" aria-pressed="false" disabled><span class="joint-key-title"><span>3</span>Elbow flex</span><span>Bends the elbow.</span></button>
+    <button type="button" data-joint="3" aria-pressed="false" disabled><span class="joint-key-title"><span>4</span>Wrist flex</span><span>Bends the wrist.</span></button>
+    <button type="button" data-joint="4" aria-pressed="false" disabled><span class="joint-key-title"><span>5</span>Wrist roll</span><span>Rotates the gripper assembly.</span></button>
+    <button type="button" data-joint="5" aria-pressed="false" disabled><span class="joint-key-title"><span>6</span>Gripper</span><span>Opens or closes the moving jaw.</span></button>
   </div>
-  <figcaption><strong>Read the chain from base to tip.</strong> A joint moves the bodies downstream of it. This SO101 schematic shows the joint order and roles; it is not a dimensional drawing.</figcaption>
+  <figcaption><strong>Follow the arm from base to gripper.</strong> Moving a joint carries the links after it. This drawing shows the joint order and movement described by the SO101 model cited above.</figcaption>
 </figure>

@@ -1,6 +1,6 @@
 ---
-title: "A target is a request: getting to know a robot arm"
-description: "Chapter 1 of Robotics for Beginners: the SO101 arm, joint coordinates, and why a target angle is different from the actual state."
+title: Learning to control a robot arm in simulation
+description: Learn the parts of a robot arm, how joint angles determine its pose, and how a position target produces motion in MuJoCo.
 date: 2026-10-22 10:00:00 +0800
 permalink: /posts/robotics-for-beginners-01-mujoco/
 categories: [Robotics]
@@ -8,154 +8,126 @@ tags: [robot-learning, mujoco]
 series: Robotics for Beginners
 chapter: 1
 robotics: true
-reading_time: 10
 ---
 
-My research in RetailVision and Physical Retail AI has made me increasingly interested in how perception connects to action. Recognizing a product is one part of the problem. Reaching for it, approaching it with a gripper, and interacting with it introduce a different set of questions.
+I have been wanting to create a robotics course that my friends can follow without owning a robot arm. **Robotics for Beginners** starts with an arm in simulation and works toward experiments in robot learning.
 
-I am putting together **Robotics for Beginners** as a record of my own learning. I started with the SO101 arm in MuJoCo. This first chapter draws on my experiments from October 17–18, 2026: loading the scene, exploring its joints, and holding a single position target.
+We will use [MuJoCo](https://mujoco.readthedocs.io/en/stable/overview.html) to simulate how a robot moves under forces and contact. The simulator needs a description of the robot's parts, joints, and actuators. These are specified in a [robot model](https://mujoco.readthedocs.io/en/stable/modeling.html). We will start with the [SO101 arm from MuJoCo Menagerie](https://github.com/google-deepmind/mujoco_menagerie/blob/main/robotstudio_so101/so101.xml).
 
-The most useful observation was simple: **changing the target did not instantly change the joint angle.**
+The question for this chapter is whether changing a joint's target angle moves the joint before the simulation advances.
 
 <div class="chapter-takeaway">
-  <p class="eyebrow">The idea to keep</p>
-  <p>A command describes what you ask the robot to do. State describes what it is doing. Physics connects the two over time.</p>
+  <p class="eyebrow">Start here</p>
+  <p>A command records what we ask the arm to do. The joint angle and velocity describe what it is doing. A physics step updates that state.</p>
 </div>
+
+MuJoCo keeps control inputs separate from the state used to compute motion. Its simulation procedure uses the control input when advancing the state. This distinction is the basis of the exercise below. [MuJoCo simulation documentation](https://mujoco.readthedocs.io/en/stable/programming/simulation.html).
 
 ## What to learn first
 
-I use the Pareto principle as a way to choose what to study first: a small set of foundations can make many later ideas easier to grasp. The “80/20” split is a useful heuristic, rather than a measured fraction of robotics knowledge.
+We will focus on the concepts needed to explain an arm's movement. By the end of the chapter you should be able to identify its joints, explain how a shoulder movement carries the gripper, and distinguish a requested angle from the arm's response.
 
-By the end of this chapter, you should be able to:
-
-- Identify the arm's main joints and explain what moves downstream of each one.
-- Distinguish a joint angle from a gripper's position and orientation in the world.
-- Read the difference between a position target, an actual angle, and an angular velocity.
-- Explain why checking both position error and velocity matters when judging settling.
+The exercise is to hold a position target and record what follows. Our hunch is that keeping the request fixed will make the role of simulation time easier to see.
 
 <nav class="chapter-nav" aria-label="In this chapter">
-  <a href="#meet-the-arm">1. Meet the arm</a>
-  <a href="#local-and-world">2. Local and world</a>
-  <a href="#model-state-control">3. Model, state, control</a>
-  <a href="#one-target">4. One target</a>
-  <a href="#next-experiment">5. Next experiment</a>
+  <a href="#meet-the-arm">Parts of the arm</a>
+  <a href="#local-and-world">Angles and pose</a>
+  <a href="#model-state-control">Commands and motion</a>
+  <a href="#one-target">The exercise</a>
+  <a href="#next-experiment">Reading the response</a>
 </nav>
 
-## 1. Meet the arm {#meet-the-arm}
+## Parts of the arm {#meet-the-arm}
 
-**MuJoCo** simulates physics. **MuJoCo Menagerie** supplies robot models, including the [SO101 model](https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotstudio_so101) I used. Loading a model gives us a description of a robot and its physical properties; it does not supply a learned policy.
+A **link** is a rigid part of the arm. A **joint** permits movement between links. A hinge joint allows rotation about an axis. The SO101 model uses hinge joints for its shoulder, elbow, wrist, and gripper jaw. The diagram follows the joints in the [model definition](https://github.com/google-deepmind/mujoco_menagerie/blob/main/robotstudio_so101/so101.xml).
 
-Think of an arm as rigid **links** connected by **joints**. A joint permits relative movement between bodies. An **actuator** produces the force or torque that drives movement. The **end effector** is the part that interacts with the task; here, it is the gripper.
+An **actuator** produces force or torque. Torque is the turning effect of a force about an axis. In this arm the actuators drive joint rotation. The **end effector** is the tool at the end of the arm that interacts with an object. Here it is a gripper. These distinctions appear in MuJoCo's [actuation model](https://mujoco.readthedocs.io/en/stable/computation/index.html#actuation-model) and the *Modern Robotics* description of [robot links and joints](https://modernrobotics.northwestern.edu/nu-gm-book-resource/2-2-degrees-of-freedom-of-a-robot/).
 
 {% include robotics/anatomy.html %}
 
-This model has five arm joints and one gripper joint, all hinges. The gripper's moving jaw therefore has an **angle**, even though we often describe its effect as an opening width. Six joint coordinates do not mean six independent ways to position and orient the gripper: one coordinate controls the jaw.
+The links and joints form a **kinematic chain**, a connected sequence from the base to the gripper. Each link's placement is defined relative to the link before it. Moving the shoulder carries the elbow, wrist, and gripper. Opening the jaw changes the gripper opening while the shoulder can stay in place. MuJoCo represents these dependencies through a [hierarchy of bodies](https://mujoco.readthedocs.io/en/stable/modeling.html#kinematic-tree).
 
-The robot's XML arranges bodies in a parent–child hierarchy. Moving the shoulder carries the elbow, wrist, and gripper with it. Moving the wrist does not carry the shoulder along. That dependency is the first useful intuition behind a **kinematic chain**.
+## Joint angles and gripper pose {#local-and-world}
 
-## 2. A local angle is not a world position {#local-and-world}
+A **coordinate frame** has an origin and axes used to describe position and orientation. The **world frame** is fixed to the scene. A frame attached to the upper arm moves with that arm. The same point can have different coordinates depending on which frame describes it. *Modern Robotics* introduces these conventions in its treatment of [rigid-body motion](https://modernrobotics.northwestern.edu/nu-gm-book-resource/introduction-to-rigid-body-motions/).
 
-An elbow can hold the same bend while the shoulder moves it to a different place in the scene. Likewise, the gripper can keep the same opening while its location and direction change.
-
-Try changing only the shoulder angle below. Watch the elbow and tool tip move, even though the elbow's relative angle stays fixed.
+In the diagram below the shoulder angle is measured from the world's horizontal axis. The elbow angle is measured from the extension of the upper link. Keep the elbow angle fixed and change the shoulder angle. The elbow keeps its bend while the tool tip moves through the world frame.
 
 {% include robotics/chain.html %}
 
-Three words help keep these ideas separate:
+**Position** describes where the tool is. **Orientation** describes which way it points. **Pose** includes both. For example, a gripper above a package can point toward the package or away from it without changing its position. The frame representation records this difference. [Position and orientation in Modern Robotics](https://modernrobotics.northwestern.edu/nu-gm-book-resource/introduction-to-rigid-body-motions/).
 
-- **Position:** where the gripper is.
-- **Orientation:** which way it points.
-- **Pose:** position and orientation together.
+**Forward kinematics** computes the tool's pose from the joint configuration, meaning the set of joint positions. **Inverse kinematics** asks which joint configurations can reach a requested pose. Depending on the arm and the request there may be several solutions or none. These problems are introduced in the textbook's sections on [forward kinematics](https://modernrobotics.northwestern.edu/nu-gm-book-resource/4-1-1-product-of-exponentials-formula-in-the-space-frame/) and [inverse kinematics](https://modernrobotics.northwestern.edu/nu-gm-book-resource/inverse-kinematics-of-open-chains/).
 
-**Forward kinematics** maps a joint configuration to the end-effector pose. **Inverse kinematics** asks which configurations could reach a desired position or pose. There may be several solutions, or none within the arm's constraints.
+For now, use the diagram to follow the chain. The pose changes because each joint changes the placement of the links after it.
 
-In the viewer, I explored configurations that appeared to reach approximately the same point. That was a useful visual check, but it did not establish that the gripper had the same orientation. For a retail manipulation task, arriving above a product and arriving beside it are different approaches, even if the final contact point is similar.
+## Commands and motion {#model-state-control}
 
-## 3. Separate the model, state, and control {#model-state-control}
+The SO101 model uses **position servos**. A position servo produces force or torque in response to a requested position and the joint state. A **controller** chooses the commands sent to the actuators. For this arm the request is a joint angle. A request for an angle of zero remains a position command. It does not disable the actuator. [MuJoCo position servos](https://mujoco.readthedocs.io/en/stable/XMLreference.html#actuator-position).
 
-The MuJoCo names become easier to remember when grouped by the question they answer. These meanings apply to the fixed-base SO101 scene used here.
+We need to keep track of the following quantities.
 
-| Question | MuJoCo name | Meaning in this experiment |
-| --- | --- | --- |
-| What robot and scene exist? | `MjModel` | Structure, joints, actuator definitions, and physical parameters |
-| What is happening now? | `MjData` | Runtime state, controls, and computed quantities |
-| Where are the joints? | `data.qpos` | Actual hinge angles, in radians |
-| How fast are they moving? | `data.qvel` | Angular velocities, in radians per second |
-| What am I requesting? | `data.ctrl` | Position-servo target angles, in radians |
-| How much time has been simulated? | `data.time` | Simulation time, in seconds |
+| Quantity | Meaning |
+| --- | --- |
+| Target angle | The joint angle requested by the controller |
+| Joint angle | The joint's current rotation relative to its reference configuration |
+| Angular velocity | The rate of change of that angle |
+| Simulation time | The elapsed time represented by the physics steps |
 
-`mujoco.mj_step` advances one physics step. Loading a model in Python alone does not open a viewer or advance time. The [MuJoCo Python documentation](https://mujoco.readthedocs.io/en/stable/python.html) describes the model, runtime data, and viewer interfaces.
-
-In my scene, `qpos`, `qvel`, and `ctrl` each had six entries. **Do not assume those array lengths always match.** A floating-base robot, a different joint type, or a different actuator arrangement changes what must be represented.
-
-### Check what a control input means
-
-The [SO101 actuator definitions](https://github.com/google-deepmind/mujoco_menagerie/blob/main/robotstudio_so101/so101.xml) use position servos. For these hinge-joint transmissions, `ctrl` requests joint angles. In another model, a control value could request torque or something else. Read the actuator definition before interpreting an action.
-
-Joint `range` describes movement limits. Actuator `ctrlrange` describes control-input limits when control limiting is enabled. Those are different roles, even when the numerical bounds happen to match. See the [MuJoCo position-actuator reference](https://mujoco.readthedocs.io/en/stable/XMLreference.html#actuator-position).
+MuJoCo calculates acceleration from the forces acting on the arm and restrictions such as joint limits. It updates velocity and position as simulation time advances. This is the **dynamics** calculation, which describes how forces produce motion. [MuJoCo integration procedure](https://mujoco.readthedocs.io/en/stable/computation/index.html#numerical-integration).
 
 <div class="concept-flow" role="group" aria-label="From request to movement">
-  <div><span class="flow-index">01</span><strong>Target angle</strong><span>The request in <code>ctrl</code></span></div>
+  <div><strong>Target angle</strong><span>The controller requests a position</span></div>
   <span class="flow-arrow" aria-hidden="true">→</span>
-  <div><span class="flow-index">02</span><strong>Actuator torque</strong><span>Acts with gravity, contact, and other dynamics</span></div>
+  <div><strong>Actuator torque</strong><span>Torque acts alongside gravity and contact forces</span></div>
   <span class="flow-arrow" aria-hidden="true">→</span>
-  <div><span class="flow-index">03</span><strong>Changing state</strong><span>Velocity and angle evolve as time advances</span></div>
+  <div><strong>Joint motion</strong><span>The physics step updates velocity and angle</span></div>
 </div>
 
-While the viewer is paused, changing an actuator target leaves the joint where it is until physics steps resume. Editing the joint state directly is a different operation. This distinction explains why a command can change before any motion is visible.
+Set a target while the simulation is paused. The request changes while the joint state stays where it was. When physics steps resume the simulator can compute the response to that request. This follows from the separation between controls and state in MuJoCo's [simulation procedure](https://mujoco.readthedocs.io/en/stable/programming/simulation.html).
 
-## 4. One target, three snapshots {#one-target}
+{% include robotics/command.html %}
 
-I set the first actuator, `shoulder_pan`, to **−1.3 radians** (about −74.5°). Then I compared the state before stepping, after one step, and after about one simulated second.
+The distinction matters when using the viewer. Editing the joint angle sets the state. Editing the target changes what the actuator is asked to do. MuJoCo exposes [state and control as separate quantities](https://mujoco.readthedocs.io/en/stable/programming/simulation.html#state-and-control).
 
-{% include robotics/snapshots.html %}
+## Hold a target and record the response {#one-target}
 
-| Recorded quantity | Before stepping | After one step | After about 1 s |
-| --- | --- | --- | --- |
-| Simulation time (s) | 0 | 0.005 | ≈ 1 |
-| Target angle (rad) | −1.3 | −1.3 | −1.3 |
-| Actual angle (rad) | 0 | ≈ −0.00152 | ≈ −1.3 |
-| Angular velocity (rad/s) | 0 | ≈ −0.304 | ≈ −9.04 × 10⁻⁸ |
+The exercise uses the shoulder pan joint, which turns the arm around its base. Set its target within the model's permitted control range. Keep that target fixed while the simulation advances. The model defines [control ranges for its position actuators](https://github.com/google-deepmind/mujoco_menagerie/blob/main/robotstudio_so101/so101.xml).
 
-These are the approximate values recorded in my lesson notes, not a new simulation run. The first snapshot was taken **after setting the target and before stepping**, which is why the target is already −1.3 at time zero.
+Record the target angle, joint angle, angular velocity, and simulation time throughout the movement. Use radians for angles and radians per second for angular velocity. MuJoCo uses radians in its [compiled models](https://mujoco.readthedocs.io/en/stable/modeling.html#coordinate-frames).
 
-The request stayed fixed because I did not change it. The actual angle changed as the simulator advanced. The actuator's torque can vary while its target remains constant.
+Save the measurements so that a plot or numerical claim can be traced to the run. The measurements for this chapter remain `\pending` until a saved result file is available.
 
-### What does “settled” mean?
+| Measurement | Before stepping | After stepping |
+| --- | --- | --- |
+| Simulation time | `\pending` | `\pending` |
+| Target angle | `\pending` | `\pending` |
+| Joint angle | `\pending` | `\pending` |
+| Angular velocity | `\pending` | `\pending` |
 
-At the final snapshot, the angle was close to the target and the angular velocity was close to zero. Both observations matter:
+Plot the target and joint angle together against simulation time. Use another plot for angular velocity. The angle plot should show where the joint goes relative to the request. The velocity plot should show when it moves and when its direction changes.
 
-- **Small position error:** the joint is close to where it was asked to go.
-- **Small velocity:** it is no longer moving appreciably.
+## How to read the response {#next-experiment}
 
-A joint can pass through its target at speed. It can also stop against an obstacle before reaching its target. Either example shows why checking only one number is insufficient. A full trajectory is needed to establish how long the joint stays near the target.
+**Position error** is the target angle minus the joint angle. Its magnitude measures how far the joint is from the request. A smaller magnitude means a closer match. This is the error definition used in *Modern Robotics* to describe a [controller's response](https://modernrobotics.northwestern.edu/nu-gm-book-resource/11-2-1-error-response/). For a target held fixed, angular velocity near zero indicates little movement.
 
-### Three zeros with different meanings
+These quantities answer different questions. Consider a joint passing through its target. Its position error reaches zero even if it is still moving. Now consider a joint held against an obstacle away from the target. Its velocity can be zero while position error remains. The angle and velocity must be read together.
 
-In my initial state, the arrays were zero. Zero joint angles refer to the model's reference configuration; they do not place the gripper at the world origin. Zero angular velocity means stationary at that moment. **Zero position control still requests a target angle of zero**; it does not turn a position servo off or rigidly lock a joint.
-
-## 5. The next experiment: record the motion {#next-experiment}
-
-I have compared snapshots. Recording and plotting the full trajectory is my next exercise, and **it is still pending**. The snapshots alone cannot show whether the joint overshot or oscillated between observations.
-
-I will keep the same target and model settings, then record simulation time, actual angle, target angle, and angular velocity throughout the one-second experiment. Two plots should answer different questions:
-
-1. **Actual and target angle versus simulation time:** how does the joint approach the request?
-2. **Angular velocity versus simulation time:** when does movement speed up, slow down, or reverse?
-
-I will look for **overshoot** (passing beyond the target), **oscillation** (moving repeatedly around it), and **settling** (remaining close with velocity near zero). I will use simulation time rather than the computer's wall-clock time.
+In the plots, **overshoot** means passing beyond the target. **Oscillation** means moving back and forth around it. These are features of the [error response](https://modernrobotics.northwestern.edu/nu-gm-book-resource/11-2-1-error-response/). For this exercise we will call the response **settled** when position error and velocity remain within chosen bounds. Those bounds and the observation period must be stated before reporting a settling result. The exercise has not yet established whether the joint overshoots, oscillates, or settles.
 
 <details class="understanding-check">
-  <summary>Check your intuition: if the shoulder moves but the elbow angle stays fixed, what changes?</summary>
-  <p>The elbow keeps its bend relative to the upper arm. Its world position changes because the shoulder carries the downstream chain. The gripper can change both position and orientation without changing its jaw opening.</p>
+  <summary>If the elbow angle stays fixed while the shoulder moves, does the tool stay in place?</summary>
+  <p>The shoulder carries the links after it. The elbow keeps its bend relative to the upper arm while the tool moves in the world frame.</p>
 </details>
 
-The foundation I want to carry into later chapters is the habit of asking: **what was commanded, what actually happened, and what evidence connects them?** That question will still matter when the commands come from a learned policy.
-
 <div class="article-notes" markdown="1">
-### Resources and figure design
+### Figure design
 
-The technical references for this chapter are the [MuJoCo documentation](https://mujoco.readthedocs.io/en/stable/), its [Python interface](https://mujoco.readthedocs.io/en/stable/python.html), and the [Menagerie SO101 model](https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotstudio_so101). Model settings and observations refer to my October 2026 learning notes.
-
-The figures follow ideas from [Sophie Wang's essay on paper writing and visualization](https://www.sophielwang.com/blog/paper-writing): one point per figure, consistent visual meaning, and readable labels. The diagrams are scalable vectors. Sans-serif labels use Graphik when installed, with self-hosted Inter as the fallback; code and literal values use self-hosted B612 Mono.
+The diagrams use [Sophie Wang's approach to figure design](https://www.sophielwang.com/blog/paper-writing). Each figure supports an explanation with consistent labels and colors. Graphik is used when installed with Inter as the fallback. Code and numerical labels use B612 Mono.
 </div>
+
+## Conclusion
+
+This chapter separates the arm's geometry from its response to a command. The diagrams show how joint angles determine the tool's pose and why choosing a target leaves the joint state unchanged until physics advances. The exercise still needs a saved trajectory to establish how the arm approaches its target.
+
+Before moving on to robot learning, record and explain the response to a fixed joint target.

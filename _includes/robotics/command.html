@@ -1,0 +1,31 @@
+<figure class="robotics-figure" id="paused-command-figure">
+  <div class="figure-heading"><span class="figure-number">03</span><strong>Change the target while physics is paused</strong><span class="figure-kind">Concept illustration</span></div>
+  <div class="command-buttons" role="group" aria-label="Choose a target in the illustration" data-interactive-only hidden>
+    <button type="button" data-command="below" aria-pressed="true">Target below the joint direction</button>
+    <button type="button" data-command="above" aria-pressed="false">Target above the joint direction</button>
+  </div>
+  <div class="command-layout">
+    <svg viewBox="0 0 360 300" role="img" aria-labelledby="command-title command-desc">
+      <title id="command-title">A target request and the joint's current angle</title>
+      <desc id="command-desc">The amber target points below the blue joint direction. The joint stays at its starting angle while physics is paused.</desc>
+      <circle cx="160" cy="140" r="100" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+      <path id="command-target" d="M160 140L190.495 249.846" fill="none" stroke="#9a5600" stroke-width="3" stroke-dasharray="7 5"/>
+      <path id="command-joint" d="M160 140L260 140" fill="none" stroke="#00356b" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="260" cy="140" r="7" fill="white" stroke="#00356b" stroke-width="3"/>
+      <circle cx="160" cy="140" r="6" fill="#00356b"/>
+      <text x="278" y="145" class="svg-note">Joint</text>
+      <text id="command-target-label" x="207" y="259" class="svg-target">Target</text>
+      <text x="40" y="30" class="svg-note">Physics paused</text>
+    </svg>
+    <div>
+      <div class="figure-legend"><span><i class="actual-swatch" aria-hidden="true"></i>Joint</span><span><i class="target-swatch" aria-hidden="true"></i>Target</span></div>
+      <dl class="figure-readout" aria-live="polite" aria-atomic="true">
+        <div><dt>Request</dt><dd id="command-request" class="target-value">Turn below the starting direction</dd></div>
+        <div><dt>Joint</dt><dd>At its starting angle</dd></div>
+        <div><dt>Physics</dt><dd>Paused</dd></div>
+      </dl>
+    </div>
+  </div>
+  <p class="command-explanation">Changing the request leaves the joint state unchanged until physics advances.</p>
+  <figcaption><strong>The target changes while the joint stays in place.</strong> This illustration represents a paused simulation. The buttons change the request. The blue ray marks the joint angle before a physics step. No trajectory or measurement is shown.</figcaption>
+</figure>
