@@ -27,7 +27,7 @@ MuJoCo keeps control inputs separate from the state used to compute motion. Its 
 
 We will focus on the concepts needed to explain an arm's movement. By the end of the chapter you should be able to identify its joints, explain how a shoulder movement carries the gripper, and distinguish a requested angle from the arm's response.
 
-The exercise is to hold a position target and record what follows. Our hunch is that keeping the request fixed will make the role of simulation time easier to see.
+The exercise is to hold a position target and record how the joint responds.
 
 <nav class="chapter-nav" aria-label="In this chapter">
   <a href="#meet-the-arm">Parts of the arm</a>
@@ -96,15 +96,6 @@ The exercise uses the shoulder pan joint, which turns the arm around its base. S
 
 Record the target angle, joint angle, angular velocity, and simulation time throughout the movement. Use radians for angles and radians per second for angular velocity. MuJoCo uses radians in its [compiled models](https://mujoco.readthedocs.io/en/stable/modeling.html#coordinate-frames).
 
-Save the measurements so that a plot or numerical claim can be traced to the run. The measurements for this chapter remain `\pending` until a saved result file is available.
-
-| Measurement | Before stepping | After stepping |
-| --- | --- | --- |
-| Simulation time | `\pending` | `\pending` |
-| Target angle | `\pending` | `\pending` |
-| Joint angle | `\pending` | `\pending` |
-| Angular velocity | `\pending` | `\pending` |
-
 Plot the target and joint angle together against simulation time. Use another plot for angular velocity. The angle plot should show where the joint goes relative to the request. The velocity plot should show when it moves and when its direction changes.
 
 ## How to read the response {#next-experiment}
@@ -113,21 +104,9 @@ Plot the target and joint angle together against simulation time. Use another pl
 
 These quantities answer different questions. Consider a joint passing through its target. Its position error reaches zero even if it is still moving. Now consider a joint held against an obstacle away from the target. Its velocity can be zero while position error remains. The angle and velocity must be read together.
 
-In the plots, **overshoot** means passing beyond the target. **Oscillation** means moving back and forth around it. These are features of the [error response](https://modernrobotics.northwestern.edu/nu-gm-book-resource/11-2-1-error-response/). For this exercise we will call the response **settled** when position error and velocity remain within chosen bounds. Those bounds and the observation period must be stated before reporting a settling result. The exercise has not yet established whether the joint overshoots, oscillates, or settles.
+In the plots, **overshoot** means passing beyond the target. **Oscillation** means moving back and forth around it. These are features of the [error response](https://modernrobotics.northwestern.edu/nu-gm-book-resource/11-2-1-error-response/). For this exercise we will call the response **settled** when position error and velocity remain within chosen bounds. State those bounds and the observation period when reporting a settling result.
 
 <details class="understanding-check">
   <summary>If the elbow angle stays fixed while the shoulder moves, does the tool stay in place?</summary>
   <p>The shoulder carries the links after it. The elbow keeps its bend relative to the upper arm while the tool moves in the world frame.</p>
 </details>
-
-<div class="article-notes" markdown="1">
-### Figure design
-
-The diagrams use [Sophie Wang's approach to figure design](https://www.sophielwang.com/blog/paper-writing). Each figure supports an explanation with consistent labels and colors. Graphik is used when installed with Inter as the fallback. Code and numerical labels use B612 Mono.
-</div>
-
-## Conclusion
-
-This chapter separates the arm's geometry from its response to a command. The diagrams show how joint angles determine the tool's pose and why choosing a target leaves the joint state unchanged until physics advances. The exercise still needs a saved trajectory to establish how the arm approaches its target.
-
-Before moving on to robot learning, record and explain the response to a fixed joint target.

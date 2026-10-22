@@ -7,4 +7,4 @@ The writing pages self-host Inter (variable, weights 400–700) and B612 Mono (r
 - Inter binary: https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2
 - B612 Mono binary: https://fonts.gstatic.com/s/b612mono/v16/kmK_Zq85QVWbN1eW6lJV0A7diOdDtw.woff2
 
-Sophie Wang's figure-design essay uses Graphik and B612 Mono. Graphik is not bundled here. The CSS prefers a locally installed Graphik and otherwise uses Inter, preserving the sans-serif/monospace distinction without redistributing a commercial font.
+The CSS prefers a locally installed Graphik and otherwise uses Inter. Graphik is not bundled here.

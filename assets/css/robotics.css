@@ -92,8 +92,6 @@
 .flow-arrow { color: #64748b; }
 .understanding-check { margin-block: 28px; padding: 18px 20px; background: #f1f5fa; font-size: .9rem; }
 .prose .understanding-check p { margin: 14px 0 0; }
-.article-notes { margin-top: 42px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .83rem; color: var(--secondary); }
-.prose .article-notes h3 { margin-top: 6px; font-size: .95rem; }
 [hidden] { display: none !important; }
 @media (max-width: 600px) {
   .writing-page { font-size: 15px; }
