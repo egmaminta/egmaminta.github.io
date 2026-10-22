@@ -42,6 +42,7 @@
 .figure-heading strong { font-weight: 600; }
 .figure-kind { margin-left: auto; color: var(--muted); font-size: .72rem; }
 .robotics-figure svg { display: block; width: 100%; height: auto; overflow: visible; }
+.robot-model-photo img { display: block; width: 100%; height: auto; margin-bottom: 16px; }
 .robotics-figure .anatomy-diagram { max-width: 620px; margin: 12px auto 0; }
 .robotics-figure svg text { fill: #334155; font: 16px var(--sans); }
 .robotics-figure svg .svg-note { fill: #596779; font-size: 13px; }

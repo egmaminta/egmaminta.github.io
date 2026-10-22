@@ -3,7 +3,7 @@
   <div class="chain-layout">
     <svg viewBox="0 0 440 390" role="img" aria-labelledby="chain-title chain-desc">
       <title id="chain-title">Joint coordinates and world coordinates</title>
-      <desc id="chain-desc">An arm moving in a plane. Moving the shoulder carries the elbow and tool tip while the elbow angle stays fixed. The displayed coordinates are calculated from the illustration's geometry.</desc>
+      <desc id="chain-desc">An arm with an open gripper moving in a plane. Moving the shoulder carries the elbow and gripper while the elbow angle stays fixed. The blue dot marks where the gripper attaches to the forearm. The displayed coordinates describe this point.</desc>
       <defs><marker id="tool-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#00356b"/></marker></defs>
       <path d="M28 270H422M220 365V30" class="diagram-guide"/>
       <path d="M415 265L423 270L415 275M215 38L220 30L225 38" class="diagram-guide"/>
@@ -15,9 +15,13 @@
       <path id="chain-elbow-arc" d="M284 159.148A28 28 0 0 1 297.046 176.15" class="angle-arc"/>
       <circle cx="220" cy="270" r="9" fill="white" stroke="#00356b" stroke-width="3"/>
       <circle id="chain-elbow" cx="270" cy="183.397" r="9" fill="white" stroke="#00356b" stroke-width="3"/>
-      <circle id="chain-tip" cx="347.274" cy="162.692" r="6" fill="#00356b"/>
-      <path id="chain-direction" d="M347.274 162.692L376.252 154.928" fill="none" stroke="#00356b" stroke-width="2" marker-end="url(#tool-arrow)"/>
-      <text x="28" y="30" class="svg-note">Arrow = tool direction</text>
+      <g id="chain-gripper" transform="translate(347.274 162.692) rotate(-15)" fill="none" stroke="#00356b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M0 -7V7M0 -7L10 -12H25L28 -7M0 7L10 12H25L28 7"/>
+      </g>
+      <circle id="chain-tip" cx="347.274" cy="162.692" r="4" fill="#00356b"/>
+      <path id="chain-direction" d="M347.274 162.692L385.911 152.339" fill="none" stroke="#00356b" stroke-width="1.5" marker-end="url(#tool-arrow)"/>
+      <text x="28" y="30" class="svg-note">Arrow = gripper direction</text>
+      <text x="28" y="50" class="svg-note">Dot = gripper mount</text>
     </svg>
     <div class="chain-controls">
       <div data-interactive-only hidden>
@@ -29,11 +33,11 @@
         <button id="chain-reset" type="button" class="text-button">Reset angles</button>
       </div>
       <dl class="figure-readout" aria-live="polite" aria-atomic="true">
-        <div><dt>Tool position (x, y)</dt><dd id="chain-position">(1.27, 1.07)</dd></div>
-        <div><dt>Tool direction</dt><dd id="chain-orientation">15°</dd></div>
+        <div><dt>Gripper mount (x, y)</dt><dd id="chain-position">(1.27, 1.07)</dd></div>
+        <div><dt>Gripper direction</dt><dd id="chain-orientation">15°</dd></div>
       </dl>
     </div>
   </div>
-  <figcaption><strong>The elbow can keep its bend while the tool moves.</strong> This illustration calculates geometry for links of length 1 and 0.8 in arbitrary units. Tool direction is measured from the horizontal axis and equals the sum of the joint angles. The sliders set the configuration without simulating forces.</figcaption>
+  <figcaption><strong>The elbow can keep its bend while the gripper moves.</strong> The blue dot marks where the gripper attaches to the forearm. This illustration calculates geometry for links of length 1 and 0.8 in arbitrary units. Gripper direction is measured from the horizontal axis and equals the sum of the joint angles. The jaw opening stays fixed as the arm moves. The sliders set the configuration without simulating forces.</figcaption>
   <noscript><p class="interaction-hint">JavaScript enables the joint-angle controls.</p></noscript>
 </figure>

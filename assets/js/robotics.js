@@ -39,7 +39,8 @@
       const tip = point(joint, 80, q1 + q2);
       get('chain-links').setAttribute('d', `M${pair(origin)}L${pair(joint)}L${pair(tip)}`);
       get('chain-extension').setAttribute('d', `M${pair(joint)}L${pair(point(joint, 40, q1))}`);
-      get('chain-direction').setAttribute('d', `M${pair(tip)}L${pair(point(tip, 30, q1 + q2))}`);
+      get('chain-gripper').setAttribute('transform', `translate(${pair(tip)}) rotate(${-a - b})`);
+      get('chain-direction').setAttribute('d', `M${pair(tip)}L${pair(point(tip, 40, q1 + q2))}`);
       get('chain-shoulder-arc').setAttribute('d', `M256 270A36 36 0 0 0 ${pair(point(origin, 36, q1))}`);
       get('chain-elbow-arc').setAttribute('d', `M${pair(point(joint, 28, q1))}A28 28 0 0 ${b < 0 ? 1 : 0} ${pair(point(joint, 28, q1 + q2))}`);
       moveCircle('chain-elbow', joint);
@@ -52,7 +53,7 @@
       const y = ((origin[1] - tip[1]) / 100).toFixed(2);
       get('chain-position').textContent = `(${x}, ${y})`;
       get('chain-orientation').textContent = degrees(a + b);
-      get('chain-desc').textContent = `Geometry illustration. Shoulder angle ${a} degrees. Relative elbow angle ${b} degrees. Calculated tool position (${x}, ${y}) in arbitrary units. Tool direction ${a + b} degrees from the positive x axis.`;
+      get('chain-desc').textContent = `An arm with an open gripper. Shoulder angle ${a} degrees. Relative elbow angle ${b} degrees. The blue dot marks where the gripper attaches to the forearm at (${x}, ${y}) in arbitrary units. Gripper direction ${a + b} degrees from the positive x axis. The jaw opening stays fixed.`;
     };
     shoulder.addEventListener('input', update);
     elbow.addEventListener('input', update);

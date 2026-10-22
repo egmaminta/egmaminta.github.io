@@ -14,6 +14,11 @@ I have been wanting to create a robotics course that my friends can follow witho
 
 We will use [MuJoCo](https://mujoco.readthedocs.io/en/stable/overview.html) to simulate how a robot moves under forces and contact. The simulator needs a description of the robot's parts, joints, and actuators. These are specified in a [robot model](https://mujoco.readthedocs.io/en/stable/modeling.html). We will start with the [SO101 arm from MuJoCo Menagerie](https://github.com/google-deepmind/mujoco_menagerie/blob/main/robotstudio_so101/so101.xml).
 
+<figure class="robotics-figure robot-model-photo">
+  <img src="{{ '/assets/img/robotics/so101.png' | relative_url }}" width="3840" height="2160" alt="The yellow SO-101 arm in MuJoCo with its base on the floor, upper arm raised, and open gripper extending to the right." decoding="async">
+  <figcaption><strong>The SO-101 arm in MuJoCo.</strong> Image from <a href="https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotstudio_so101">MuJoCo Menagerie</a> under the <a href="{{ '/assets/img/robotics/SO101-LICENSE.txt' | relative_url }}">Apache 2.0 license</a>.</figcaption>
+</figure>
+
 The question for this chapter is whether changing a joint's target angle moves the joint before the simulation advances.
 
 <div class="chapter-takeaway">
@@ -51,7 +56,7 @@ The links and joints form a **kinematic chain**, a connected sequence from the b
 
 A **coordinate frame** has an origin and axes used to describe position and orientation. The **world frame** is fixed to the scene. A frame attached to the upper arm moves with that arm. The same point can have different coordinates depending on which frame describes it. *Modern Robotics* introduces these conventions in its treatment of [rigid-body motion](https://modernrobotics.northwestern.edu/nu-gm-book-resource/introduction-to-rigid-body-motions/).
 
-In the diagram below the shoulder angle is measured from the world's horizontal axis. The elbow angle is measured from the extension of the upper link. Keep the elbow angle fixed and change the shoulder angle. The elbow keeps its bend while the tool tip moves through the world frame.
+In the diagram below the shoulder angle is measured from the world's horizontal axis. The elbow angle is measured from the extension of the upper link. Keep the elbow angle fixed and change the shoulder angle. The elbow keeps its bend while the gripper moves through the world frame.
 
 {% include robotics/chain.html %}
 
@@ -110,3 +115,9 @@ In the plots, **overshoot** means passing beyond the target. **Oscillation** mea
   <summary>If the elbow angle stays fixed while the shoulder moves, does the tool stay in place?</summary>
   <p>The shoulder carries the links after it. The elbow keeps its bend relative to the upper arm while the tool moves in the world frame.</p>
 </details>
+
+## Conclusion
+
+Following the chain from the shoulder to the gripper explains why a fixed elbow angle does not keep the gripper in place. Joint angles determine the arm's pose. A target angle gives the actuator a request and the joint responds as the simulation advances.
+
+Reaching the target is only part of the task. The joint must also stop moving near it. Read position error and angular velocity together to judge that response. Before moving on to robot learning, hold a joint target fixed and plot the joint angle and velocity over time.
