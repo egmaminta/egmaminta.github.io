@@ -76,7 +76,9 @@ with tempfile.TemporaryDirectory() as temp:
         ax.axvline(settling, color=gray, linestyle=':', linewidth=1.2)
         ax.set_xlim(0, summary['recorded_duration_s'])
     dest = root / 'assets/img/robotics'
-    fig.savefig(dest / 'shoulder-pan-response.svg', metadata={'Date': None})
+    svg_path = dest / 'shoulder-pan-response.svg'
+    fig.savefig(svg_path, metadata={'Date': None})
+    svg_path.write_text('\n'.join(line.rstrip() for line in svg_path.read_text().splitlines()) + '\n')
     fig.savefig(dest / 'shoulder-pan-response.png', dpi=180)
     plt.close(fig)
 print('Plotted the recorded shoulder-pan response')
