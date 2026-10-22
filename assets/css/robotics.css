@@ -32,9 +32,6 @@
 .prose .writing-series .writing-list { margin-top: 32px; }
 .writing-series .writing-list h3 { font-size: 1.05rem; font-weight: 500; }
 .prose .archive-note { margin-top: 32px; font-size: .88rem; }
-.chapter-takeaway { margin-block: 28px; padding: 20px 24px; background: #f1f5fa; }
-.chapter-takeaway p:last-child { margin: 5px 0 0; color: var(--accent); font-size: 1.08rem; line-height: 1.65; }
-.chapter-takeaway .eyebrow { margin: 0; }
 .chapter-nav { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-block: 26px 40px; padding-block: 18px; border-block: 1px solid var(--line); font-size: .85rem; }
 .prose .robotics-figure { margin: 28px 0 32px; padding: 22px; border: 1px solid #dce3eb; border-radius: 4px; background: #fff; }
 .figure-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; font-size: .92rem; line-height: 1.5; }
@@ -43,6 +40,7 @@
 .figure-kind { margin-left: auto; color: var(--muted); font-size: .72rem; }
 .robotics-figure svg { display: block; width: 100%; height: auto; overflow: visible; }
 .robot-model-photo img { display: block; width: 100%; height: auto; margin-bottom: 16px; }
+.response-figure img { display: block; width: 100%; height: auto; margin-block: 18px; }
 .motion-controls { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; margin-bottom: 16px; font-size: .8rem; }
 .model-mosaic { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 14px; margin-bottom: 24px; }
 .prose .robot-model-card { display: flex; flex-direction: column; align-items: flex-start; padding: 12px; background: #f6f8fb; color: var(--ink); text-decoration: none; line-height: 1.45; }

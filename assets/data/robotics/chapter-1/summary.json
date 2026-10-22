@@ -1,0 +1,43 @@
+{
+  "experiment": "SO101 shoulder pan response to a fixed position target",
+  "source_script_sha256": "4216240af7d8632dc7a507aaad68d686e7334375e4bdffd8eb2b749d4976f453",
+  "model_file": "robotstudio_so101/so101.xml",
+  "model_sha256": "982c02c027ec0c62d3459d0a6eb00dfb7dc13a451992e72ce99addc71f209805",
+  "mujoco_version": "3.16.0",
+  "target_angle_rad": -1.3,
+  "tolerance_rad": 0.01,
+  "lower_bound_rad": -1.31,
+  "upper_bound_rad": -1.29,
+  "angle_criterion": "absolute angle error < tolerance",
+  "requested_duration_s": 2.0,
+  "recorded_duration_s": 2.0049999999999795,
+  "physics_timestep_s": 0.005,
+  "recorded_samples": 402,
+  "angle_settling_time_s": 0.5600000000000004,
+  "velocity_at_angle_settling_rad_s": 0.5762536459796046,
+  "initial_angle_rad": 0.0,
+  "final_angle_rad": -1.2999999999999257,
+  "final_velocity_rad_s": -3.456556011966923e-13,
+  "peak_overshoot_rad": 0.10483182209411646,
+  "peak_overshoot_time_s": 0.39500000000000024,
+  "minimum_angle_rad": -1.4048318220941165,
+  "first_crossing_bracket_s": [
+    0.3400000000000002,
+    0.3450000000000002
+  ],
+  "velocity_at_first_sample_beyond_target_rad_s": -4.76004776095522,
+  "first_step_angle_rad": -0.001521903931941375,
+  "first_step_velocity_rad_s": -0.304380786388275,
+  "shoulder_pan_joint_range_rad": [
+    -1.91986,
+    1.91986
+  ],
+  "shoulder_pan_control_range_rad": [
+    -1.91986,
+    1.91986
+  ],
+  "shoulder_pan_force_range": [
+    -2.94,
+    2.94
+  ]
+}
