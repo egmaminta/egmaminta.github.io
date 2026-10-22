@@ -43,6 +43,17 @@
 .figure-kind { margin-left: auto; color: var(--muted); font-size: .72rem; }
 .robotics-figure svg { display: block; width: 100%; height: auto; overflow: visible; }
 .robot-model-photo img { display: block; width: 100%; height: auto; margin-bottom: 16px; }
+.motion-controls { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; margin-bottom: 16px; font-size: .8rem; }
+.model-mosaic { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 14px; margin-bottom: 24px; }
+.prose .robot-model-card { display: flex; flex-direction: column; align-items: flex-start; padding: 12px; background: #f6f8fb; color: var(--ink); text-decoration: none; line-height: 1.45; }
+.robot-model-card:hover .model-name { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.robot-model-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.robot-model-card img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+.model-category { margin-top: 8px; font-size: .68rem; color: #596779; }
+.model-name { margin-top: 4px; font-size: .8rem; }
+.model-collection { margin-bottom: 22px; font-size: .85rem; }
+.model-collection summary { cursor: pointer; color: var(--accent); padding-block: 10px; }
+.model-collection .model-mosaic { margin-top: 16px; }
 .robotics-figure .anatomy-diagram { max-width: 620px; margin: 12px auto 0; }
 .robotics-figure svg text { fill: #334155; font: 16px var(--sans); }
 .robotics-figure svg .svg-note { fill: #596779; font-size: 13px; }
@@ -95,6 +106,8 @@
 .prose .understanding-check p { margin: 14px 0 0; }
 [hidden] { display: none !important; }
 @media (max-width: 600px) {
+  .model-mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .prose .robot-model-card { padding: 8px; }
   .writing-page { font-size: 15px; }
   .prose .robotics-figure { padding: 16px; margin-inline: -4px; }
   .figure-kind { width: 100%; margin-left: 28px; }
@@ -113,6 +126,7 @@
   .figure-readout dd { font-size: .77rem; }
 }
 @media print {
+  .motion-controls { display: none !important; }
   .writing-page { font-size: 11pt; }
   [data-interactive-only], .chapter-nav { display: none !important; }
   .prose .robotics-figure { break-inside: avoid; }

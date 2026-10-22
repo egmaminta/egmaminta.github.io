@@ -1,0 +1,268 @@
+[
+  {
+    "name": "The Robot Studio SO101",
+    "category": "Arm",
+    "image": "robotstudio_so101-so101.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotstudio_so101",
+    "featured": true
+  },
+  {
+    "name": "Franka Emika Panda",
+    "category": "Arm",
+    "image": "franka_emika_panda-panda.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/franka_emika_panda",
+    "featured": true
+  },
+  {
+    "name": "Universal Robots UR5e",
+    "category": "Arm",
+    "image": "universal_robots_ur5e-ur5e.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/universal_robots_ur5e",
+    "featured": true
+  },
+  {
+    "name": "Robotiq 2F-85",
+    "category": "End effector",
+    "image": "robotiq_2f85-2f85.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotiq_2f85",
+    "featured": true
+  },
+  {
+    "name": "Allegro Hand V3",
+    "category": "End effector",
+    "image": "wonik_allegro-left_hand.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/wonik_allegro",
+    "featured": true
+  },
+  {
+    "name": "Unitree G1",
+    "category": "Humanoid",
+    "image": "unitree_g1-g1.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_g1",
+    "featured": true
+  },
+  {
+    "name": "ARX L5",
+    "category": "Arm",
+    "image": "arx_l5-arx_l5.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/arx_l5",
+    "featured": false
+  },
+  {
+    "name": "AgileX PiPER",
+    "category": "Arm",
+    "image": "agilex_piper-piper.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/agilex_piper",
+    "featured": false
+  },
+  {
+    "name": "Dynamixel 2R",
+    "category": "Arm",
+    "image": "dynamixel_2r-dynamixel_2r.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/dynamixel_2r",
+    "featured": false
+  },
+  {
+    "name": "Flexiv Robotics Rizon4",
+    "category": "Arm",
+    "image": "flexiv_rizon4-flexiv_rizon4.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/flexiv_rizon4",
+    "featured": false
+  },
+  {
+    "name": "Flexiv Robotics Rizon4S",
+    "category": "Arm",
+    "image": "flexiv_rizon4s-flexiv_rizon4s.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/flexiv_rizon4s",
+    "featured": false
+  },
+  {
+    "name": "Franka Robotics FR3",
+    "category": "Arm",
+    "image": "franka_fr3-fr3.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/franka_fr3",
+    "featured": false
+  },
+  {
+    "name": "Franka Robotics FR3 v2",
+    "category": "Arm",
+    "image": "franka_fr3_v2-fr3v2.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/franka_fr3_v2",
+    "featured": false
+  },
+  {
+    "name": "KUKA LBR iiwa 14",
+    "category": "Arm",
+    "image": "kuka_iiwa_14-iiwa14.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/kuka_iiwa_14",
+    "featured": false
+  },
+  {
+    "name": "Kinova Gen3",
+    "category": "Arm",
+    "image": "kinova_gen3-gen3.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/kinova_gen3",
+    "featured": false
+  },
+  {
+    "name": "Lite 6",
+    "category": "Arm",
+    "image": "ufactory_lite6-lite6.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/ufactory_lite6",
+    "featured": false
+  },
+  {
+    "name": "Low-Cost Robot Arm",
+    "category": "Arm",
+    "image": "low_cost_robot_arm-low_cost_robot_arm.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/low_cost_robot_arm",
+    "featured": false
+  },
+  {
+    "name": "ROBOTIS OMY-3M",
+    "category": "Arm",
+    "image": "robotis_omy_3m-omy_3m.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotis_omy_3m",
+    "featured": false
+  },
+  {
+    "name": "Rethink Robotics Sawyer",
+    "category": "Arm",
+    "image": "rethink_robotics_sawyer-sawyer.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/rethink_robotics_sawyer",
+    "featured": false
+  },
+  {
+    "name": "Seeed Studio reBot DevArm",
+    "category": "Arm",
+    "image": "seeed_rebot_devarm-seeed_rebot_devarm.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/seeed_rebot_devarm",
+    "featured": false
+  },
+  {
+    "name": "Standard Open Arm-100 5DOF - Version 1.3",
+    "category": "Arm",
+    "image": "trs_so_arm100-so_arm100.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/trs_so_arm100",
+    "featured": false
+  },
+  {
+    "name": "Trossen WXAI",
+    "category": "Arm",
+    "image": "trossen_wxai-wxai_follower.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/trossen_wxai",
+    "featured": false
+  },
+  {
+    "name": "Unitree Z1",
+    "category": "Arm",
+    "image": "unitree_z1-z1.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_z1",
+    "featured": false
+  },
+  {
+    "name": "Universal Robots UR10e",
+    "category": "Arm",
+    "image": "universal_robots_ur10e-ur10e.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/universal_robots_ur10e",
+    "featured": false
+  },
+  {
+    "name": "ViperX 300 6DOF",
+    "category": "Arm",
+    "image": "trossen_vx300s-vx300s.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/trossen_vx300s",
+    "featured": false
+  },
+  {
+    "name": "WidowX 250 6DOF",
+    "category": "Arm",
+    "image": "trossen_wx250s-wx250s.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/trossen_wx250s",
+    "featured": false
+  },
+  {
+    "name": "Yet Another Manipulator (YAM)",
+    "category": "Arm",
+    "image": "i2rt_yam-yam.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/i2rt_yam",
+    "featured": false
+  },
+  {
+    "name": "xArm7",
+    "category": "Arm",
+    "image": "ufactory_xarm7-xarm7.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/ufactory_xarm7",
+    "featured": false
+  },
+  {
+    "name": "ALOHA",
+    "category": "Dual arm",
+    "image": "aloha-aloha.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/aloha",
+    "featured": false
+  },
+  {
+    "name": "Leap Hand",
+    "category": "End effector",
+    "image": "leap_hand-left_hand.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/leap_hand",
+    "featured": false
+  },
+  {
+    "name": "Panda Gripper",
+    "category": "End effector",
+    "image": "franka_emika_panda-hand.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/franka_emika_panda",
+    "featured": false
+  },
+  {
+    "name": "Robotiq 2F-85 v4",
+    "category": "End effector",
+    "image": "robotiq_2f85_v4-2f85.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotiq_2f85_v4",
+    "featured": false
+  },
+  {
+    "name": "Shadow DEX-EE Hand",
+    "category": "End effector",
+    "image": "shadow_dexee-shadow_dexee.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/shadow_dexee",
+    "featured": false
+  },
+  {
+    "name": "Shadow Hand E3M5",
+    "category": "End effector",
+    "image": "shadow_hand-left_hand.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/shadow_hand",
+    "featured": false
+  },
+  {
+    "name": "Sharpa Wave",
+    "category": "End effector",
+    "image": "sharpa_wave-left_hand.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/sharpa_wave",
+    "featured": false
+  },
+  {
+    "name": "Tetheria Aero Hand Open",
+    "category": "End effector",
+    "image": "tetheria_aero_hand_open-right_hand.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/tetheria_aero_hand_open",
+    "featured": false
+  },
+  {
+    "name": "UMI-Gripper",
+    "category": "End effector",
+    "image": "umi_gripper-umi_gripper.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/umi_gripper",
+    "featured": false
+  },
+  {
+    "name": "xarm7 Gripper",
+    "category": "End effector",
+    "image": "ufactory_xarm7-hand.png",
+    "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/ufactory_xarm7",
+    "featured": false
+  }
+]

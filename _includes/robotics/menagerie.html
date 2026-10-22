@@ -1,0 +1,16 @@
+<figure class="robotics-figure menagerie-figure" aria-label="Robot models in MuJoCo Menagerie">
+  <div class="model-mosaic">
+    {% for model in site.data.robotics_models %}{% if model.featured %}
+      {% include robotics/model-card.html model=model %}
+    {% endif %}{% endfor %}
+  </div>
+  <details class="model-collection">
+    <summary>Explore more arms and end effectors</summary>
+    <div class="model-mosaic">
+      {% for model in site.data.robotics_models %}{% unless model.featured %}
+        {% include robotics/model-card.html model=model %}
+      {% endunless %}{% endfor %}
+    </div>
+  </details>
+  <figcaption><strong>Arms, grippers, hands, and a humanoid.</strong> Select a model to open its files in <a href="https://github.com/google-deepmind/mujoco_menagerie">MuJoCo Menagerie</a>. The Unitree G1 also appears in <a href="https://github.com/taliyah0x0/MuJoCoForBeginners/tree/main/Part4">Taliyah’s MuJoCoForBeginners</a>. Images are from Menagerie and are shown at different scales. <a href="{{ '/assets/img/robotics/menagerie/LICENSES.txt' | relative_url }}">Image licenses</a>.</figcaption>
+</figure>

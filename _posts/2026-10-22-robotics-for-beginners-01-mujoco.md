@@ -14,9 +14,14 @@ I have been wanting to create a robotics course that my friends can follow witho
 
 We will use [MuJoCo](https://mujoco.readthedocs.io/en/stable/overview.html) to simulate how a robot moves under forces and contact. The simulator needs a description of the robot's parts, joints, and actuators. These are specified in a [robot model](https://mujoco.readthedocs.io/en/stable/modeling.html). We will start with the [SO101 arm from MuJoCo Menagerie](https://github.com/google-deepmind/mujoco_menagerie/blob/main/robotstudio_so101/so101.xml).
 
-<figure class="robotics-figure robot-model-photo">
-  <img src="{{ '/assets/img/robotics/so101.png' | relative_url }}" width="3840" height="2160" alt="The yellow SO-101 arm in MuJoCo with its base on the floor, upper arm raised, and open gripper extending to the right." decoding="async">
-  <figcaption><strong>The SO-101 arm in MuJoCo.</strong> Image from <a href="https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotstudio_so101">MuJoCo Menagerie</a> under the <a href="{{ '/assets/img/robotics/SO101-LICENSE.txt' | relative_url }}">Apache 2.0 license</a>.</figcaption>
+<figure class="robotics-figure robot-model-photo" id="so101-motion">
+  <img id="so101-animation" src="{{ '/assets/img/robotics/so101-motion-poster.png' | relative_url }}" data-still-src="{{ '/assets/img/robotics/so101-motion-poster.png' | relative_url }}" data-motion-src="{{ '/assets/img/robotics/so101-motion.gif' | relative_url }}" width="720" height="450" alt="The SO-101 arm in MuJoCo with its gripper open." decoding="async">
+  <div class="motion-controls">
+    <button id="so101-motion-toggle" type="button" class="text-button" aria-controls="so101-animation" aria-pressed="false" data-interactive-only hidden>Play animation</button>
+    <a href="{{ '/assets/img/robotics/so101-motion.gif' | relative_url }}">View GIF</a>
+    <a href="{{ '/assets/img/robotics/so101.png' | relative_url }}">View still image</a>
+  </div>
+  <figcaption><strong>The SO-101 arm in motion.</strong> Programmed joint targets turn the arm and open and close its gripper in MuJoCo. Model from <a href="https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotstudio_so101">MuJoCo Menagerie</a> under the <a href="{{ '/assets/img/robotics/SO101-LICENSE.txt' | relative_url }}">Apache 2.0 license</a>.</figcaption>
 </figure>
 
 The question for this chapter is whether changing a joint's target angle moves the joint before the simulation advances.
@@ -40,6 +45,7 @@ The exercise is to hold a position target and record how the joint responds.
   <a href="#model-state-control">Commands and motion</a>
   <a href="#one-target">The exercise</a>
   <a href="#next-experiment">Reading the response</a>
+  <a href="#other-robots">Other robots</a>
 </nav>
 
 ## Parts of the arm {#meet-the-arm}
@@ -115,6 +121,10 @@ In the plots, **overshoot** means passing beyond the target. **Oscillation** mea
   <summary>If the elbow angle stays fixed while the shoulder moves, does the tool stay in place?</summary>
   <p>The shoulder carries the links after it. The elbow keeps its bend relative to the upper arm while the tool moves in the world frame.</p>
 </details>
+
+## Other robots to explore {#other-robots}
+
+{% include robotics/menagerie.html %}
 
 ## Conclusion
 

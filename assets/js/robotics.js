@@ -7,6 +7,29 @@
   };
   const degrees = (angle) => `${angle < 0 ? '−' : ''}${Math.abs(angle)}°`;
 
+  const motion = document.getElementById('so101-motion');
+  if (motion) {
+    const picture = document.getElementById('so101-animation');
+    const button = document.getElementById('so101-motion-toggle');
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let playing = false;
+    const setPlaying = (value) => {
+      playing = value;
+      picture.src = playing ? picture.dataset.motionSrc : picture.dataset.stillSrc;
+      picture.alt = playing
+        ? 'The SO-101 arm turns at its shoulder while its gripper opens and closes in MuJoCo.'
+        : 'The SO-101 arm in MuJoCo with its gripper open.';
+      button.textContent = playing ? 'Stop animation' : 'Play animation';
+      button.setAttribute('aria-pressed', String(playing));
+    };
+    button.addEventListener('click', () => setPlaying(!playing));
+    preference.addEventListener('change', (event) => {
+      if (event.matches) setPlaying(false);
+    });
+    setPlaying(!preference.matches);
+    revealControls(motion);
+  }
+
   const anatomy = document.getElementById('arm-anatomy');
   if (anatomy) {
     const buttons = [...anatomy.querySelectorAll('[data-joint]')];
