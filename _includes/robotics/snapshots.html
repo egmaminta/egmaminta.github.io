@@ -1,0 +1,34 @@
+<figure class="robotics-figure" id="target-snapshots">
+  <div class="figure-heading"><span class="figure-number">03</span><strong>The request stays fixed. The state changes.</strong><span class="figure-kind">Recorded snapshots</span></div>
+  <div class="snapshot-buttons" role="group" aria-label="Choose a recorded snapshot" data-interactive-only hidden>
+    <button type="button" data-snapshot="0" aria-pressed="true">Before stepping</button>
+    <button type="button" data-snapshot="1" aria-pressed="false">After one step</button>
+    <button type="button" data-snapshot="2" aria-pressed="false">After ≈ 1 s</button>
+  </div>
+  <div class="snapshot-layout">
+    <svg viewBox="0 0 360 300" role="img" aria-labelledby="snapshot-title snapshot-desc">
+      <title id="snapshot-title">Target angle compared with the actual joint angle</title>
+      <desc id="snapshot-desc">Before stepping, the target is minus 1.3 radians, while the actual angle is zero. The dashed amber ray shows the target; the solid blue ray shows the actual angle.</desc>
+      <circle cx="160" cy="140" r="100" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+      <path d="M160 140H281" class="diagram-guide"/>
+      <text x="287" y="145" class="svg-note">0 rad</text>
+      <path d="M160 140L190.495 249.846" fill="none" stroke="#9a5600" stroke-width="3" stroke-dasharray="7 5"/>
+      <path id="snapshot-actual" d="M160 140L260 140" fill="none" stroke="#00356b" stroke-width="6" stroke-linecap="round"/>
+      <circle id="snapshot-tip" cx="260" cy="140" r="7" fill="white" stroke="#00356b" stroke-width="3"/>
+      <circle cx="160" cy="140" r="6" fill="#00356b"/>
+      <text x="207" y="259" class="svg-target">−1.3 rad</text>
+      <text x="40" y="30" class="svg-note">Angle about one joint</text>
+    </svg>
+    <div>
+      <div class="figure-legend"><span><i class="actual-swatch" aria-hidden="true"></i>Actual</span><span><i class="target-swatch" aria-hidden="true"></i>Target</span></div>
+      <dl class="figure-readout" aria-live="polite" aria-atomic="true">
+        <div><dt>Simulation time</dt><dd id="snapshot-time">0 s</dd></div>
+        <div><dt>Target angle</dt><dd class="target-value">−1.3 rad</dd></div>
+        <div><dt>Actual angle</dt><dd id="snapshot-angle">0 rad</dd></div>
+        <div><dt>Angular velocity</dt><dd id="snapshot-velocity">0 rad/s</dd></div>
+      </dl>
+    </div>
+  </div>
+  <p id="snapshot-explanation" class="snapshot-explanation" aria-live="polite">The target is set, but no physics step has run. The actual angle is still zero.</p>
+  <figcaption><strong>A position target does not teleport the joint.</strong> Switch between the three observations from my lesson notes. The dial is a schematic angle indicator; it does not interpolate a trajectory or run MuJoCo. All recorded values also appear in the table below.</figcaption>
+</figure>

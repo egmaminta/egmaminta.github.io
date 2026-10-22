@@ -1,0 +1,36 @@
+<figure class="robotics-figure" id="arm-anatomy">
+  <div class="figure-heading"><span class="figure-number">01</span><strong>Six joints, different jobs</strong><span class="figure-kind">Anatomy</span></div>
+  <svg class="anatomy-diagram" viewBox="0 0 620 360" role="img" aria-labelledby="anatomy-title anatomy-desc">
+    <title id="anatomy-title">The six joints of the SO101 arm</title>
+    <desc id="anatomy-desc">A schematic chain from a fixed base through shoulder pan, shoulder lift, elbow flex, wrist flex, wrist roll, and the gripper jaw. Numbers correspond to the descriptions below. Dimensions and perspective are simplified.</desc>
+    <path d="M60 324H555" class="diagram-guide"/>
+    <path d="M116 320L128 283H177L189 320Z" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+    <path d="M152 288V246L247 104L384 169L434 150" fill="none" stroke="#d4dce6" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M152 246L247 104L384 169L434 150" fill="none" stroke="#00356b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M434 150L471 157M471 157L505 142L527 155M471 157L495 190L520 182" fill="none" stroke="#00356b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M103 285C80 306 210 313 208 285" class="diagram-guide" stroke-dasharray="4 5"/>
+    <path d="M201 288L208 281L213 292" class="diagram-guide"/>
+    <g class="joint-mark is-selected" data-joint-mark="0"><circle class="joint-halo" cx="152" cy="288" r="23"/><circle cx="152" cy="288" r="14"/><text x="152" y="293">1</text></g>
+    <g class="joint-mark" data-joint-mark="1"><circle class="joint-halo" cx="152" cy="246" r="23"/><circle cx="152" cy="246" r="14"/><text x="152" y="251">2</text></g>
+    <g class="joint-mark" data-joint-mark="2"><circle class="joint-halo" cx="247" cy="104" r="23"/><circle cx="247" cy="104" r="14"/><text x="247" y="109">3</text></g>
+    <g class="joint-mark" data-joint-mark="3"><circle class="joint-halo" cx="384" cy="169" r="23"/><circle cx="384" cy="169" r="14"/><text x="384" y="174">4</text></g>
+    <g class="joint-mark" data-joint-mark="4"><circle class="joint-halo" cx="434" cy="150" r="23"/><circle cx="434" cy="150" r="14"/><text x="434" y="155">5</text></g>
+    <g class="joint-mark" data-joint-mark="5"><circle class="joint-halo" cx="495" cy="190" r="23"/><circle cx="495" cy="190" r="14"/><text x="495" y="195">6</text></g>
+    <g class="part-labels">
+      <path d="M114 253H20M200 162L153 133H68M309 133L337 89H404M506 210V253H556" class="diagram-guide"/>
+      <text x="20" y="275">Fixed base</text><text x="68" y="124">Upper arm</text>
+      <text x="337" y="79">Forearm</text><text x="446" y="276">Gripper</text>
+      <text x="446" y="297" class="svg-note">End effector</text>
+    </g>
+  </svg>
+  <p class="interaction-hint" data-interactive-only hidden>Select a joint to locate it in the diagram.</p>
+  <div class="joint-key" role="group" aria-label="Locate an arm joint">
+    <button type="button" data-joint="0" aria-pressed="true" disabled><span class="joint-key-title"><span>1</span><code>shoulder_pan</code></span><span>Turns the arm around its base.</span></button>
+    <button type="button" data-joint="1" aria-pressed="false" disabled><span class="joint-key-title"><span>2</span><code>shoulder_lift</code></span><span>Raises or lowers the upper arm.</span></button>
+    <button type="button" data-joint="2" aria-pressed="false" disabled><span class="joint-key-title"><span>3</span><code>elbow_flex</code></span><span>Bends the elbow.</span></button>
+    <button type="button" data-joint="3" aria-pressed="false" disabled><span class="joint-key-title"><span>4</span><code>wrist_flex</code></span><span>Bends the wrist.</span></button>
+    <button type="button" data-joint="4" aria-pressed="false" disabled><span class="joint-key-title"><span>5</span><code>wrist_roll</code></span><span>Rotates the gripper assembly.</span></button>
+    <button type="button" data-joint="5" aria-pressed="false" disabled><span class="joint-key-title"><span>6</span><code>gripper</code></span><span>Opens or closes the moving jaw.</span></button>
+  </div>
+  <figcaption><strong>Read the chain from base to tip.</strong> A joint moves the bodies downstream of it. This SO101 schematic shows the joint order and roles; it is not a dimensional drawing.</figcaption>
+</figure>

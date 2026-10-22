@@ -1,0 +1,39 @@
+<figure class="robotics-figure" id="local-world-figure">
+  <div class="figure-heading"><span class="figure-number">02</span><strong>The same elbow bend, a different place</strong><span class="figure-kind">Explore</span></div>
+  <div class="chain-layout">
+    <svg viewBox="0 0 440 390" role="img" aria-labelledby="chain-title chain-desc">
+      <title id="chain-title">Joint coordinates and world coordinates</title>
+      <desc id="chain-desc">A simplified planar arm with two links. The shoulder is at 60 degrees and the elbow's relative angle is minus 45 degrees. Moving the shoulder carries the elbow and tool tip, even with a fixed elbow angle.</desc>
+      <defs><marker id="tool-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#00356b"/></marker></defs>
+      <path d="M28 270H422M220 365V30" class="diagram-guide"/>
+      <path d="M415 265L423 270L415 275M215 38L220 30L225 38" class="diagram-guide"/>
+      <text x="414" y="295" class="svg-note">x</text><text x="232" y="39" class="svg-note">y</text>
+      <text x="203" y="291" class="svg-note">0</text><text x="28" y="367" class="svg-note">World origin = fixed shoulder</text>
+      <path id="chain-links" d="M220 270L270 183.397L347.274 162.692" fill="none" stroke="#00356b" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="chain-extension" d="M270 183.397L290 148.756" class="diagram-guide" stroke-dasharray="4 4"/>
+      <path id="chain-shoulder-arc" d="M256 270A36 36 0 0 0 238 238.823" class="angle-arc"/>
+      <path id="chain-elbow-arc" d="M284 159.148A28 28 0 0 1 297.046 176.15" class="angle-arc"/>
+      <circle cx="220" cy="270" r="9" fill="white" stroke="#00356b" stroke-width="3"/>
+      <circle id="chain-elbow" cx="270" cy="183.397" r="9" fill="white" stroke="#00356b" stroke-width="3"/>
+      <circle id="chain-tip" cx="347.274" cy="162.692" r="6" fill="#00356b"/>
+      <path id="chain-direction" d="M347.274 162.692L376.252 154.928" fill="none" stroke="#00356b" stroke-width="2" marker-end="url(#tool-arrow)"/>
+      <text x="28" y="30" class="svg-note">Arrow = tool direction</text>
+    </svg>
+    <div class="chain-controls">
+      <div data-interactive-only hidden>
+        <label for="shoulder-angle">Shoulder angle <output id="shoulder-value" for="shoulder-angle">60°</output></label>
+        <input id="shoulder-angle" type="range" min="20" max="140" step="1" value="60" aria-describedby="chain-control-hint">
+        <label for="elbow-angle">Relative elbow angle <output id="elbow-value" for="elbow-angle">−45°</output></label>
+        <input id="elbow-angle" type="range" min="-120" max="120" step="1" value="-45" aria-describedby="chain-control-hint">
+        <p id="chain-control-hint" class="interaction-hint">Move just the shoulder first. With keyboard focus, use the arrow keys.</p>
+        <button id="chain-reset" type="button" class="text-button">Reset angles</button>
+      </div>
+      <dl class="figure-readout" aria-live="polite" aria-atomic="true">
+        <div><dt>Tool position (x, y)</dt><dd id="chain-position">(1.27, 1.07)</dd></div>
+        <div><dt>Tool direction</dt><dd id="chain-orientation">15°</dd></div>
+      </dl>
+    </div>
+  </div>
+  <figcaption><strong>Joint angles are relative; the tip position is in the world frame.</strong> This is a two-link, planar teaching model with lengths 1 and 0.8 arbitrary units, not an SO101 simulation. Tool direction is the sum of the two angles. Changing the sliders edits the configuration directly; it does not simulate actuator dynamics.</figcaption>
+  <noscript><p class="interaction-hint">The static view uses a 60° shoulder and −45° relative elbow angle. JavaScript enables the sliders.</p></noscript>
+</figure>

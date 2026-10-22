@@ -1,6 +1,6 @@
 # Emmanuel G. Maminta · Academic profile
 
-Personal academic website at <https://egmaminta.github.io>, built with Jekyll and deployed to GitHub Pages. The custom layouts provide a consistent profile, publication list, writing archive, and article view. The Chirpy gem supplies the existing Jekyll plugins and feed.
+Personal academic website at <https://egmaminta.github.io>, built with Jekyll and deployed to GitHub Pages. The custom layouts provide a consistent profile, publication list, writing index, archive, and article view. The Chirpy gem supplies the existing Jekyll plugins and feed.
 
 ## Local development
 
@@ -33,10 +33,12 @@ If Bundler reports a permission error under `/usr/local/bundle`, rerun the `expo
 ## Updating content
 
 - **Profile and research:** edit `index.html`.
-- **CV:** the homepage links to `assets/cv/Maminta_Emmanuel_CV.pdf`. Edit `_cv/Emmanuel_G_Maminta_Academic_CV.tex` and run `bash _cv/build.sh` with XeLaTeX installed. Formatting follows the supplied [Stanford Career Center guide](https://careered.stanford.edu/sites/g/files/sbiybj22801/files/media/file/resume-and-cover-letter-examples.pdf): one-inch margins, a single column, conventional headings, and text larger than 10 points. The PDF has no URLs or embedded links. Source notes are in `_cv/BUILD_AND_CONTENT_NOTES.txt`; Jekyll omits `_cv/` from published output.
+- **CV:** the homepage links to `assets/cv/Maminta_Emmanuel_CV.pdf`. Edit `_cv/Emmanuel_G_Maminta_Academic_CV.tex` and run `bash _cv/build.sh` with XeLaTeX installed. Formatting follows the supplied [Stanford Career Center guide](https://careered.stanford.edu/sites/g/files/sbiybj22801/files/media/file/resume-and-cover-letter-examples.pdf): one-inch margins, a single column, conventional headings, and text larger than 10 points. The PDF has no URLs or embedded links. Build instructions are in `_cv/BUILD.txt`; Jekyll omits `_cv/` from published output.
 - **News:** add entries to `_data/news.yml`, newest event first, using `Mon YYYY` labels (for example, `Sep 2026`). The first five are visible; the rest appear under “Earlier updates.” Use the supplied event month for upcoming conference presentations; leave unknown historical months unspecified.
 - **Publications:** edit `_data/publications.yml`. Each entry supports `title`, `venue`, `context`, `authors` (Markdown), `url`, `badge`, `badge_url`, `highlight`, and a list of `links` with `label` and `url`. `highlight: true` emphasizes the ACCV main-conference oral presentation. Add the ACCV paper link when available.
-- **Archived writing:** the four existing posts remain in `_posts/` with `archived: true`, preserving their URLs. They are listed at `/archives/` and marked as archived on article pages. Writing is absent from the homepage and main navigation; `/blog/` points visitors to the archive. When ready to publish new writing, add a post without `archived: true` and restore the writing index/navigation.
+- **Writing:** `/blog/` lists active posts and introduces the Robotics for Beginners learning journal. Add new chapters in `_posts/` without `archived: true`. The homepage shows the three latest active posts. The four older posts retain their URLs and `archived: true`; they remain at `/archives/`.
+- **Robotics figures:** Chapter 1 uses `_includes/robotics/`, `assets/css/robotics.css`, and `assets/js/robotics.js`. Set `robotics: true` in chapter front matter to load those assets. The SVG diagrams preserve text labels, and all explanations and observed values remain readable without JavaScript. The planar chain is an illustrative kinematic model; the snapshot selector displays recorded observations without inventing intermediate samples. The original course exercises remain separate from this website.
+- **Writing fonts:** Graphik is preferred if locally installed; self-hosted Inter is the fallback. B612 Mono is used for code and values. Font sources and licenses are in `assets/fonts/`.
 - **Preprints:** edit `_tabs/preprints.md`; PDFs live in `assets/preprints/`.
 - **Certifications:** badge images are stored in `assets/img/certifications/` and displayed in `index.html`, with links to the public Credly verification pages.
 - **Appearance:** `assets/css/academic.css` and `_layouts/`. The homepage uses a simple document layout, local assets, and [Yale Blue](https://medicine.yale.edu/myysm/communications-technology/ysm-brand/visual-identity/colors/) (`#00356b`) for links. The ACCV oral presentation has a subtle blue background without a border accent. Posts with math or diagrams load MathJax or Mermaid as needed.

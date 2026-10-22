@@ -5,7 +5,8 @@ layout: default
   {% if page.archived %}{% assign writing_url = '/archives/' %}{% assign writing_label = 'Writing archive' %}{% else %}{% assign writing_url = '/blog/' %}{% assign writing_label = 'All writing' %}{% endif %}
   <header class="page-heading">
     <a class="back-link" href="{{ writing_url | relative_url }}">← {{ writing_label }}</a>
-    <p class="eyebrow post-date">{% if page.archived %}Archived · {% endif %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time> · {{ content | number_of_words | divided_by: 200 | at_least: 1 }} min read</p>
+    {% if page.series %}<p class="series-label">{{ page.series | escape }} · Chapter {{ page.chapter }}</p>{% endif %}
+    <p class="eyebrow post-date">{% if page.archived %}Archived · {% endif %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time> · {% if page.reading_time %}{{ page.reading_time }}{% else %}{{ content | number_of_words | divided_by: 200 | at_least: 1 }}{% endif %} min read</p>
     <h1>{{ page.title | escape }}</h1>
     <p class="post-byline">Emmanuel G. Maminta</p>
   </header>

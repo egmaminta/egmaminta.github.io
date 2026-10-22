@@ -36,6 +36,7 @@ home: true
   <a href="#publications">Publications</a>
   <a href="#news">News</a>
   <a href="#software">Software</a>
+  <a href="{{ '/blog/' | relative_url }}">Writing</a>
 </nav>
 
 <section class="profile-section" id="news" aria-labelledby="news-heading">
@@ -85,6 +86,12 @@ home: true
     <li>I released <a href="https://github.com/egmaminta/GEPA-Lite">GEPA-Lite</a>, a lightweight implementation of Genetic-Pareto prompt optimization under the MIT License.</li>
     <li>I contributed the <a href="https://github.com/gepa-ai/gepa">AnyMaths adapter to GEPA</a> for prompt optimization on mathematical word problems and LLM reasoning.</li>
   </ul>
+</section>
+
+<section class="profile-section" id="writing" aria-labelledby="writing-heading">
+  <h2 id="writing-heading"><a href="{{ '/blog/' | relative_url }}">Writing</a></h2>
+  {% assign current_posts = site.posts | where_exp: 'post', 'post.archived != true' %}
+  {% include post-list.html posts=current_posts descriptions=true limit=3 %}
 </section>
 
 <section class="profile-section" aria-labelledby="background-heading">
