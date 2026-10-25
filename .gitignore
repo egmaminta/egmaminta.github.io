@@ -15,6 +15,11 @@ _site
 node_modules
 package-lock.json
 
+# Python experiment caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # IDE configurations
 .idea
 .vscode/*

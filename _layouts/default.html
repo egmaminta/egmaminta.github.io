@@ -13,6 +13,10 @@
     {% if page.robotics %}
     <script src="{{ '/assets/js/robotics.js' | relative_url }}" defer></script>
     {% endif %}
+    {% if page.softmax %}
+    <link rel="stylesheet" href="{{ '/assets/css/softmax.css' | relative_url }}">
+    <script src="{{ '/assets/js/softmax.js' | relative_url }}" defer></script>
+    {% endif %}
     <link rel="alternate" type="application/atom+xml" title="{{ site.title | escape }}" href="{{ '/feed.xml' | relative_url }}">
     <script src="{{ '/assets/js/academic.js' | relative_url }}" defer></script>
     {% if page.mermaid %}

@@ -1,0 +1,25 @@
+.prose .softmax-figure { margin: 30px 0; padding: 22px; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
+.softmax-figure img { display: block; width: 100%; height: auto; }
+.softmax-figure figcaption { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--secondary); font-size: .82rem; line-height: 1.7; }
+.softmax-controls { margin-top: 20px; }
+.softmax-controls label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: .88rem; }
+.softmax-controls input { display: block; width: 100%; min-height: 44px; accent-color: var(--accent); cursor: pointer; }
+.softmax-controls input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.softmax-figure output, .softmax-figure td { font-family: 'B612 Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.prose .softmax-figure table { display: table; width: 100%; table-layout: fixed; font-size: .78rem; margin-block: 12px; }
+.prose .softmax-figure th, .prose .softmax-figure td { padding: 10px; }
+.prose .softmax-figure th { overflow-wrap: normal; }
+.prose .softmax-figure td { white-space: nowrap; }
+.softmax-figure .standard { color: #9a5600; }
+.softmax-figure .reformulated { color: #00356b; }
+.prose .softmax-status { font-size: .84rem; margin: 14px 0 0; }
+.softmax-controls[hidden] { display: none; }
+.writing-page mjx-container[display='true'] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-block: 8px; }
+@media (max-width: 600px) {
+  .prose .softmax-figure { padding: 12px; margin-inline: -4px; }
+  .prose .softmax-figure th, .prose .softmax-figure td { padding: 8px 4px; font-size: .73rem; }
+}
+@media print {
+  .softmax-controls { display: none; }
+  .softmax-figure { break-inside: avoid; }
+}

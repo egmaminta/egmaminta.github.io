@@ -1,0 +1,17 @@
+<figure class="softmax-figure" id="softmax-margin-figure" data-results="{{ '/assets/data/softmax/margin-sweep.json' | relative_url }}">
+  <a href="{{ '/assets/img/softmax/target-gradient.svg' | relative_url }}"><picture><source media="(max-width: 600px)" srcset="{{ '/assets/img/softmax/target-gradient-mobile.svg' | relative_url }}" width="420" height="580"><img src="{{ '/assets/img/softmax/target-gradient.svg' | relative_url }}" width="840" height="530" loading="lazy" alt="As the score gap increases, the reference and reformulated target gradients shrink together. Standard PyTorch gradients become zero at the sampled gap of 16.75. Zero results are shown in a separate strip below the logarithmic plot."></picture></a>
+  <div class="softmax-controls" hidden>
+    <label for="softmax-margin">Score gap between the correct product and its competitor <output id="softmax-margin-value" for="softmax-margin" data-margin>20.00</output></label>
+    <input id="softmax-margin" type="range" min="0" max="30" step="0.25" value="20" aria-describedby="softmax-margin-caption">
+  </div>
+  <table aria-label="Recorded loss and gradients for the selected score gap">
+    <thead><tr><th scope="col">Quantity</th><th scope="col" class="standard">Standard</th><th scope="col" class="reformulated">Reformulated</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Loss</th><td data-standard-loss>0</td><td data-reformulated-loss>2.061e−9</td></tr>
+      <tr><th scope="row">Correct product gradient</th><td data-standard-target>0</td><td data-reformulated-target>−2.061e−9</td></tr>
+      <tr><th scope="row">Competitor gradient</th><td data-standard-other>2.061e−9</td><td data-reformulated-other>2.061e−9</td></tr>
+    </tbody>
+  </table>
+  <p class="softmax-status" data-status aria-live="polite">The standard target gradient is zero. Its competitor gradient remains positive.</p>
+  <figcaption id="softmax-margin-caption">Target-gradient magnitude means the absolute derivative of the loss with respect to the correct product's score. Smaller values mean a weaker instruction to change that score. The upper axis is logarithmic. Zero values appear only in the lower strip. The table starts at a score gap of 20. Moving the slider selects another recorded PyTorch calculation. <a href="{{ '/assets/data/softmax/margin-sweep.csv' | relative_url }}">Download the measurements</a>.</figcaption>
+</figure>
