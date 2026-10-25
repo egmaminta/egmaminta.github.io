@@ -1,6 +1,6 @@
 ---
 title: Rounding errors in softmax and cross-entropy
-description: Work through softmax collapse and cancellation by hand, inspect recorded gradients, and implement the reformulations in PyTorch.
+description: Follow a neural network classifier through its loss surface, softmax rounding errors, and slingshot updates, with worked calculations and PyTorch code.
 date: 2026-10-25 09:00:00 +0800
 permalink: /posts/softmax-cross-entropy/
 categories: [Machine Learning]
@@ -16,16 +16,33 @@ The arithmetic has finite precision. A calculation can discard a small differenc
 
 In [A Fix for Softmax and Cross-Entropy](https://jonbarron.info/softmaxfix/), Jonathan T. Barron, Dan Gnanapragasam, and Michael Tschannen examine two consequences for training. They call them **Softmax Collapse** and **Softmax Cancellation**. Their examples and reformulations are the starting point for this post. We will work through a product-classification example and translate the supplied JAX code into PyTorch.
 
-The measurements below use PyTorch 2.14.1 with float32 tensors on an ARM64 CPU. Reference calculations use 80 decimal digits of precision. The [saved results]({{ '/assets/data/softmax/examples.json' | relative_url }}) record the inputs, outputs, and implementation checksum. Different hardware or implementations can produce different residuals.
+The numerical-error measurements use PyTorch 2.14.1 with float32 tensors on an ARM64 CPU. Reference calculations use 80 decimal digits of precision. The [saved results]({{ '/assets/data/softmax/examples.json' | relative_url }}) record the inputs, outputs, and implementation checksum. Different hardware or implementations can produce different residuals. The introductory classifier uses float64 to illustrate the calculation before we examine float32 rounding.
 
 <nav class="chapter-nav" aria-label="In this article">
+  <a href="#neural-network-classifier">The classifier</a>
   <a href="#scores-and-gradients">Background</a>
+  <a href="#loss-landscape">The loss surface</a>
   <a href="#collapse-by-hand">Collapse by hand</a>
+  <a href="#slingshot-updates">Slingshots</a>
   <a href="#hard-target-pytorch">Hard targets in PyTorch</a>
   <a href="#matching-a-teacher">Matching a teacher</a>
   <a href="#soft-target-pytorch">Soft targets in PyTorch</a>
   <a href="#conclusion">Conclusion</a>
 </nav>
+
+## A neural network classifier {#neural-network-classifier}
+
+A **neural network**, or NN, combines input values through layers of trainable weights. A weight multiplies an incoming value. A bias adds an offset. A hidden layer computes intermediate values before the output layer produces a score for each class. PyTorch's [network tutorial](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html) follows this structure.
+
+Imagine classifying a package as product A or product B. For this arithmetic example, choose two input feature values $x=[1,0.5]$. These are illustrative measurements. We also choose the weights by hand, so this example makes no claim about recognition accuracy on real images.
+
+The hidden units compute $h_1=\operatorname{ReLU}(x_1)$ and $h_2=\operatorname{ReLU}(2x_2)$. **ReLU** keeps positive values and replaces negative values with zero. Both hidden outputs are one. The output weights give $z_A=h_1+h_2=2$ and $z_B=0$. All biases start at zero. The [classifier record]({{ '/assets/data/softmax/classifier.json' | relative_url }}) contains every chosen parameter.
+
+{% include softmax/classifier.html %}
+
+Product A has the higher score. Softmax assigns it probability $0.8808$, and the loss for a correct A label is approximately $0.1269$. The network predicts the right product but can still increase its probability. The next section derives the gradients that ask it to do so.
+
+The diagram shows probabilities to explain the calculation. In PyTorch, pass the raw scores to `F.cross_entropy`, which combines normalization and the loss computation. The [classifier script](https://github.com/egmaminta/egmaminta.github.io/blob/main/_experiments/softmax/classifier.py) builds this network and records the bias updates below.
 
 ## From scores to a training gradient {#scores-and-gradients}
 
@@ -66,6 +83,41 @@ $$
 $$
 
 This also follows from the scores themselves. Adding the same constant to every score leaves all their differences unchanged. It leaves the probabilities and loss unchanged too.
+
+## A slice of the loss landscape {#loss-landscape}
+
+A **loss landscape** maps parameter settings to loss values. To draw one for our classifier, hold the input and all connection weights fixed. Change only the output biases $b_A$ and $b_B$. The product scores become $[2+b_A,b_B]$. For the correct A label, the loss is
+
+$$
+L(b_A,b_B)=\log\left(1+e^{b_B-(2+b_A)}\right).
+$$
+
+The horizontal axes below are bias settings. Height is the loss on this one example. The contour plot shows the same values from above. Each contour connects settings with equal loss.
+
+<figure class="softmax-figure">
+  <a href="{{ '/assets/img/softmax/loss-landscape.svg' | relative_url }}"><picture><source media="(max-width: 600px)" srcset="{{ '/assets/img/softmax/loss-landscape-mobile.svg' | relative_url }}" width="420" height="840"><img src="{{ '/assets/img/softmax/loss-landscape.svg' | relative_url }}" width="840" height="480" loading="lazy" alt="Cross-entropy decreases as the correct product's bias rises relative to its competitor. A contour view shows twelve recorded gradient-descent updates from zero biases toward a higher A bias and a lower B bias."></picture></a>
+  <figcaption>The loss is evaluated from the same classifier at each pair of bias settings. Blue marks the initial setting. The orange path records updates to the biases with every other parameter fixed. <a href="{{ '/assets/data/softmax/loss-slice.csv' | relative_url }}">Loss values</a> and <a href="{{ '/assets/data/softmax/classifier.json' | relative_url }}">update trajectory</a>.</figcaption>
+</figure>
+
+We can calculate the first update by hand. At the initial setting,
+
+$$
+q_A=\frac{e^2}{e^2+1}\approx0.8808,
+\qquad q_B=\frac{1}{e^2+1}\approx0.1192.
+$$
+
+Each output bias contributes directly to its product's score, so its gradient is the corresponding score gradient. Subtract the gradient with a learning rate of one
+
+$$
+\begin{aligned}
+b_A' &= 0-(0.8808-1)\approx+0.1192,\\
+b_B' &= 0-(0.1192-0)\approx-0.1192.
+\end{aligned}
+$$
+
+The recorded loss falls from $0.1269$ to $0.1013$ after this update. Increasing A's bias and decreasing B's bias widens the score gap in favor of the correct answer. After the recorded sequence of twelve updates, the loss is $0.0314$.
+
+This slice has no finite point where the loss reaches zero. As A's advantage grows, the loss and its slope become smaller. The smooth slope is useful context for the next example, where rounding makes one gradient component disappear.
 
 ## A confident prediction by hand {#collapse-by-hand}
 
@@ -112,7 +164,7 @@ $$
 
 The numerator for B still contains $a$. Its gradient survives. The computed loss also becomes zero because $-\log 1=0$.
 
-This is Softmax Collapse. Training still lowers B's score but loses the corresponding instruction to raise A's score. The gradient entries no longer add to zero.
+This is Softmax Collapse. The loss still asks for a lower B score but loses the corresponding instruction to raise A's score. The gradient entries no longer add to zero.
 
 {% include softmax/margin.html %}
 
@@ -129,6 +181,24 @@ The right-hand expression retains $a$ in its numerator. Even if its denominator 
 The loss needs the same care. Calculating `log(1 + a)` first forms the rounded sum. [`log1p(a)`](https://docs.pytorch.org/docs/2.14/generated/torch.log1p.html) evaluates $\log(1+a)$ with better accuracy for small inputs. In this example it preserves the loss of approximately $2.061\times10^{-9}$.
 
 This rounding mechanism was documented in [PyTorch issue 113708](https://github.com/pytorch/pytorch/issues/113708) in November 2023. Jason Gross proposed removing the maximum term from the exponential sum and using `log1p` for the remaining contribution. The underlying log-softmax issue therefore predates the newer paper. That issue concerns the first failure discussed here.
+
+## How slingshot updates arise {#slingshot-updates}
+
+The slingshots mentioned in [Barron's thread](https://x.com/jon_barron/status/2113707875290042665) concern training over time. A loss trace plots the losses encountered as the weights change. [Thilak and colleagues](https://arxiv.org/abs/2206.04817) documented recurring periods of low loss followed by weight growth and loss spikes. They also studied **grokking**, where performance on unseen examples improves long after training examples have been learned. A loss spike alone does not establish that improvement.
+
+An **optimizer** converts parameter gradients into weight updates. Adam keeps running averages of the gradient and its square. For one weight, the gradient-based part of the update has the form
+
+$$
+\Delta w=-\eta\frac{\widehat m}{\sqrt{\widehat v}+\epsilon}.
+$$
+
+Here $\eta$ is the learning rate. $\widehat m$ averages the weight's gradients and $\widehat v$ averages their squares, with corrections for starting the averages at zero. The positive constant $\epsilon$ limits division by a small denominator. **Weight decay** is an additional update that shrinks weights. These operations are specified in [AdamW](https://docs.pytorch.org/docs/2.14/generated/torch.optim.AdamW.html).
+
+[Barron and colleagues](https://jonbarron.info/softmaxfix/#slingshot) give this explanation for their experiments. When high-confidence gradients disappear, the stored squared-gradient average can decay. Weight decay or residual updates can move scores back across the rounding boundary. Returning gradients then meet a small denominator. The resulting update can raise the loss and restart the cycle. Their reformulation removes the abrupt loss of the target gradient. The behavior depends on the optimizer and its state.
+
+{% include softmax/slingshot.html %}
+
+In the published plots, CE means cross-entropy. Epoch counts passes through the training data. Step counts optimizer updates. The symbol $c_{32}$ is the paper's float32 score-margin threshold. The marked level $e^{-c_{32}}$ indicates its corresponding small-loss scale. The toy classifier's bias updates above have no slingshot. The published traces show experiments in which the loss calculation interacts with adaptive optimization over training.
 
 ## Hard targets in PyTorch {#hard-target-pytorch}
 

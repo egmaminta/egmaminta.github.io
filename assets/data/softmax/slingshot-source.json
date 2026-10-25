@@ -1,0 +1,23 @@
+{
+  "title": "A Fix for Softmax and Cross-Entropy",
+  "authors": [
+    "Jonathan T. Barron",
+    "Dan Gnanapragasam",
+    "Michael Tschannen"
+  ],
+  "source_page": "https://jonbarron.info/softmaxfix/#slingshot",
+  "figure": "Figure 2, training loss panel and legend",
+  "note": "Unmodified source images. These training runs are reported by the authors and were not reproduced in the toy classifier.",
+  "files": [
+    {
+      "file": "assets/img/softmax/barron-slingshot-legend.png",
+      "source": "https://jonbarron.info/softmaxfix/img/paper_fig_slingshot_legend.png",
+      "sha256": "b481c794ad4db22322f6291519c2434a408b2abdc2451c3bd00c697b945147ff"
+    },
+    {
+      "file": "assets/img/softmax/barron-slingshot-loss.png",
+      "source": "https://jonbarron.info/softmaxfix/img/paper_fig_slingshot_b.png",
+      "sha256": "0f7166834d35d0050fb319703f168738eabd1c51fb481dd361d91adc247a67e6"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<figure class="softmax-figure classifier-figure">
+  <svg viewBox="0 0 560 280" role="img" aria-labelledby="classifier-title classifier-description">
+    <title id="classifier-title">A neural network classifies product A or B</title>
+    <desc id="classifier-description">Chosen input features are 1 and 0.5. A hidden layer produces 1 and 1. The output layer produces scores of 2 for A and 0 for B. Solid connections have nonzero weights. Dashed connections have zero weights in this example. Gradients propagate backward through the network.</desc>
+    <defs><marker id="classifier-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#9a5600"/></marker></defs>
+    <g class="network-edges">
+      <path d="M94 100 L252 100 M94 175 L252 175 M308 100 L466 100 M308 175 L466 100"/>
+      <path class="zero-weight" d="M94 100 L252 175 M94 175 L252 100 M308 100 L466 175 M308 175 L466 175"/>
+    </g>
+    <g class="network-labels">
+      <text x="70" y="27">Input features</text><text x="280" y="27">Hidden layer</text><text x="490" y="27">Output scores</text>
+      <text class="network-note" x="280" y="53">Weighted sum, then ReLU</text>
+    </g>
+    <g class="network-nodes">
+      <circle cx="70" cy="100" r="25"/><text x="70" y="107">1</text>
+      <circle cx="70" cy="175" r="25"/><text x="70" y="182">0.5</text>
+      <circle cx="280" cy="100" r="25"/><text x="280" y="107">1</text>
+      <circle cx="280" cy="175" r="25"/><text x="280" y="182">1</text>
+      <circle cx="490" cy="100" r="25"/><text x="490" y="107">2</text>
+      <circle cx="490" cy="175" r="25"/><text x="490" y="182">0</text>
+    </g>
+    <text class="network-product" x="531" y="107">A</text><text class="network-product" x="531" y="182">B</text>
+    <path class="network-backward" d="M490 213 L490 246 L185 246" marker-end="url(#classifier-arrow)"/>
+    <text class="network-backward-label" x="337" y="273">Backpropagate through the weights</text>
+  </svg>
+  <div class="classifier-outcomes">
+    <div><strong>Softmax probabilities</strong><span>Product A <code>0.8808</code></span><span>Product B <code>0.1192</code></span></div>
+    <span class="classifier-flow-arrow" aria-hidden="true">→</span>
+    <div><strong>Cross-entropy loss</strong><span>Correct answer is product A</span><code>−log(0.8808) ≈ 0.1269</code></div>
+  </div>
+  <p class="classifier-gradient">Score gradients <code>[−0.1192, +0.1192]</code></p>
+  <figcaption>The forward calculation runs from features to scores, probabilities, and loss. Backpropagation carries derivatives toward the trainable weights. Inputs and weights are chosen for this arithmetic example. Dashed connections have zero weight. <a href="{{ '/assets/data/softmax/classifier.json' | relative_url }}">View the parameters and calculated values</a>.</figcaption>
+</figure>

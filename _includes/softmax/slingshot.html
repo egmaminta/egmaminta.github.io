@@ -1,0 +1,11 @@
+<figure class="softmax-figure slingshot-figure">
+  <ol class="slingshot-stages" aria-label="Proposed slingshot cycle">
+    <li>Target gradient rounds to zero</li>
+    <li>Adam's gradient scale shrinks</li>
+    <li>Target gradient returns</li>
+    <li>Normalized update grows</li>
+  </ol>
+  <img class="slingshot-legend" src="{{ '/assets/img/softmax/barron-slingshot-legend.png' | relative_url }}" width="841" height="33" loading="lazy" alt="Blue is reformulated cross-entropy. Orange is standard cross-entropy.">
+  <a href="https://jonbarron.info/softmaxfix/#slingshot"><img class="slingshot-trace" src="{{ '/assets/img/softmax/barron-slingshot-loss.png' | relative_url }}" width="557" height="666" loading="lazy" alt="Published training-loss traces. The upper panel shows recurring orange loss spikes with weight decay. The lower panel shows a loss spike in a separate task without weight decay. Blue reformulated-loss traces continue downward."></a>
+  <figcaption>Training-loss panel from Figure 2 of <a href="https://jonbarron.info/softmaxfix/#slingshot">Barron, Gnanapragasam, and Tschannen</a>. The upper experiment uses weight decay. The lower experiment uses a different task without it. These are the authors' runs. <a href="{{ '/assets/data/softmax/slingshot-source.json' | relative_url }}">Image sources</a>.</figcaption>
+</figure>
