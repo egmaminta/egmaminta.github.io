@@ -37,7 +37,7 @@ CHAPTERS = [
         [
             "On its first day, a new product may have a description and one catalog picture. The store can already search for it, even though nobody has labeled a checkout photograph of it.",
             "As people shop, the camera collects views of the new package under store lighting and in different hands. These views show what the catalog picture leaves out. The store still has no product label for each frame.",
-            "ShelfTaught uses these unlabeled views to train a reranker offline. The first step is deciding which catalog entry each training frame probably shows.",
+            "Why not just fine-tune the retriever? Labels from brands the store already sells help it recognize groceries. But those labels never show it the new brand’s box in a shopper’s hand. We keep the retriever frozen and use the new, unlabeled views to train a small reranker. First we need a likely product label for each view.",
         ],
     ),
     (
@@ -71,16 +71,18 @@ CHAPTERS = [
         ],
     ),
     (
-        "How often is the first entry correct?",
+        "What changes when the model sees the new products?",
         [
-            "Across ten brand splits, the share of correct first choices on GroceryVision rises from 78.7 to 91.2 percent. On Klasson it rises from 75.8 to 93.1.",
-            "Retail-786k starts higher. ShelfTaught reaches 95.5 percent, while TransCLIP with teacher answers reaches 97.0 percent there.",
+            "On GroceryVision, fine-tuning on labeled brands raises first-choice accuracy from 78.7 to 85.2 percent on new brands. Training our reranker on unlabeled views of those new products brings it to 91.2 percent.",
+            "On Klasson, fine-tuning reaches 85.9 percent. ShelfTaught reaches 93.1. On Retail-786k the difference is small: 95.2 and 95.5 percent. TransCLIP with teacher answers leads there at 97.0.",
+            "What if we give fine-tuning the very same labels our model inferred? On GroceryVision the adapted retriever reaches 92.3 percent, slightly ahead of our frozen retriever and reranker. It trains 63.5 million parameters and takes about nine times as long. Our reranker trains just 340 thousand parameters and reuses the store’s existing image features.",
         ],
     ),
     (
-        "One box on the bill",
+        "The receipt at the door",
         [
-            "A description lets a new product enter the catalog. Unlabeled views from the store can then teach the checkout system to make the distinction that matters on this bill: one box of beans.",
+            "The shopper leaves the store carrying the box of beans. The checkout system has checked the pickup against the item in the cart.",
+            "Outside, a notification arrives. In this example the box costs two dollars and forty-nine cents. The receipt shows exactly what was charged: one box of garbanzo beans.",
         ],
     ),
 ]
@@ -100,11 +102,56 @@ PRONUNCIATION = {
     "91.9": "ninety-one point nine",
     "78.7": "seventy-eight point seven",
     "91.2": "ninety-one point two",
+    "85.2": "eighty-five point two",
+    "85.9": "eighty-five point nine",
+    "95.2": "ninety-five point two",
+    "92.3": "ninety-two point three",
+    "63.5": "sixty-three point five",
     "75.8": "seventy-five point eight",
     "93.1": "ninety-three point one",
     "95.5": "ninety-five point five",
     "97.0": "ninety-seven",
 }
+
+
+def checkout_sounds(chapters):
+    pickup = chapters[1]["lines"][0]
+    outside = chapters[-1]["lines"][1]
+    return {
+        "Camera shutter": pickup["start"] + 0.95 * 0.90 * (pickup["end"] - pickup["start"]),
+        "Phone chimes": outside["start"]
+        + 0.94 * (0.62 - 0.58) / 0.42 * (outside["end"] - outside["start"]),
+    }
+
+
+def mix_checkout_sounds(work, chapters):
+    with wave.open(str(work / "narration.wav")) as src:
+        rate = src.getframerate()
+        samples = np.frombuffer(src.readframes(src.getnframes()), dtype="<i2").astype(float) / 32768
+    times = checkout_sounds(chapters)
+
+    def mix(start, sound):
+        i = round(start * rate)
+        samples[i : i + len(sound)] += sound
+
+    rng = np.random.default_rng(9)
+    moment = np.arange(round(rate * 0.043)) / rate
+    for delay, gain in ((0, 0.075), (0.065, 0.038)):
+        noise = np.convolve(rng.normal(size=len(moment)), [0.22, 0.56, 0.22], mode="same")
+        shutter = (noise + 0.35 * np.sin(2 * np.pi * 1180 * moment)) * np.exp(-moment * 117)
+        mix(times["Camera shutter"] + delay, gain * shutter)
+    moment = np.arange(round(rate * 0.53)) / rate
+    envelope = (1 - np.exp(-moment * 180)) * np.exp(-moment * 8)
+    for delay, frequency in ((0, 697), (0.135, 930)):
+        tone = np.sin(2 * np.pi * frequency * moment) + 0.19 * np.sin(
+            4 * np.pi * frequency * moment
+        )
+        mix(times["Phone chimes"] + delay, 0.068 * envelope * tone)
+    target = work / "soundtrack.wav"
+    with wave.open(str(target), "wb") as dest:
+        dest.setparams((1, 2, rate, 0, "NONE", "not compressed"))
+        dest.writeframes((np.clip(samples, -1, 32767 / 32768) * 32768).astype("<i2").tobytes())
+    return target
 
 
 def record(model, voices, work):
@@ -113,7 +160,9 @@ def record(model, voices, work):
     options.intra_op_num_threads = 6
     options.inter_op_num_threads = 1
     options.log_severity_level = 3
-    session = ort.InferenceSession(str(model), sess_options=options, providers=["CPUExecutionProvider"])
+    session = ort.InferenceSession(
+        str(model), sess_options=options, providers=["CPUExecutionProvider"]
+    )
     engine = Kokoro.from_session(session, str(voices))
     rate = 24000
     timeline = []

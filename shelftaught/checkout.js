@@ -1,4 +1,6 @@
 // Recorded GroceryVision queries. Each row is a catalog entry offered to the reranker.
+import { demoPrices, dollars } from './store-prices.js';
+
 (() => {
   'use strict';
   const products = {
@@ -34,18 +36,63 @@
   const cart = document.getElementById('checkout-cart');
   const basket = document.getElementById('basket');
   const basketLines = document.getElementById('basket-lines');
+  const compare = document.getElementById('compare-charges');
+  const receipt = document.getElementById('charge-receipt');
+  function expandReceipt(open) {
+    compare.setAttribute('aria-expanded', String(open));
+    receipt.hidden = !open;
+  }
+  compare.addEventListener('click', () => expandReceipt(receipt.hidden));
   const pickups = [];
   let current = -1;
   let store;
+  function rerankedEntry(product) {
+    return product.entries.reduce((best, next) => (next.probability > best.probability ? next : best));
+  }
+  function renderReceipt() {
+    const list = document.getElementById('receipt-items');
+    list.replaceChildren();
+    const counts = new Map();
+    for (const { key } of pickups) counts.set(key, (counts.get(key) || 0) + 1);
+    let firstTotal = 0,
+      correctedTotal = 0;
+    for (const [key, quantity] of counts) {
+      const product = products[key];
+      const row = list.insertRow();
+      const name = document.createElement('th');
+      name.scope = 'row';
+      name.textContent = product.label;
+      row.append(name);
+      row.insertCell().textContent = quantity;
+      const amounts = [product.entries[0], rerankedEntry(product)].map((entry) => {
+        const cents = demoPrices[key][entry.name] * quantity;
+        const cell = row.insertCell();
+        const variant = document.createElement('small');
+        variant.textContent = entry.name;
+        cell.append(dollars(cents), variant);
+        return cents;
+      });
+      firstTotal += amounts[0];
+      correctedTotal += amounts[1];
+    }
+    document.getElementById('first-total').textContent = dollars(firstTotal);
+    document.getElementById('corrected-total').textContent = dollars(correctedTotal);
+    const diff = firstTotal - correctedTotal;
+    document.getElementById('charge-difference').textContent = !pickups.length
+      ? ''
+      : diff === 0
+        ? 'The two totals are equal.'
+        : 'Without correction you would pay ' +
+          dollars(Math.abs(diff)) +
+          (diff > 0 ? ' more.' : ' less.');
+  }
 
   function renderBasket() {
     basket.hidden = pickups.length === 0;
     basketLines.replaceChildren();
     pickups.forEach((item, i) => {
       const product = products[item.key];
-      const entry = item.reranked
-        ? product.entries.reduce((best, next) => (next.probability > best.probability ? next : best))
-        : product.entries[0];
+      const entry = item.reranked ? rerankedEntry(product) : product.entries[0];
       const row = basketLines.insertRow();
       const cell = document.createElement('th');
       cell.scope = 'row';
@@ -55,9 +102,15 @@
       inspect.setAttribute('aria-label', 'Inspect pickup ' + (i + 1) + ', ' + product.label);
       if (i === current) inspect.setAttribute('aria-current', 'true');
       inspect.addEventListener('click', () => {
+        const alreadyShowing = i === current;
         current = i;
         select.value = item.key;
         store?.focusShelf(item.key);
+        if (item.photo) store?.restorePhoto(item.photo, item.key);
+        else if (!alreadyShowing)
+          store?.animatePickup(item.key, undefined, (image) => {
+            item.photo = image;
+          });
         render();
         button.focus();
       });
@@ -67,12 +120,16 @@
       row.insertCell().textContent = entry.name;
       if (item.reranked) row.className = 'corrected';
     });
+    renderReceipt();
   }
 
   function pickUp(key, instance) {
     select.value = key;
-    current = pickups.push({ key, reranked: false }) - 1;
-    store?.animatePickup(key, instance);
+    const receiptItem = { key, reranked: false };
+    current = pickups.push(receiptItem) - 1;
+    store?.animatePickup(key, instance, (image) => {
+      receiptItem.photo = image;
+    });
     render();
   }
 
@@ -105,7 +162,13 @@
       const packshot = new Image(44, 44);
       packshot.src = './assets/' + entry.photo + '.webp';
       packshot.alt = '';
-      th.append(packshot, document.createTextNode(entry.name));
+      const label = document.createElement('span');
+      label.textContent = entry.name;
+      const price = document.createElement('small');
+      price.textContent = dollars(demoPrices[select.value][entry.name]);
+      price.setAttribute('aria-label', 'Illustrative unit price ' + price.textContent);
+      label.append(price);
+      th.append(packshot, label);
       row.append(th);
       if (phase > 0) {
         row.insertCell().textContent =
@@ -129,6 +192,7 @@
   }
   select.addEventListener('change', () => {
     current = -1;
+    store?.restorePhoto();
     store?.focusShelf(select.value);
     render();
   });
@@ -143,17 +207,31 @@
   document.getElementById('empty-basket').addEventListener('click', () => {
     pickups.length = 0;
     current = -1;
+    expandReceipt(false);
+    store?.restorePhoto();
     render();
     button.focus();
   });
+  document.getElementById('print-receipt').addEventListener('click', () => {
+    // Only this explicit action uses the receipt print layout. Ordinary page printing still works.
+    document.body.classList.add('printing-receipt');
+    window.print();
+  });
+  window.addEventListener('afterprint', () => document.body.classList.remove('printing-receipt'));
   function fallback() {
     document.getElementById('store-guide').textContent =
       'Choose a product below to replay its pickup and compare the two retrieval passes.';
   }
   async function startStore() {
     try {
-      const { openStore } = await import('./store.js');
+      const { openStore } = await import('./store.js?v=2');
       store = openStore({ onPick: pickUp, onUnavailable: fallback });
+      if (current >= 0) {
+        const item = pickups[current];
+        store.animatePickup(item.key, undefined, (image) => {
+          item.photo = image;
+        });
+      }
     } catch {
       fallback();
     }

@@ -1,5 +1,6 @@
 // The room illustrates a pickup. All retrieval values are supplied by checkout.js from recorded queries.
 import * as THREE from './three-r180/three.module.min.js';
+import { stageShoppers, pickupDuration, captureAt, lensPosition } from './shoppers.js';
 
 const views = {
   aisle: [
@@ -14,10 +15,7 @@ const views = {
     [0.73, 1.61, -0.57],
     [1.14, 1.48, -2.51],
   ],
-  camera: [
-    [-2.91, 3.18, 0.35],
-    [0.02, 1.23, -2.52],
-  ],
+  camera: [lensPosition, [0.02, 1.23, -2.52]],
 };
 
 function printed(width, height, paint) {
@@ -301,10 +299,12 @@ export function buildRoom(scene) {
   }
   // Ceiling-mounted shelf camera and the checkout counter.
   tube(-2.91, 3.55, 0.35, 0.025, 0.52, metal);
-  const cameraBody = box(-2.91, 3.27, 0.35, 0.24, 0.15, 0.35, white);
-  cameraBody.rotation.x = -0.28;
-  const lens = tube(-2.91, 3.23, 0.17, 0.06, 0.08, charcoal);
-  lens.rotation.x = Math.PI / 2 - 0.28;
+  const cameraBody = box(-2.91, 3.3, 0.35, 0.24, 0.15, 0.35, white);
+  const direction = new THREE.Vector3(0.52, -0.44, -0.73).normalize();
+  cameraBody.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), direction);
+  const lens = tube(0, 0, 0, 0.06, 0.08, charcoal);
+  lens.position.copy(cameraBody.position).addScaledVector(direction, 0.2);
+  lens.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
   box(4.45, 0.48, 3.16, 1.2, 0.96, 1.48, wood);
   box(4.45, 1, 3.16, 1.3, 0.1, 1.55, white);
   box(4.42, 1.24, 3.04, 0.055, 0.42, 0.055, metal);
@@ -356,6 +356,7 @@ export function openStore({ onPick, onUnavailable }) {
   const nav = document.getElementById('store-nav');
   const guide = document.getElementById('store-guide');
   const picks = document.getElementById('shelf-picks');
+  const controls = document.getElementById('store-keys');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const renderer = new THREE.WebGLRenderer({
     canvas,
@@ -373,6 +374,54 @@ export function openStore({ onPick, onUnavailable }) {
   camera.rotation.order = 'YXZ';
   lightRoom(scene);
   const { heroes, stock } = buildRoom(scene);
+  const shoppers = stageShoppers(scene, heroes);
+  const monitor = document.getElementById('camera-preview');
+  const photo = monitor.querySelector('canvas');
+  const cameraLabel = monitor.querySelector('span');
+  const photoContext = photo.getContext('2d');
+  const shelfCamera = new THREE.PerspectiveCamera(46, photo.width / photo.height, 0.04, 30);
+  let photoGeneration = 0;
+  function showPhoto(expanded) {
+    monitor.setAttribute('aria-expanded', String(expanded));
+    monitor.setAttribute(
+      'aria-label',
+      (expanded ? 'Reduce' : 'Enlarge') +
+        ' the shelf camera photo' +
+        (monitor.dataset.product ? ' of ' + monitor.dataset.product : ''),
+    );
+  }
+  monitor.addEventListener('click', () => showPhoto(monitor.getAttribute('aria-expanded') !== 'true'));
+  monitor.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') showPhoto(false);
+  });
+  function filmPickup(item, zoom) {
+    shoppers.cameraView(shelfCamera, item, zoom);
+    const ratio = renderer.getPixelRatio();
+    const w = Math.min(canvas.width, canvas.height * shelfCamera.aspect, photo.width);
+    const h = w / shelfCamera.aspect;
+    renderer.setViewport(0, 0, w / ratio, h / ratio);
+    renderer.setScissor(0, 0, w / ratio, h / ratio);
+    renderer.setScissorTest(true);
+    renderer.render(scene, shelfCamera);
+    photoContext.drawImage(canvas, 0, canvas.height - h, w, h, 0, 0, photo.width, photo.height);
+    renderer.setScissorTest(false);
+    renderer.setViewport(0, 0, canvas.width / ratio, canvas.height / ratio);
+    monitor.hidden = false;
+  }
+  function captureHeldItem() {
+    shoppers.pickup(lift.key, lift.item, captureAt);
+    filmPickup(lift.item, 1);
+    monitor.dataset.state = 'captured';
+    cameraLabel.textContent = 'Pickup photo';
+    lift.captured = true;
+    lift.save?.(photo.toDataURL('image/jpeg', 0.9));
+  }
+  function finishPickup() {
+    if (!lift) return;
+    if (!lift.captured && !lost) captureHeldItem();
+    shoppers.reset(lift.key, lift.item);
+    lift = null;
+  }
   const heroParts = stock.flatMap((g) => g.children);
   const origins = Object.fromEntries(
     Object.entries(heroes).map(([key, g]) => [key, g.position.clone()]),
@@ -380,6 +429,21 @@ export function openStore({ onPick, onUnavailable }) {
   const ray = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   const keys = new Set();
+  const keyButtons = [...controls.querySelectorAll('[data-key]')];
+  const aliases = { arrowup: 'w', arrowdown: 's', arrowleft: 'a', arrowright: 'd' };
+  const movementKeys = keyButtons.map((b) => b.dataset.key);
+  function releaseKeys() {
+    keys.clear();
+    keyButtons.forEach((b) => b.classList.remove('is-down'));
+  }
+  function press(key, down) {
+    if (down) {
+      manual();
+      keys.add(key);
+      request();
+    } else keys.delete(key);
+    keyButtons.find((b) => b.dataset.key === key)?.classList.toggle('is-down', down);
+  }
   const startPosition = new THREE.Vector3(),
     endPosition = new THREE.Vector3();
   const startRotation = new THREE.Quaternion(),
@@ -403,7 +467,7 @@ export function openStore({ onPick, onUnavailable }) {
   }
   function moveTo(key, instant = false) {
     chosen = key;
-    keys.clear();
+    releaseKeys();
     const [position, target] = views[key];
     startPosition.copy(camera.position);
     startRotation.copy(camera.quaternion);
@@ -426,6 +490,21 @@ export function openStore({ onPick, onUnavailable }) {
     chosen = '';
     nav.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
   }
+  function moveCamera(pressed, dt) {
+    camera.rotation.y += ((pressed.has('q') ? 1 : 0) - (pressed.has('e') ? 1 : 0)) * dt * 1.52;
+    camera.getWorldDirection(look);
+    look.y = 0;
+    look.normalize();
+    walk.set(0, 0, 0);
+    if (pressed.has('w')) walk.add(look);
+    if (pressed.has('s')) walk.sub(look);
+    const side = anchor.set(-look.z, 0, look.x);
+    if (pressed.has('a')) walk.sub(side);
+    if (pressed.has('d')) walk.add(side);
+    camera.position.addScaledVector(walk.normalize(), dt * 1.75);
+    camera.position.x = THREE.MathUtils.clamp(camera.position.x, -2.65, 2.65);
+    camera.position.z = THREE.MathUtils.clamp(camera.position.z, -1.55, 4.9);
+  }
   function draw(time) {
     frame = 0;
     const dt = Math.max(0, Math.min(0.04, (time - lastTime) / 1000));
@@ -437,29 +516,18 @@ export function openStore({ onPick, onUnavailable }) {
       camera.quaternion.slerpQuaternions(startRotation, endRotation, f);
       if (t >= 1) motion = null;
     }
-    if (keys.size) {
-      camera.getWorldDirection(look);
-      look.y = 0;
-      look.normalize();
-      walk.set(0, 0, 0);
-      if (keys.has('w') || keys.has('arrowup')) walk.add(look);
-      if (keys.has('s') || keys.has('arrowdown')) walk.sub(look);
-      const side = anchor.set(-look.z, 0, look.x);
-      if (keys.has('a') || keys.has('arrowleft')) walk.sub(side);
-      if (keys.has('d') || keys.has('arrowright')) walk.add(side);
-      camera.position.addScaledVector(walk.normalize(), dt * 1.75);
-      camera.position.x = THREE.MathUtils.clamp(camera.position.x, -2.65, 2.65);
-      camera.position.z = THREE.MathUtils.clamp(camera.position.z, -1.55, 4.9);
-    }
+    if (keys.size) moveCamera(keys, dt);
     if (lift) {
-      const t = Math.min(1, (time - lift.start) / 1150);
-      const amount = Math.sin(t * Math.PI) ** 2;
-      const g = lift.item;
-      g.position.copy(g.userData.shelfPosition);
-      g.position.z += 0.4 * amount;
-      g.position.y += 0.13 * amount;
-      g.rotation.x = -0.2 * amount;
-      if (t === 1) lift = null;
+      const t = reduced.matches
+        ? 1
+        : THREE.MathUtils.clamp((time - lift.start) / (1000 * pickupDuration), 0, 1);
+      // Always photograph the held pose, including when a tab misses animation frames.
+      if (t >= captureAt && !lift.captured) captureHeldItem();
+      shoppers.pickup(lift.key, lift.item, t);
+      if (t >= 0.33 && !lift.captured) filmPickup(lift.item, (t - 0.33) / 0.33);
+      if (t === 1) {
+        finishPickup();
+      }
     }
     camera.updateMatrixWorld();
     for (const button of buttons) {
@@ -492,13 +560,45 @@ export function openStore({ onPick, onUnavailable }) {
     ray.setFromCamera(mouse, camera);
     return ray.intersectObjects(heroParts, false)[0]?.object.parent;
   }
-  function animatePickup(key, item = heroes[key]) {
+  function clearPhoto() {
+    photoGeneration++;
     if (lift) {
-      const old = lift.item;
-      old.position.copy(old.userData.shelfPosition);
-      old.rotation.x = 0;
+      finishPickup();
+      request();
     }
-    lift = reduced.matches ? null : { item, start: performance.now() };
+    monitor.hidden = true;
+    delete monitor.dataset.state;
+    delete monitor.dataset.product;
+    showPhoto(false);
+  }
+  function identifyPhoto(key) {
+    monitor.dataset.product =
+      key === 'beans' ? 'the boxed garbanzo beans' : 'the green-cap ranch dressing';
+    showPhoto(false);
+  }
+  function restorePhoto(data, key) {
+    clearPhoto();
+    if (!data || lost) return;
+    const generation = photoGeneration;
+    const image = new Image();
+    image.onload = () => {
+      if (generation !== photoGeneration || lost) return;
+      photoContext.drawImage(image, 0, 0);
+      identifyPhoto(key);
+      cameraLabel.textContent = 'Pickup photo';
+      monitor.dataset.state = 'captured';
+      monitor.hidden = false;
+    };
+    image.src = data;
+  }
+  function animatePickup(key, item = heroes[key], save) {
+    clearPhoto();
+    if (lost) return;
+    lift = { key, item, save, captured: false, start: performance.now() };
+    identifyPhoto(key);
+    cameraLabel.textContent = 'Shelf camera';
+    monitor.dataset.state = 'live';
+    if (!visible || reduced.matches) finishPickup();
     request();
   }
   canvas.addEventListener('pointerdown', (e) => {
@@ -541,32 +641,61 @@ export function openStore({ onPick, onUnavailable }) {
   canvas.addEventListener('pointercancel', () => {
     drag = null;
   });
-  canvas.addEventListener('keydown', (e) => {
-    const key = e.key.toLowerCase();
+  function onKey(e) {
+    const raw = e.key.toLowerCase();
+    const key = aliases[raw] || raw;
     if (key === 'escape') {
       moveTo('aisle');
       return;
     }
-    if (!['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) return;
+    if (!movementKeys.includes(key) || e.ctrlKey || e.altKey || e.metaKey) return;
     e.preventDefault();
-    manual();
-    keys.add(key);
-    request();
+    press(key, e.type === 'keydown');
+  }
+  for (const el of [canvas, controls]) {
+    el.addEventListener('keydown', onKey);
+    el.addEventListener('keyup', onKey);
+    el.addEventListener('focusout', releaseKeys);
+  }
+  keyButtons.forEach((b) => {
+    const key = b.dataset.key;
+    let began = 0;
+    b.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      began = performance.now();
+      b.setPointerCapture(e.pointerId);
+      press(key, true);
+    });
+    b.addEventListener('pointerup', () => {
+      const extra = Math.max(0, 0.12 - (performance.now() - began) / 1000);
+      moveCamera(new Set([key]), extra);
+      press(key, false);
+      request();
+    });
+    b.addEventListener('lostpointercapture', () => press(key, false));
+    b.addEventListener('click', (e) => {
+      if (e.detail === 0) {
+        manual();
+        moveCamera(new Set([key]), 0.14);
+        request();
+      }
+    });
   });
-  canvas.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
-  canvas.addEventListener('blur', () => keys.clear());
+  window.addEventListener('blur', releaseKeys);
   buttons.forEach((b) => b.addEventListener('click', () => onPick(b.dataset.pick)));
   nav
     .querySelectorAll('[data-view]')
     .forEach((b) => b.addEventListener('click', () => moveTo(b.dataset.view)));
   function fallback() {
     lost = true;
-    keys.clear();
+    clearPhoto();
+    releaseKeys();
     cancelAnimationFrame(frame);
     frame = 0;
     canvas.hidden = true;
     nav.hidden = true;
     picks.hidden = true;
+    controls.hidden = true;
     document.getElementById('store-poster').hidden = false;
     onUnavailable();
   }
@@ -579,17 +708,18 @@ export function openStore({ onPick, onUnavailable }) {
     canvas.hidden = false;
     nav.hidden = false;
     picks.hidden = false;
+    controls.hidden = false;
     document.getElementById('store-poster').hidden = true;
     guide.textContent = help;
     resize();
     request();
   });
-  const help = matchMedia('(pointer: coarse)').matches
-    ? 'Drag to look around or tap a shelf view. Tap a package or its pickup label to add it to the cart.'
-    : 'Drag to look around. Focus the aisle and use W, A, S, D or the arrow keys to walk, or choose a shelf view.';
+  const help =
+    'Select a shelf or drag to look around. Click the aisle to use the keys, or hold a movement button. Pick a package to see the shelf camera take its photo.';
   canvas.hidden = false;
   nav.hidden = false;
   picks.hidden = false;
+  controls.hidden = false;
   guide.textContent = help;
   moveTo('aisle', true);
   resize();
@@ -598,7 +728,10 @@ export function openStore({ onPick, onUnavailable }) {
   new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     if (visible) request();
-    else keys.clear();
+    else {
+      releaseKeys();
+      finishPickup();
+    }
   }).observe(room);
-  return { animatePickup, focusShelf: moveTo };
+  return { animatePickup, restorePhoto, focusShelf: moveTo };
 }

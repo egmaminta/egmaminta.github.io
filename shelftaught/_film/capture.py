@@ -1,0 +1,112 @@
+"""Film the deterministic 3D sequences. Serve the repository's site root over HTTP first."""
+
+import argparse
+import base64
+import os
+import subprocess
+from pathlib import Path
+
+from PIL import Image
+from playwright.sync_api import sync_playwright
+
+HERE = Path(__file__).resolve().parent
+
+
+def capture(args):
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(
+            executable_path=os.environ.get("CHROMIUM"),
+            args=[
+                "--use-gl=angle",
+                "--use-angle=swiftshader",
+                "--enable-unsafe-swiftshader",
+            ],
+        )
+        page = browser.new_page(viewport={"width": 1280, "height": 720})
+        if args.fonts:
+
+            def local_font(route):
+                weight = "semibold" if "Semibold" in route.request.url else "regular"
+                route.fulfill(
+                    path=args.fonts / (weight + ".woff2"),
+                    content_type="font/woff2",
+                    headers={"Access-Control-Allow-Origin": "*"},
+                )
+
+            page.route("https://cdn.openai.com/common/fonts/**", local_font)
+        page.goto(args.url)
+        page.wait_for_function("typeof window.frameAt === 'function'")
+
+        def frame(shot, time):
+            data = page.evaluate(
+                """([shot,t]) => {
+                window.frameAt(shot,t);
+                return document.querySelector('canvas').toDataURL('image/jpeg',.965).split(',')[1];
+            }""",
+                [shot, time],
+            )
+            return base64.b64decode(data)
+
+        if args.proof:
+            for shot, positions in {
+                "pickup": [0.12, 0.44, 0.60, 0.70, 0.86, 1],
+                "exit": [0.08, 0.31, 0.48, 0.53, 0.68, 0.74, 0.94],
+            }.items():
+                for t in positions:
+                    (args.proof / f"{shot}-{round(100 * t):02d}.jpg").write_bytes(frame(shot, t))
+            browser.close()
+            return
+
+        import io
+
+        Image.open(io.BytesIO(frame("poster", 0))).save(
+            HERE.parent / "assets/checkout-aisle.webp", quality=92
+        )
+        for shot, seconds, file in [("pickup", 9, "shelf-pickup.mp4"), ("exit", 18, "store-exit.mp4")]:
+            fps = 24
+            encoder = subprocess.Popen(
+                [
+                    "ffmpeg",
+                    "-loglevel",
+                    "error",
+                    "-y",
+                    "-f",
+                    "image2pipe",
+                    "-framerate",
+                    str(fps),
+                    "-vcodec",
+                    "mjpeg",
+                    "-i",
+                    "pipe:0",
+                    "-an",
+                    "-c:v",
+                    "libx264",
+                    "-crf",
+                    "16",
+                    "-preset",
+                    "veryfast",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-threads",
+                    "2",
+                    str(HERE / file),
+                ],
+                stdin=subprocess.PIPE,
+            )
+            try:
+                for i in range(fps * seconds):
+                    encoder.stdin.write(frame(shot, i / (fps * seconds - 1)))
+            finally:
+                encoder.stdin.close()
+            if encoder.wait():
+                raise RuntimeError(file)
+            print(f"Filmed {file}", flush=True)
+        browser.close()
+
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--url", default="http://127.0.0.1:8772/shelftaught/_film/camera.html")
+    p.add_argument("--fonts", type=Path, help="Optional directory of cached OpenAI Sans WOFF2 files")
+    p.add_argument("--proof", type=Path, help="Write representative frames for review")
+    capture(p.parse_args())

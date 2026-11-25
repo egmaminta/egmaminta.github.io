@@ -20,7 +20,8 @@ a shopper can take an item off the shelf
 without scanning a barcode.
 
 00:00:16.545 --> 00:00:18.557
-A store camera records the pickup.
+[Camera shutter] A store camera records
+the pickup.
 
 00:00:18.897 --> 00:00:23.595
 The checkout system has to turn that
@@ -114,192 +115,245 @@ picture leaves out.
 The store still has no product label for
 each frame.
 
-00:01:44.755 --> 00:01:49.140
-ShelfTaught uses these unlabeled views
-to train a reranker offline.
+00:01:44.755 --> 00:01:46.920
+Why not just fine-tune the retriever?
 
-00:01:49.140 --> 00:01:54.045
-The first step is deciding which catalog
-entry each training frame probably
+00:01:46.920 --> 00:01:51.345
+Labels from brands the store already
+sells help it recognize groceries.
 
-00:01:54.045 --> 00:01:54.312
-shows.
+00:01:51.345 --> 00:01:55.545
+But those labels never show it the new
+brand’s box in a shopper’s hand.
 
-00:01:55.452 --> 00:01:58.530
+00:01:55.545 --> 00:01:58.305
+We keep the retriever frozen and use the
+new,
+
+00:01:58.305 --> 00:02:00.915
+unlabeled views to train a small
+reranker.
+
+00:02:00.915 --> 00:02:03.997
+First we need a likely product label for
+each view.
+
+00:02:05.137 --> 00:02:08.205
 Consider a separate training photograph
 of apples.
 
-00:01:58.530 --> 00:02:01.185
+00:02:08.205 --> 00:02:10.875
 The frozen retriever ranks Pink Lady
 first.
 
-00:02:01.185 --> 00:02:04.230
+00:02:10.875 --> 00:02:13.905
 We give a larger vision-language model
 the frame
 
-00:02:04.230 --> 00:02:06.545
+00:02:13.905 --> 00:02:16.231
 and the ten most plausible descriptions.
 
-00:02:06.885 --> 00:02:08.895
+00:02:16.571 --> 00:02:18.570
 The teacher favors Royal Gala.
 
-00:02:08.895 --> 00:02:12.420
+00:02:18.570 --> 00:02:22.110
 Several candidates remain plausible, so
 we ask again,
 
-00:02:12.420 --> 00:02:14.985
+00:02:22.110 --> 00:02:24.660
 this time with their catalog pictures.
 
-00:02:14.985 --> 00:02:16.912
+00:02:24.660 --> 00:02:26.597
 Royal Gala still comes first.
 
-00:02:17.252 --> 00:02:18.690
+00:02:26.937 --> 00:02:28.365
 Both answers are wrong.
 
-00:02:18.690 --> 00:02:20.550
+00:02:28.365 --> 00:02:29.670
 This is a Pink Lady apple.
 
-00:02:20.550 --> 00:02:24.825
+00:02:29.670 --> 00:02:34.500
 Taking a majority vote would turn the
 teacher’s mistake into a training
 
-00:02:24.825 --> 00:02:25.081
+00:02:34.500 --> 00:02:34.767
 label.
 
-00:02:26.221 --> 00:02:30.510
+00:02:35.907 --> 00:02:40.200
 A label model estimates an unknown label
 from several imperfect signals.
 
-00:02:30.510 --> 00:02:32.685
+00:02:40.200 --> 00:02:42.375
 Here it can ask one more question:
 
-00:02:32.685 --> 00:02:35.053
+00:02:42.375 --> 00:02:44.739
 which other store frames look like this
 one?
 
-00:02:35.393 --> 00:02:39.690
+00:02:45.079 --> 00:02:49.380
 Each dot is a store frame, positioned by
 its similarity to two apple
 
-00:02:39.690 --> 00:02:40.320
+00:02:49.380 --> 00:02:50.010
 clusters.
 
-00:02:40.320 --> 00:02:42.390
+00:02:50.010 --> 00:02:52.080
 The ring marks our photograph.
 
-00:02:42.390 --> 00:02:45.735
+00:02:52.080 --> 00:02:55.425
 During fitting, the model combines these
 visual groups
 
-00:02:45.735 --> 00:02:49.005
+00:02:55.425 --> 00:02:58.695
 with the retrieval scores and both
 teacher answers.
 
-00:02:49.005 --> 00:02:52.396
+00:02:58.695 --> 00:03:02.081
 It also balances assignments across
 catalog entries.
 
-00:02:52.736 --> 00:02:55.050
+00:03:02.421 --> 00:03:04.740
 Follow the probability of Pink Lady.
 
-00:02:55.050 --> 00:02:58.065
+00:03:04.740 --> 00:03:07.755
 It passes ninety percent after the first
 update
 
-00:02:58.065 --> 00:03:01.815
+00:03:07.755 --> 00:03:11.490
 and reaches 99.5 percent after fifteen.
 
-00:03:01.815 --> 00:03:04.170
+00:03:11.490 --> 00:03:13.860
 The retriever also named Pink Lady,
 
-00:03:04.170 --> 00:03:06.944
+00:03:13.860 --> 00:03:16.629
 so the frame qualifies as a training
 example.
 
-00:03:08.084 --> 00:03:10.440
+00:03:17.769 --> 00:03:20.130
 Those examples train the slow thinker.
 
-00:03:10.440 --> 00:03:14.685
+00:03:20.130 --> 00:03:24.360
 It takes the image patches already
 computed by the frozen retriever.
 
-00:03:14.685 --> 00:03:18.795
+00:03:24.360 --> 00:03:28.485
 For each patch, it finds the strongest
 match among the tokens of a
 
-00:03:18.795 --> 00:03:20.116
+00:03:28.485 --> 00:03:29.801
 candidate description.
 
-00:03:20.456 --> 00:03:23.670
+00:03:30.141 --> 00:03:33.345
 Move to another patch and the best match
 can change.
 
-00:03:23.670 --> 00:03:27.735
+00:03:33.345 --> 00:03:37.425
 Averaging these best matches gives one
 score for the description.
 
-00:03:27.735 --> 00:03:30.504
+00:03:37.425 --> 00:03:40.189
 The same calculation scores its
 competitors.
 
-00:03:31.644 --> 00:03:33.825
+00:03:41.329 --> 00:03:43.500
 Return to the shopper’s box of beans.
 
-00:03:33.825 --> 00:03:37.530
+00:03:43.500 --> 00:03:47.340
 At checkout, a single candidate can go
 straight to the cart.
 
-00:03:37.530 --> 00:03:41.835
+00:03:47.340 --> 00:03:51.525
 The first choice also stands if the
 store has too few training examples for
 
-00:03:41.835 --> 00:03:42.204
+00:03:51.525 --> 00:03:51.889
 it.
 
-00:03:42.544 --> 00:03:46.185
+00:03:52.229 --> 00:03:55.860
 Here three packages remain and there are
 enough examples.
 
-00:03:46.185 --> 00:03:51.150
+00:03:55.860 --> 00:04:00.840
 The slow thinker puts the box first with
 91.9 percent probability.
 
-00:03:51.150 --> 00:03:53.985
+00:04:00.840 --> 00:04:03.660
 The cart changes from one can to one
 box.
 
-00:03:53.985 --> 00:03:56.005
+00:04:03.660 --> 00:04:05.691
 The offline teacher is finished.
 
-00:03:57.145 --> 00:04:00.885
-Across ten brand splits, the share of
-correct first choices on
+00:04:06.831 --> 00:04:11.400
+On GroceryVision, fine-tuning on labeled
+brands raises first-choice
 
-00:04:00.885 --> 00:04:06.420
-GroceryVision rises from 78.7 to 91.2
+00:04:11.400 --> 00:04:16.935
+accuracy from 78.7 to 85.2 percent on
+new brands.
+
+00:04:16.935 --> 00:04:21.495
+Training our reranker on unlabeled views
+of those new products brings it to
+
+00:04:21.495 --> 00:04:23.343
+91.2 percent.
+
+00:04:23.683 --> 00:04:27.690
+On Klasson, fine-tuning reaches 85.9
 percent.
 
-00:04:06.420 --> 00:04:11.247
-On Klasson it rises from 75.8 to 93.1.
+00:04:27.690 --> 00:04:30.495
+ShelfTaught reaches 93.1.
 
-00:04:11.587 --> 00:04:14.310
-Retail-786k starts higher.
+00:04:30.495 --> 00:04:37.485
+On Retail-786k the difference is small:
+95.2 and 95.5 percent.
 
-00:04:14.310 --> 00:04:17.295
-ShelfTaught reaches 95.5 percent,
+00:04:37.485 --> 00:04:41.325
+TransCLIP with teacher answers leads
+there at 97.0.
 
-00:04:17.295 --> 00:04:22.083
-while TransCLIP with teacher answers
-reaches 97.0 percent there.
+00:04:41.665 --> 00:04:45.405
+What if we give fine-tuning the very
+same labels our model inferred?
 
-00:04:23.223 --> 00:04:26.265
-A description lets a new product enter
-the catalog.
+00:04:45.405 --> 00:04:50.715
+On GroceryVision the adapted retriever
+reaches 92.3 percent,
 
-00:04:26.265 --> 00:04:30.495
-Unlabeled views from the store can then
-teach the checkout system to make
+00:04:50.715 --> 00:04:53.805
+slightly ahead of our frozen retriever
+and reranker.
 
-00:04:30.495 --> 00:04:34.231
-the distinction that matters on this
-bill: one box of beans.
+00:04:53.805 --> 00:04:59.190
+It trains 63.5 million parameters and
+takes about nine times as long.
+
+00:04:59.190 --> 00:05:02.085
+Our reranker trains just 340 thousand
+parameters
+
+00:05:02.085 --> 00:05:04.919
+and reuses the store’s existing image
+features.
+
+00:05:06.059 --> 00:05:09.060
+The shopper leaves the store carrying
+the box of beans.
+
+00:05:09.060 --> 00:05:13.013
+The checkout system has checked the
+pickup against the item in the cart.
+
+00:05:13.353 --> 00:05:15.510
+[Phone chimes] Outside, a notification
+arrives.
+
+00:05:15.510 --> 00:05:19.785
+In this example the box costs two
+dollars and forty-nine cents.
+
+00:05:19.785 --> 00:05:24.553
+The receipt shows exactly what was
+charged: one box of garbanzo beans.

@@ -1,17 +1,19 @@
-"""Monochrome drawing primitives for the film. All layout uses a 1280 by 720 frame."""
+"""Drawing primitives for the film. All layout uses a 1280 by 720 frame."""
 
 import math
-import subprocess
 from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
 import skia
-from PIL import Image, ImageOps
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 ASSETS = HERE.parent / "assets"
 INK, MID, SUB, RULE, PALE, WHITE = 21, 72, 91, 183, 231, 255
+
+
+TEAL, AMBER, BLUE = (25, 111, 93), (166, 78, 37), (48, 103, 148)
 
 
 def clamp(v, low=0, high=1):
@@ -32,8 +34,8 @@ def ramp(time, start, duration=0.85):
 
 
 def color(grey, alpha=255):
-    grey = round(clamp(grey, 0, 255))
-    return skia.ColorSetARGB(round(alpha), grey, grey, grey)
+    rgb = grey if isinstance(grey, tuple) else (grey,) * 3
+    return skia.ColorSetARGB(round(alpha), *(round(clamp(v, 0, 255)) for v in rgb))
 
 
 @lru_cache(300)
@@ -53,48 +55,10 @@ def photograph(name):
     if not path.is_file():
         path = HERE / (name + ".webp")
     with Image.open(path) as source:
-        arr = np.asarray(ImageOps.grayscale(source)).copy()
+        arr = np.array(source.convert("RGBA"))
     return skia.Image.fromarray(
         arr,
-        colorType=skia.ColorType.kGray_8_ColorType,
-        alphaType=skia.AlphaType.kOpaque_AlphaType,
-        copy=True,
-    )
-
-
-@lru_cache(1)
-def pickup_frames():
-    width, height = 864, 486
-    raw = subprocess.check_output(
-        [
-            "ffmpeg",
-            "-nostdin",
-            "-hide_banner",
-            "-loglevel",
-            "error",
-            "-threads",
-            "1",
-            "-i",
-            str(HERE / "shelf-pickup.mp4"),
-            "-vf",
-            f"scale={width}:{height}",
-            "-pix_fmt",
-            "gray",
-            "-threads",
-            "1",
-            "-f",
-            "rawvideo",
-            "pipe:1",
-        ]
-    )
-    return np.frombuffer(raw, dtype="uint8").reshape(-1, height, width)
-
-
-@lru_cache(8)
-def shot_frame(index):
-    return skia.Image.fromarray(
-        pickup_frames()[index],
-        colorType=skia.ColorType.kGray_8_ColorType,
+        colorType=skia.ColorType.kRGBA_8888_ColorType,
         alphaType=skia.AlphaType.kOpaque_AlphaType,
         copy=True,
     )
@@ -104,9 +68,12 @@ class Drawing:
     def __init__(self, fonts, width=1920, height=1080):
         self.width, self.height = width, height
         info = skia.ImageInfo.Make(
-            width, height, skia.ColorType.kGray_8_ColorType, skia.AlphaType.kOpaque_AlphaType
+            width, height, skia.ColorType.kRGBA_8888_ColorType, skia.AlphaType.kOpaque_AlphaType
         )
-        self.surface = skia.Surface.MakeRaster(info)
+        self.frames = {}
+        self.work = fonts
+        self.pixels = np.empty((height, width, 4), dtype=np.uint8)
+        self.surface = skia.Surface.MakeRasterDirect(info, self.pixels, self.pixels.strides[0])
         self.c = self.surface.getCanvas()
         self.c.scale(width / 1280, height / 720)
         self.faces = {
@@ -242,22 +209,20 @@ class Drawing:
             im, src, dst, skia.SamplingOptions(skia.FilterMode.kLinear, skia.MipmapMode.kNone)
         )
 
-    def aisle_shot(self, x, y, w, h, progress):
-        frames = pickup_frames()
-        im = shot_frame(round((len(frames) - 1) * clamp(progress)))
-        src = skia.Rect.MakeWH(im.width(), im.height())
+    def film_shot(self, name, progress, x=0, y=0, w=1280, h=720):
+        if name not in self.frames:
+            path = self.work / (name + ".rgba")
+            self.frames[name] = np.memmap(path, mode="r", dtype=np.uint8).reshape(-1, 720, 1280, 4)
+        frames = self.frames[name]
+        frame = frames[round((len(frames) - 1) * clamp(progress))]
+        im = skia.Image.fromarray(
+            frame,
+            colorType=skia.ColorType.kRGBA_8888_ColorType,
+            alphaType=skia.AlphaType.kOpaque_AlphaType,
+            copy=False,
+        )
         dst = skia.Rect.MakeXYWH(x, y, w, h)
-        self.c.drawImageRect(im, src, dst, skia.SamplingOptions(skia.FilterMode.kLinear))
-
-    def title(self, s):
-        self.text(65, 52, s, 51, "medium", maxw=1150)
-
-    def subtitle(self, s):
-        self.text(67, 117, s, 24, grey=SUB, maxw=1145)
-
-    def note(self, s):
-        self.line([(66, 577), (1214, 577)], RULE, 1)
-        self.text(66, 592, s, 24, grey=MID, maxw=1147)
+        self.c.drawImageRect(im, dst, skia.SamplingOptions(skia.FilterMode.kLinear))
 
     def product(self, kind, x, y, scale=1, grey=INK):
         """Illustrated packaging, with physical edges and print on the front face."""
@@ -266,18 +231,18 @@ class Drawing:
         c.translate(x, y)
         c.scale(scale, scale)
         if kind == "box":
-            self.shape([(0, 19), (27, 0), (118, 8), (96, 27)], 249, grey, 2.3)
-            self.shape([(96, 27), (118, 8), (119, 156), (96, 177)], 220, grey, 2.3)
-            self.shape([(0, 19), (96, 27), (96, 177), (0, 166)], 249, grey, 2.5)
+            self.shape([(0, 19), (27, 0), (118, 8), (96, 27)], (248, 235, 201), grey, 2.3)
+            self.shape([(96, 27), (118, 8), (119, 156), (96, 177)], (214, 189, 140), grey, 2.3)
+            self.shape([(0, 19), (96, 27), (96, 177), (0, 166)], (248, 242, 219), grey, 2.5)
             self.line([(5, 27), (93, 35)], grey, 1.4)
             self.line([(27, 3), (58, 20), (112, 10)], grey, 1.4)
             self.rect(27, 43, 38, 21, grey)
             self.text(46, 46, "365", 15, "semibold", WHITE, "center")
             self.text(47, 75, "Garbanzo", 15, "semibold", grey, "center")
-            self.text(47, 94, "Beans", 19, "semibold", grey, "center")
+            self.text(47, 94, "Beans", 19, "semibold", TEAL, "center")
             for a, b in [(33, 130), (48, 123), (60, 137)]:
-                self.oval(a - 7, b - 5, 14, 9, 226, grey, 1.3)
-            self.line([(5, 151), (92, 161)], grey, 2)
+                self.oval(a - 7, b - 5, 14, 9, (199, 157, 91), grey, 1.3)
+            self.line([(5, 151), (92, 161)], TEAL, 5)
         else:
             self.rect(0, 15, 94, 116, 244)
             self.oval(0, 115, 94, 29, 244, grey, 2.3)
@@ -290,7 +255,7 @@ class Drawing:
             self.rect(30, 39, 35, 19, grey)
             self.text(47, 41, "365", 14, "semibold", WHITE, "center")
             self.text(47, 66, "Garbanzo", 15, "semibold", grey, "center")
-            self.text(47, 85, "Beans", 18, "semibold", grey, "center")
+            self.text(47, 85, "Beans", 18, "semibold", AMBER, "center")
             self.line([(4, 113), (26, 118), (66, 118), (91, 112)], grey, 1.4)
         c.restore()
 
@@ -304,7 +269,6 @@ class Drawing:
         pts.append((x, y))
         self.shape(pts, 251, INK, 1.8)
         self.text(x + 22, y + 22, "Virtual cart", 26, "medium")
-        self.line([(x + 22, y + 61), (x + width - 22, y + 61)], RULE, 1)
         self.text(x + 22, y + 80, "365 Organic", 23)
         self.text(x + 22, y + 111, "Garbanzo Beans", 25, "medium", maxw=width - 68)
         self.text(x + 22, y + 154, entry, 28, "italic", grey=INK)

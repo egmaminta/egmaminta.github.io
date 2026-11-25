@@ -8,8 +8,9 @@ from functools import partial
 from pathlib import Path
 from urllib.request import urlopen
 
-from art import ASSETS, Drawing, clamp
+from art import ASSETS, HERE, Drawing, clamp
 from fontTools.ttLib import TTFont
+from narration import mix_checkout_sounds
 from PIL import Image
 from scenes import SCENES
 
@@ -31,7 +32,9 @@ def fonts_at(work):
             woff = work / (name + ".woff2")
             if not woff.is_file():
                 with urlopen(
-                    "https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-" + suffix + ".woff2",
+                    "https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-"
+                    + suffix
+                    + ".woff2",
                     timeout=30,
                 ) as r:
                     woff.write_bytes(r.read())
@@ -54,21 +57,51 @@ def draw(drawing, index, scene, time):
         drawing.white_overlay(0, 0, 1280, 720, 1 - fade)
 
 
+def prepare_clips(work):
+    for name in ("shelf-pickup", "store-exit"):
+        source = HERE / (name + ".mp4")
+        raw = work / (name + ".rgba")
+        if raw.exists() and raw.stat().st_mtime >= source.stat().st_mtime:
+            continue
+        temp = raw.with_suffix(".tmp")
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-loglevel",
+                "error",
+                "-y",
+                "-i",
+                str(source),
+                "-vf",
+                "scale=1280:720",
+                "-f",
+                "rawvideo",
+                "-pix_fmt",
+                "rgba",
+                "-threads",
+                "2",
+                str(temp),
+            ],
+            check=True,
+        )
+        temp.replace(raw)
+
+
 def stills(work, timeline):
     d = Drawing(work)
     for index, scene in enumerate(timeline):
         for j, line in enumerate(scene["lines"]):
             time = line["start"] + 0.76 * (line["end"] - line["start"])
             draw(d, index, scene, time)
-            im = Image.fromarray(d.surface.makeImageSnapshot().toarray())
+            im = Image.fromarray(d.pixels).convert("RGB")
             im.thumbnail((800, 450))
             im.save(work / f"proof-{index:02d}-{j}.jpg", quality=93)
     draw(d, 0, timeline[0], 0)
-    poster = Image.fromarray(d.surface.makeImageSnapshot().toarray())
+    poster = Image.fromarray(d.pixels).convert("RGB")
     poster.save(ASSETS / "explainer-poster.webp", quality=95, method=6)
     thumbnail = poster.copy()
     thumbnail.thumbnail((1200, 630), Image.Resampling.LANCZOS)
-    preview = Image.new("L", (1200, 630), 255)
+    preview = Image.new("RGB", (1200, 630), "white")
     preview.paste(thumbnail, ((1200 - thumbnail.width) // 2, (630 - thumbnail.height) // 2))
     preview.save(ASSETS / "preview.jpg", quality=95)
 
@@ -88,7 +121,7 @@ def encode(index, work, timeline):
         "-f",
         "rawvideo",
         "-pix_fmt",
-        "gray",
+        "rgba",
         "-s",
         f"{WIDTH}x{HEIGHT}",
         "-framerate",
@@ -100,6 +133,14 @@ def encode(index, work, timeline):
         "libx264",
         "-pix_fmt",
         "yuv420p",
+        "-vf",
+        "scale=out_color_matrix=bt709",
+        "-colorspace",
+        "bt709",
+        "-color_primaries",
+        "bt709",
+        "-color_trc",
+        "bt709",
         "-preset",
         "veryfast",
         "-crf",
@@ -116,7 +157,7 @@ def encode(index, work, timeline):
     try:
         for k in range(first, last):
             draw(d, index, scene, k / FPS)
-            proc.stdin.write(memoryview(d.surface.makeImageSnapshot().toarray()))
+            proc.stdin.write(memoryview(d.pixels))
     finally:
         proc.stdin.close()
     if proc.wait():
@@ -155,7 +196,7 @@ def assemble(work, timeline):
             "-i",
             str(concat),
             "-i",
-            str(work / "narration.wav"),
+            str(mix_checkout_sounds(work, timeline)),
             "-i",
             str(meta),
             "-map",
@@ -206,6 +247,7 @@ if __name__ == "__main__":
     timeline = json.loads((work / "timeline.json").read_text())
     assert len(timeline) == len(SCENES)
     fonts_at(work)
+    prepare_clips(work)
     stills(work, timeline)
     if not args.proof:
         indices = list(range(len(SCENES))) if args.chapters is None else args.chapters

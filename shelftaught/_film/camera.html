@@ -1,33 +1,68 @@
 <!doctype html>
-<html lang="en"><meta charset="utf-8"><title>Checkout aisle camera shot</title>
-<style>html,body{margin:0;background:white}canvas{display:block}</style>
-<canvas width="1120" height="630"></canvas>
-<script type="module">
-import * as THREE from '../three-r180/three.module.min.js';
-import {buildRoom, lightRoom} from '../store.js';
-const canvas=document.querySelector('canvas');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
-renderer.setSize(1120,630,false);
-renderer.setClearColor(0xeae7df);
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-const scene=new THREE.Scene();
-lightRoom(scene);
-const {heroes}=buildRoom(scene);
-const box=heroes.beans;
-const origin=box.position.clone();
-const camera=new THREE.PerspectiveCamera(44,16/9,.06,25);
-function ease(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);}
-window.frameAt=(p)=>{
-  const move=ease(p/.79);
-  const lift=ease((p-.66)/.32);
-  camera.position.set(1.09-2.01*move,1.69-0.12*move,3.95-5.59*move);
-  camera.lookAt(-0.08-1.04*move,1.50+0.15*lift,-2.66+0.52*lift);
-  box.position.copy(origin);
-  box.position.z+=.53*lift;
-  box.position.y+=.136*lift;
-  box.rotation.x=-.17*lift;box.rotation.y=-.09*lift;
-  renderer.render(scene,camera);
-};
-window.frameAt(0);
-</script></html>
+<html lang="en">
+  <meta charset="utf-8" /><title>Checkout film camera</title>
+  <style>
+    @font-face {
+      font-family: 'OpenAI Sans';
+      src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Regular.woff2');
+    }
+    @font-face {
+      font-family: 'OpenAI Sans';
+      font-weight: 600;
+      src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Semibold.woff2');
+    }
+    html,
+    body {
+      margin: 0;
+      background: white;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+  <canvas width="1280" height="720"></canvas>
+  <script type="module">
+    import * as T from '../three-r180/three.module.min.js';
+    import { buildRoom, lightRoom } from '../store.js';
+    import { stageShoppers, captureAt } from '../shoppers.js';
+    import { exitSequence } from './exit.js';
+    await Promise.all(['400', '600'].map((w) => document.fonts.load(w + ' 16px "OpenAI Sans"')));
+    const canvas = document.querySelector('canvas');
+    const renderer = new T.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+    renderer.setSize(1280, 720, false);
+    renderer.setClearColor(0xd9e8e4);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = T.PCFSoftShadowMap;
+    const scene = new T.Scene();
+    lightRoom(scene);
+    const { heroes } = buildRoom(scene);
+    const actors = stageShoppers(scene, heroes);
+    const camera = new T.PerspectiveCamera(44, 16 / 9, 0.018, 45);
+    const leave = exitSequence(scene, actors.people.beans, heroes.beans);
+    const s = (n) => T.MathUtils.smoothstep(n, 0, 1);
+    window.frameAt = (shot, u) => {
+      if (shot === 'exit') leave(camera, u);
+      else if (shot === 'poster') {
+        actors.reset('beans', heroes.beans);
+        actors.reset('ranch', heroes.ranch);
+        camera.position.set(0.15, 1.65, 4.05);
+        camera.lookAt(0, 1.46, -2.55);
+        camera.fov = 47;
+      } else {
+        const close = s((u - 0.13) / 0.38);
+        actors.pickup('ranch', heroes.ranch, Math.min(1, u * 1.78 + 0.19));
+        actors.pickup('beans', heroes.beans, Math.min(captureAt, Math.max(0, (u - 0.18) * 1.46)));
+        if (u < 0.64) {
+          camera.position.set(0.48 - 2.87 * close, 1.64 - 0.14 * close, 2.54 - 3.45 * close);
+          camera.lookAt(-0.11 - 0.74 * close, 1.23 + 0.22 * close, -2.17);
+          camera.fov = 47 - 3 * close;
+        } else {
+          actors.cameraView(camera, heroes.beans, s((u - 0.64) / 0.22));
+        }
+      }
+      camera.updateProjectionMatrix();
+      renderer.render(scene, camera);
+    };
+    window.frameAt('poster', 0);
+  </script>
+</html>

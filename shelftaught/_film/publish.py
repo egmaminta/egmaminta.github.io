@@ -10,10 +10,10 @@ from math import floor
 from pathlib import Path
 
 import numpy as np
-from narration import PRONUNCIATION
+from narration import PRONUNCIATION, checkout_sounds
 
 PAGE = Path(__file__).resolve().parents[1]
-MEDIA = "./assets/shelftaught-explainer.mp4?v=2"
+MEDIA = "./assets/shelftaught-explainer.mp4?v=3"
 
 
 def stamp(value):
@@ -59,6 +59,7 @@ def emphasize_packages(text):
 
 def write(work):
     scenes = json.loads((work / "timeline.json").read_text())
+    sounds = checkout_sounds(scenes)
     with wave.open(str(work / "narration.wav")) as wav:
         sr = wav.getframerate()
         a = np.frombuffer(wav.readframes(wav.getnframes()), dtype="<i2").astype(float) / 32768
@@ -92,6 +93,9 @@ def write(work):
             boundaries.append(t1)
             for p, begin, finish in zip(parts, boundaries, boundaries[1:]):
                 assert begin < finish
+                sound = next((name for name, time in sounds.items() if begin <= time < finish), None)
+                if sound:
+                    p = f"[{sound}] {p}"
                 caps.extend(
                     [
                         stamp(begin) + " --> " + stamp(finish),
