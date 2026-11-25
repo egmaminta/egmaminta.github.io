@@ -23,8 +23,8 @@
   <canvas width="1280" height="720"></canvas>
   <script type="module">
     import * as T from '../three-r180/three.module.min.js';
-    import { buildRoom, lightRoom } from '../store.js';
-    import { stageShoppers, captureAt, makeShopper } from '../shoppers.js';
+    import { buildRoom, lightRoom } from '../store.js?v=3';
+    import { stageShoppers, captureAt, makeShopper } from '../shoppers.js?v=2';
     import { exitSequence } from './exit.js';
     import { focusLens } from './focus.js';
     await Promise.all(['400', '600'].map((w) => document.fonts.load(w + ' 16px "OpenAI Sans"')));
@@ -47,6 +47,7 @@
       actors.people.beans.root.visible = heroes.beans.visible = shot !== 'exit';
       if (shot === 'exit') {
         if (!leave) {
+          actors.reset('ranch', heroes.ranch);
           exterior = new T.Group();
           scene.add(exterior);
           const carton = heroes.beans.clone();
@@ -65,15 +66,16 @@
         camera.lookAt(0, 1.46, -2.55);
         camera.fov = 47;
       } else {
-        const close = s((u - 0.13) / 0.38);
-        actors.pickup('ranch', heroes.ranch, Math.min(1, u * 1.78 + 0.19));
-        actors.pickup('beans', heroes.beans, Math.min(captureAt, Math.max(0, (u - 0.18) * 1.46)));
-        if (u < 0.64) {
-          camera.position.set(0.48 - 2.87 * close, 1.64 - 0.14 * close, 2.54 - 3.45 * close);
-          camera.lookAt(-0.11 - 0.74 * close, 1.23 + 0.22 * close, -2.17);
-          camera.fov = 47 - 3 * close;
+        const close = s((u - 0.04) / 0.42);
+        actors.pickup('ranch', heroes.ranch, captureAt * Math.min(1, 0.14 + u * 1.53));
+        actors.pickup('beans', heroes.beans, captureAt * T.MathUtils.clamp((u - 0.115) / 0.61, 0, 1));
+        if (u < 0.72) {
+          // A three-quarter view keeps the reaching arm, shelf edge and planted feet in view.
+          camera.position.set(1.1 - 1.00 * close, 1.52, 1.97 - 3.34 * close);
+          camera.lookAt(-0.18 - 1.02 * close, 1.14 + 0.24 * close, -2.34);
+          camera.fov = 45 - 8 * close;
         } else {
-          actors.cameraView(camera, heroes.beans, s((u - 0.64) / 0.22));
+          actors.cameraView(camera, heroes.beans, s((u - 0.72) / 0.15));
         }
       }
       camera.updateProjectionMatrix();

@@ -1,16 +1,52 @@
 // Both the interactive aisle and the film pose these figures from the same pickup.
 import * as T from './three-r180/three.module.min.js';
+import { shelfHand, orientation } from './hands.js';
 
 const v = (x, y, z) => new T.Vector3(x, y, z);
 const up = v(0, 1, 0);
+const down = v(0, -1, 0);
+const step = T.MathUtils.smootherstep;
+const forearmShape = new T.LatheGeometry(
+  [
+    [0.001, -0.5],
+    [0.04, -0.49],
+    [0.051, -0.43],
+    [0.052, -0.34],
+    [0.05, -0.2],
+    [0.045, 0],
+    [0.038, 0.18],
+    [0.031, 0.33],
+    [0.027, 0.43],
+    [0.025, 0.48],
+    [0.023, 0.508],
+    [0.017, 0.536],
+    [0.001, 0.552],
+  ].map(([r, y]) => new T.Vector2(r, y)),
+  28,
+);
+
 const ball = new T.SphereGeometry(1, 24, 18);
 const unit = new T.BoxGeometry(1, 1, 1);
 const mat = (color) => new T.MeshStandardMaterial({ color, roughness: 0.88 });
 const smooth = (t) => T.MathUtils.smoothstep(t, 0, 1);
 const mix = T.MathUtils.lerp;
 const cloth = [
-  { skin: '#ad704e', hair: '#302420', shirt: '#197976', pants: '#293d49', sole: '#efe0c9', tied: true },
-  { skin: '#cd916c', hair: '#372e31', shirt: '#b95836', pants: '#394a64', sole: '#f2ecdc', tied: false },
+  {
+    skin: '#ad704e',
+    hair: '#302420',
+    shirt: '#197976',
+    pants: '#293d49',
+    sole: '#efe0c9',
+    tied: true,
+  },
+  {
+    skin: '#cd916c',
+    hair: '#372e31',
+    shirt: '#b95836',
+    pants: '#394a64',
+    sole: '#f2ecdc',
+    tied: false,
+  },
 ];
 
 function group(parent) {
@@ -50,7 +86,7 @@ function join(bone, a, b) {
 function arm(parent, side, color) {
   const sleeve = segment(parent, color.shirt, 0.089, 0.069);
   const upper = segment(parent, color.skin, 0.061, 0.05);
-  const lower = segment(parent, color.skin, 0.052, 0.033);
+  const lower = mesh(parent, forearmShape, color.skin, 1, 1, 1);
   const shoulderCap = ellipsoid(parent, color.shirt, 0, 0, 0, 0.087, 0.084, 0.087);
   const elbowCap = ellipsoid(parent, color.skin, 0, 0, 0, 0.051, 0.052, 0.051);
   const hand = group(parent);
@@ -71,13 +107,13 @@ function arm(parent, side, color) {
   const thumb = ellipsoid(hand, color.skin, -side * 0.038, -0.009, 0.011, 0.016, 0.034, 0.017);
   thumb.rotation.z = -side * 0.48;
 
-  function solve(goal, grip = 0) {
+  function solve(goal, grip = 0, shelf = false) {
     const s = v(side * 0.196, 1.418, 0.004);
     const axis = goal.clone().sub(s);
     const distance = Math.min(0.668, Math.max(0.04, axis.length()));
     axis.normalize();
     const wrist = s.clone().addScaledVector(axis, distance);
-    const pole = v(side * 0.81, -0.88, -0.34);
+    const pole = shelf ? v(side * 0.33, -0.96, -0.46) : v(side * 0.81, -0.88, -0.34);
     pole.addScaledVector(axis, -pole.dot(axis)).normalize();
     const l1 = 0.319,
       l2 = 0.351;
@@ -95,7 +131,7 @@ function arm(parent, side, color) {
     hand.position.copy(wrist);
     hand.rotation.set(-0.12 + grip * 0.53, side * grip * 0.72, -side * (0.1 + grip * 0.19));
   }
-  return { hand, forearm: lower, solve };
+  return { hand, solve };
 }
 
 function leg(parent, side, color) {
@@ -133,12 +169,34 @@ function leg(parent, side, color) {
   ellipsoid(foot, color.sole, 0, -0.043, 0.047, 0.081, 0.04, 0.149);
   ellipsoid(foot, color.shoe, 0, -0.017, 0.048, 0.079, 0.058, 0.142);
   mesh(foot, unit, color.sole, 0.081, 0.012, 0.015, 0, 0.024, 0.101);
-  return (phase, stride) => {
+  function walk(phase, stride) {
     const a = 0.48 * Math.sin(phase) * stride;
     pivot.rotation.x = a;
     knee.rotation.x = 0.66 * Math.max(0, -Math.cos(phase)) * stride;
     foot.rotation.x = -a * 0.6 - knee.rotation.x * 0.69;
-  };
+  }
+  function plant(hip, ankle) {
+    const start = hip.clone().add(v(side * 0.108, 0, 0));
+    const axis = ankle.clone().sub(start);
+    const length = axis.length();
+    axis.normalize();
+    const forward = v(side * 0.12, 0, 1);
+    forward.addScaledVector(axis, -forward.dot(axis)).normalize();
+    const along = (0.406 ** 2 - 0.38 ** 2 + length ** 2) / (2 * length);
+    const bend = start
+      .clone()
+      .addScaledVector(axis, along)
+      .addScaledVector(forward, Math.sqrt(Math.max(0, 0.406 ** 2 - along ** 2)));
+    pivot.position.copy(start);
+    pivot.quaternion.setFromUnitVectors(down, bend.clone().sub(start).normalize());
+    const shin = new T.Quaternion().setFromUnitVectors(down, ankle.clone().sub(bend).normalize());
+    knee.quaternion.copy(pivot.quaternion).invert().multiply(shin);
+    foot.quaternion
+      .copy(shin)
+      .invert()
+      .multiply(new T.Quaternion().setFromAxisAngle(up, side * 0.09));
+  }
+  return { walk, plant };
 }
 
 export function makeShopper(scene, variant = 0) {
@@ -150,15 +208,17 @@ export function makeShopper(scene, variant = 0) {
   );
   color.shoe = mat(variant ? '#5f443c' : '#e6c691');
   const root = group(scene),
+    seat = group(root),
     torso = group(root),
     head = group(torso);
   profile(
-    torso,
+    seat,
     color.pants,
     [
       [0.13, 0.79],
       [0.192, 0.87],
-      [0.158, 1.036],
+      [0.171, 0.925],
+      [0.137, 0.992],
     ],
     0.7,
   );
@@ -216,16 +276,32 @@ export function makeShopper(scene, variant = 0) {
   }
   const arms = [arm(torso, -1, color), arm(torso, 1, color)];
   const legs = [leg(root, -1, color), leg(root, 1, color)];
-  function pose({ lean = 0, left, right, grasp = 0, stride = 0, phase = 0, look = 0 } = {}) {
-    torso.position.set(0, 0.018 * Math.sin(phase) ** 2 * stride, lean * 0.105);
-    torso.rotation.x = lean * 0.075;
-    head.rotation.set(0.06 + look * 0.28, -0.1 + lean * 0.11, 0);
+  const pelvis = v(0, 0.88, 0);
+  function pose({
+    lean = 0,
+    left,
+    right,
+    grasp = 0,
+    stride = 0,
+    phase = 0,
+    look = 0,
+    stance,
+  } = {}) {
+    const hip = stance
+      ? stance.hip
+      : pelvis.clone().add(v(0, 0.018 * Math.sin(phase) ** 2 * stride, 0));
+    seat.position.copy(hip).sub(pelvis);
+    torso.rotation.set(lean, stance?.twist ?? 0, 0, 'YXZ');
+    // The belt stays over the pelvis as the chest inclines.
+    torso.position.copy(hip).sub(pelvis.clone().applyQuaternion(torso.quaternion));
+    head.rotation.set(0.06 + look * 0.28, -0.1, 0);
     root.updateMatrixWorld(true);
     for (const [i, side] of [-1, 1].entries()) {
       const goal = i ? left : right;
-      const rest = v(side * 0.235, 0.925, 0.078 + Math.sin(phase + i * Math.PI) * stride * 0.23);
-      arms[i].solve(goal ? torso.worldToLocal(goal.clone()) : rest, goal ? grasp : 0);
-      legs[i](phase + i * Math.PI, stride);
+      const rest = v(side * 0.235, 0.86, 0.065 + Math.sin(phase + i * Math.PI) * stride * 0.23);
+      arms[i].solve(goal ? torso.worldToLocal(goal.clone()) : rest, goal ? grasp : 0, !!stance);
+      if (stance) legs[i].plant(hip, stance.ankles[i]);
+      else legs[i].walk(phase + i * Math.PI, stride);
     }
   }
   pose();
@@ -235,58 +311,132 @@ export function makeShopper(scene, variant = 0) {
     head,
     leftHand: arms[1].hand,
     rightHand: arms[0].hand,
-    forearms: arms.map((arm) => arm.forearm),
   };
 }
 
-export const pickupDuration = 4.3;
-export const captureAt = 0.7;
-export const lensPosition = [-2.77, 3.18, 0.15];
+const reachSeconds = 3.42;
+const holdSeconds = 0.48;
+export const pickupDuration = 2 * reachSeconds + holdSeconds;
+export const captureAt = 0.5;
+export const lensPosition = [2.44, 3.18, 0.87];
 
 export function stageShoppers(scene, heroes) {
   const people = { beans: makeShopper(scene, 0), ranch: makeShopper(scene, 1) };
-  function stand(key, x = heroes[key].userData.shelfPosition.x) {
-    const p = people[key];
-    p.root.position.set(x + 0.4, 0, -1.98);
-    p.root.rotation.y = -2.47;
-    p.pose();
+  const grips = Object.fromEntries(
+    Object.entries(people).map(([key, p]) => [key, shelfHand(p.rightHand, key)]),
+  );
+  const supportHand = shelfHand(people.beans.leftHand, 'support');
+  const sideGrip = orientation(v(1, 0, 0), v(0, 0, -1));
+  const underGrip = orientation(up, v(0, 0, -1));
+  const restRight = orientation(v(-1, 0, 0), v(0, -1, 0.1));
+  const restLeft = orientation(v(1, 0, 0), v(0, -1, 0.1));
+
+  function pickup(key, item, time) {
+    const shopper = people[key],
+      root = shopper.root;
+    const home = heroes[key].userData.shelfPosition,
+      base = item.userData.shelfPosition;
+    const beans = key === 'beans';
+    // For a second facing of the same product, step along the shelf before reaching.
+    const dx = base.x - home.x;
+    const steps = Math.ceil(Math.abs(dx) / 0.34);
+    const walkPart = steps ? Math.min(0.34, 0.1 + 0.07 * steps) : 0;
+    const elapsed = time * pickupDuration;
+    const outward = T.MathUtils.clamp(Math.min(elapsed, pickupDuration - elapsed) / reachSeconds, 0, 1);
+    const walk = walkPart ? step(outward, 0, walkPart) : 1;
+    const t = T.MathUtils.clamp((outward - walkPart) / (1 - walkPart), 0, 1);
+    const approach = step(t, 0.055, 0.43);
+    const closeHand = step(t, 0.405, 0.515);
+    const clear = step(t, 0.52, 0.76);
+    const carry = step(t, 0.68, 1);
+    const shift = step(t, 0.025, 0.4) * (1 - step(t, 0.55, 0.94));
+    const support = beans ? step(t, 0.68, 0.975) : 0;
+
+    root.rotation.y = beans ? 2.81 : 2.91;
+    const anchor = v(home.x - (beans ? 0.21 : 0.15), 0, beans ? -2.015 : -2.045);
+    // The planted shoe has zero world velocity while the other foot crosses the aisle tiles.
+    const ankles = [-1, 1].map((side) => {
+      const tick = walk * steps,
+        stepIndex = Math.min(Math.floor(tick), Math.max(0, steps - 1));
+      const swing = T.MathUtils.clamp((tick - stepIndex) * 2 - (side * dx > 0 ? 0 : 1), 0, 1);
+      const progress = steps ? (stepIndex + smooth(swing)) / steps : 1;
+      const stride = v(
+        dx * (progress - walk),
+        steps ? 0.045 * Math.sin(Math.PI * swing) : 0,
+        0,
+      ).applyQuaternion(root.quaternion.clone().invert());
+      return v(side * 0.132, 0.085, side < 0 ? 0.091 : -0.089).add(stride);
+    });
+    root.position.copy(anchor).add(v(dx * walk, 0, 0));
+    root.updateMatrixWorld();
+    const world = (point) => root.localToWorld(point);
+    const hip = v(-0.01 - 0.017 * shift, 0.846 - 0.016 * shift, 0.018 + 0.024 * shift);
+
+    item.position.copy(base);
+    item.position.z += 0.218 * clear + 0.111 * carry;
+    item.position.x -= (beans ? 0.052 : 0.032) * carry;
+    item.position.y += 0.025 * step(t, 0.515, 0.61) - (beans ? 0.235 : 0.197) * carry;
+    item.rotation.set(-0.06 * carry, (beans ? 0.36 : 0.19) * carry, -0.035 * carry);
+    item.updateMatrixWorld();
+    const wrist = item.localToWorld(v(beans ? 0.157 : 0.137, beans ? 0.223 : 0.271, 0.135));
+    const rest = world(v(-0.22, 0.815, 0.079));
+    const right = new T.CubicBezierCurve3(
+      rest,
+      world(v(-0.25, 1.035, 0.15)),
+      wrist.clone().add(v(0.025, -0.062, 0.106)),
+      wrist,
+    ).getPoint(approach);
+    const leftRest = world(v(0.22, 0.815, 0.072));
+    const under = item.localToWorld(v(-0.049, -0.028, 0.108));
+    const left = new T.CubicBezierCurve3(
+      leftRest,
+      world(v(0.229, 0.926, 0.16)),
+      under.clone().add(v(-0.034, -0.075, 0.072)),
+      under,
+    ).getPoint(support);
+    shopper.pose({
+      stance: { hip, ankles, twist: -0.075 * shift },
+      lean: 0.025 + 0.072 * shift,
+      left,
+      right,
+    });
+    // Direct the gaze before the wrist moves, then follow the package down.
+    const sight = root.worldToLocal(item.localToWorld(v(0, 0.26, 0)));
+    const attention = 0.35 + 0.65 * step(t, 0, 0.25);
+    shopper.head.rotation.set(
+      0.055 + attention * Math.atan2(1.66 - sight.y, Math.max(0.31, sight.z)) * 0.77,
+      attention * Math.atan2(sight.x, Math.max(0.3, sight.z)) * 0.83,
+      0.018 * shift,
+    );
+    grips[key](
+      root.quaternion
+        .clone()
+        .multiply(restRight)
+        .slerp(item.quaternion.clone().multiply(sideGrip), approach),
+      closeHand,
+    );
+    if (beans)
+      supportHand(
+        root.quaternion
+          .clone()
+          .multiply(restLeft)
+          .slerp(item.quaternion.clone().multiply(underGrip), support),
+        support,
+      );
+    return item.localToWorld(v(0, 0.23, 0.04));
   }
-  Object.keys(people).forEach((k) => stand(k));
   function reset(key, item) {
     item.position.copy(item.userData.shelfPosition);
     item.rotation.set(0, 0, 0);
-    stand(key);
+    pickup(key, heroes[key], 0);
   }
-  function pickup(key, item, time) {
-    const p = people[key],
-      base = item.userData.shelfPosition;
-    // Reach the shelf first. Only the time interval after contact moves the package.
-    const reach = smooth(time / 0.33) * (1 - smooth((time - 0.88) / 0.12));
-    const held = smooth((time - 0.33) / 0.23) * (1 - smooth((time - 0.76) / 0.12));
-    p.root.position.set(
-      mix(heroes[key].userData.shelfPosition.x, base.x, smooth(time / 0.24)) + 0.4,
-      0,
-      -1.98,
-    );
-    p.root.rotation.y = -2.47 + held * 0.18;
-    item.position.copy(base);
-    item.position.z += 0.5 * held;
-    item.position.x -= 0.14 * held;
-    item.position.y += 0.1 * held + 0.045 * Math.sin(held * Math.PI);
-    item.rotation.set(-0.08 * held, -0.47 * held, -0.075 * held);
-    item.updateMatrixWorld();
-    const grip = item.localToWorld(v(0.144, 0.212, 0.069));
-    const rest = p.root.localToWorld(v(-0.235, 0.925, 0.078));
-    // With the body turned towards the shelf, this arm reaches the near side of the box.
-    p.pose({ lean: reach, right: rest.lerp(grip, reach), grasp: reach, look: held * 0.58 });
-    return item.localToWorld(v(0, 0.23, 0.04));
-  }
+  for (const [key, item] of Object.entries(heroes)) reset(key, item);
   function cameraView(cam, item, amount) {
     const center = item.localToWorld(v(0, 0.23, 0.06));
     cam.position.fromArray(lensPosition);
     cam.lookAt(center);
-    cam.fov = mix(46, 13, smooth(amount));
+    cam.fov = mix(43, 6.5, smooth(amount));
     cam.updateProjectionMatrix();
   }
-  return { people, stand, reset, pickup, cameraView };
+  return { people, reset, pickup, cameraView };
 }

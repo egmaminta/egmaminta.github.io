@@ -1,6 +1,6 @@
 // The room illustrates a pickup. All retrieval values are supplied by checkout.js from recorded queries.
 import * as THREE from './three-r180/three.module.min.js';
-import { stageShoppers, pickupDuration, captureAt, lensPosition } from './shoppers.js';
+import { stageShoppers, pickupDuration, captureAt, lensPosition } from './shoppers.js?v=2';
 
 const views = {
   aisle: [
@@ -163,6 +163,7 @@ export function buildRoom(scene) {
   function product(kind, x, y, z, parent = fixed, blueCap = false) {
     const group = new THREE.Group();
     group.position.set(x, y, z);
+    group.scale.setScalar(0.66);
     parent.add(group);
     if (kind === 'ranch') {
       mesh(bottle, milk, 0, 0, 0, 1, 1, 0.78, group);
@@ -236,12 +237,13 @@ export function buildRoom(scene) {
     box(x, 2.59, -3.12, 2.22, 0.34, 0.08, edge);
     sign(sections[bay], x, 2.59, -3.073, 2.09, 0.3, '#eee8d9', '#28332d');
     for (let level = 0; level < shelves.length; level++) {
-      for (let col = 0; col < 7; col++) {
-        const sx = x + (col - 3) * 0.296,
+      for (let col = 0; col < 11; col++) {
+        const offset = col - 5;
+        const sx = x + offset * 0.198,
           sy = shelves[level] + 0.032;
-        const hero = level === 2 && col === 3 && (bay === 1 || bay === 2);
+        const hero = level === 2 && offset === 0 && (bay === 1 || bay === 2);
         let kind;
-        if (bay === 1 && level === 2) kind = col === 2 || col === 4 ? 'can' : 'box';
+        if (bay === 1 && level === 2) kind = Math.abs(offset) % 2 ? 'can' : 'box';
         else if (bay === 2 && level === 2) kind = 'ranch';
         else
           kind = [
@@ -250,7 +252,7 @@ export function buildRoom(scene) {
             ['ketchup', 'tea', 'ranch'],
             ['milk', 'tea', 'rice'],
           ][bay][(level + Math.floor(col / 3)) % 3];
-        const blueCap = kind === 'ranch' && col !== 3 && col % 2 === 0;
+        const blueCap = kind === 'ranch' && Math.abs(offset) % 2 === 1;
         const key =
           bay === 1 && level === 2 && kind === 'box'
             ? 'beans'
@@ -298,9 +300,10 @@ export function buildRoom(scene) {
     }
   }
   // Ceiling-mounted shelf camera and the checkout counter.
-  tube(-2.91, 3.55, 0.35, 0.025, 0.52, metal);
-  const cameraBody = box(-2.91, 3.3, 0.35, 0.24, 0.15, 0.35, white);
-  const direction = new THREE.Vector3(0.52, -0.44, -0.73).normalize();
+  const direction = new THREE.Vector3(-0.52, -0.44, -0.73).normalize();
+  const mount = new THREE.Vector3(...lensPosition).addScaledVector(direction, -0.2);
+  tube(mount.x, 3.55, mount.z, 0.025, 0.52, metal);
+  const cameraBody = box(mount.x, mount.y, mount.z, 0.24, 0.15, 0.35, white);
   cameraBody.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), direction);
   const lens = tube(0, 0, 0, 0.06, 0.08, charcoal);
   lens.position.copy(cameraBody.position).addScaledVector(direction, 0.2);
@@ -524,7 +527,8 @@ export function openStore({ onPick, onUnavailable }) {
       // Always photograph the held pose, including when a tab misses animation frames.
       if (t >= captureAt && !lift.captured) captureHeldItem();
       shoppers.pickup(lift.key, lift.item, t);
-      if (t >= 0.33 && !lift.captured) filmPickup(lift.item, (t - 0.33) / 0.33);
+      const approach = t / captureAt;
+      if (approach >= 0.32 && !lift.captured) filmPickup(lift.item, (approach - 0.32) / 0.6);
       if (t === 1) {
         finishPickup();
       }

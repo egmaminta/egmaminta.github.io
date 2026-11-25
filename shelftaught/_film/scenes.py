@@ -19,6 +19,7 @@ from art import (
     lerp,
     ramp,
 )
+from pipeline import pipeline
 
 DATA = json.loads(
     (ASSETS.parent / "trace.js").read_text().split("const appleTrace = ", 1)[1].strip().rstrip(";")
@@ -61,9 +62,9 @@ def title(d, scene, t):
 
 
 def focus_marks(d, u):
-    if not 0.67 < u < 0.92:
+    if not 0.72 < u < 0.92:
         return
-    tightening = ramp(u, 0.67, 0.19)
+    tightening = ramp(u, 0.72, 0.14)
     w, h = lerp(256, 144, tightening), lerp(236, 181, tightening)
     for sx in (-1, 1):
         for sy in (-1, 1):
@@ -419,6 +420,7 @@ SCENES = [
     checkout,
     close_call,
     insertion,
+    pipeline,
     teacher,
     model,
     patches,

@@ -224,7 +224,7 @@ import { demoPrices, dollars } from './store-prices.js';
   }
   async function startStore() {
     try {
-      const { openStore } = await import('./store.js?v=2');
+      const { openStore } = await import('./store.js?v=3');
       store = openStore({ onPick: pickUp, onUnavailable: fallback });
       if (current >= 0) {
         const item = pickups[current];

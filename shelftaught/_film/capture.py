@@ -50,7 +50,7 @@ def capture(args):
 
         if args.proof:
             for shot, positions in {
-                "pickup": [0.12, 0.44, 0.60, 0.70, 0.86, 1],
+                "pickup": [0.12, 0.30, 0.40, 0.46, 0.50, 0.56, 0.62, 0.70, 0.86, 1],
                 "exit": [
                     0.08,
                     0.30,
@@ -84,7 +84,7 @@ def capture(args):
             )
         exit_seconds = json.loads((HERE / "exit-cues.json").read_text())["seconds"]
         for shot, seconds, fps, file in [
-            ("pickup", 9, 24, "shelf-pickup.mp4"),
+            ("pickup", 9, 30, "shelf-pickup.mp4"),
             ("exit", exit_seconds, 30, "store-exit.mp4"),
         ]:
             if args.shot and shot != args.shot:

@@ -1,5 +1,16 @@
 (() => {
   'use strict';
+  const resources = document.querySelector('.resources');
+  document.addEventListener('click', (event) => {
+    if (!resources.contains(event.target)) resources.querySelector('details[open]')?.removeAttribute('open');
+  });
+  resources.addEventListener('keydown', (event) => {
+    const open = resources.querySelector('details[open]');
+    if (event.key === 'Escape' && open) {
+      open.open = false;
+      open.querySelector('summary').focus();
+    }
+  });
   // Browser PDF viewers interpret page= as a page number within the document.
   document.querySelectorAll('a[data-pdf-page]').forEach((link) => {
     link.hash = 'page=' + link.dataset.pdfPage;
@@ -129,6 +140,7 @@
   const film = document.getElementById('method-film');
   if (!film.canPlayType('video/mp4')) return;
   document.querySelectorAll('[data-seek]').forEach((link) => {
+    link.hash = 't=' + link.dataset.seek;
     link.addEventListener('click', (event) => {
       if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       event.preventDefault();

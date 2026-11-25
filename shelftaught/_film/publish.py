@@ -13,7 +13,7 @@ import numpy as np
 from narration import PRONUNCIATION, checkout_sounds
 
 PAGE = Path(__file__).resolve().parents[1]
-MEDIA = "./assets/shelftaught-explainer.mp4?v=4"
+MEDIA = "./assets/shelftaught-explainer.mp4?v=5"
 
 
 def stamp(value):
@@ -115,6 +115,13 @@ def write(work):
     a = source.index("<ol>", section) + 4
     b = source.index("</ol>", a)
     source = source[:a] + "\n" + "\n".join(items) + "\n        " + source[b:]
+    figure = next(chapter for chapter in scenes if chapter["title"].startswith("Figure 1."))
+    start = figure["start"]
+    source = re.sub(
+        r'<a id="pipeline-film"[^>]*>',
+        f'<a id="pipeline-film" href="{MEDIA}" data-seek="{start:.3f}">',
+        source,
+    )
     path.write_text(source)
 
 

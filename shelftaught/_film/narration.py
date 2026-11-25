@@ -9,10 +9,12 @@ import numpy as np
 import onnxruntime as ort
 from kokoro_onnx import Kokoro
 
+PAPER_TITLE = "Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval"
 CHAPTERS = [
     (
-        "Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval",
+        PAPER_TITLE,
         [
+            PAPER_TITLE + ".",
             "Suppose a shopper picks up one package from a shelf of almost identical products. How does the store know exactly what to put on the bill?",
         ],
     ),
@@ -38,6 +40,17 @@ CHAPTERS = [
             "On its first day, a new product may have a description and one catalog picture. The store can already search for it, even though nobody has labeled a checkout photograph of it.",
             "As people shop, the camera collects views of the new package under store lighting and in different hands. These views show what the catalog picture leaves out. The store still has no product label for each frame.",
             "Why not just fine-tune the retriever? Labels from brands the store already sells help it recognize groceries. But those labels never show it the new brand’s box in a shopper’s hand. ShelfTaught keeps the retriever frozen and uses the new, unlabeled views to train its reranker. First we need a likely product label for each view.",
+        ],
+    ),
+    (
+        "Figure 1. Inside ShelfTaught",
+        [
+            "Figure one has two rows. The top follows a pickup through checkout. The bottom shows how the slow thinker learned to recognize the package.",
+            "Start with the pinto beans below. The teacher compares the frame with ten descriptions. If several candidates remain on the preliminary shortlist, a second question adds their catalog pictures.",
+            "The four shaded circles are evidence: two teacher answers, retrieval scores, and the frame embedding. The white circle is what the label model infers: which product is in the frame?",
+            "Option A, refried pinto beans, clears ninety percent, and a source named it first. That gives us one training example. Follow its arrow to the slow thinker.",
+            "At the top, a different shopper holds boxed garbanzo beans. The frozen retriever ranks the can first. A single candidate, or too few training examples for its first choice, would end the search here.",
+            "Here three entries remain and the first has enough examples. Matching image patches to description tokens puts the box first, with about ninety-two percent probability. The teacher stays offline.",
         ],
     ),
     (
@@ -88,6 +101,7 @@ CHAPTERS = [
 ]
 
 PRONUNCIATION = {
+    "Label-Free Open-Catalog": "Label Free Open Catalog",
     "camera-based": "camera based",
     "vision-language": "vision language",
     "ShelfTaught": "Shelf Taught",
@@ -187,7 +201,7 @@ def record(model, voices, work):
                     {"text": passage, "start": begin, "end": output.getnframes() / rate}
                 )
                 if j + 1 < len(passages):
-                    pause(0.34)
+                    pause(0.72 if i == 0 else 0.34)
             pause(2.0 if i == len(CHAPTERS) - 1 else 0.72)
             chapter["end"] = output.getnframes() / rate
             timeline.append(chapter)

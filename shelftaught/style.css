@@ -103,14 +103,12 @@ b {
   font-weight: 600;
 }
 button,
-select,
-.resources a {
+select {
   border: 1px solid #a5abb1;
   border-radius: 3px;
 }
 button:not(:disabled):hover,
-select:hover,
-.resources a:hover {
+select:hover {
   border-color: var(--ink);
 }
 .skip {
@@ -199,36 +197,52 @@ h1 .keep {
   white-space: nowrap;
 }
 .resources {
+  position: relative;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.55rem;
   margin-top: 1.15rem;
 }
-.resources a,
-.resources button {
+.resource-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.55rem;
-  padding: 0.31rem 1.1rem;
+  gap: 0.46rem;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.95rem;
+  background: white;
+  border: 1px solid #a5abb1;
+  border-radius: 3px;
+  color: var(--ink);
+  cursor: pointer;
   font-size: 0.94rem;
   line-height: 1.35;
+  list-style: none;
   text-decoration: none;
+  transition: background 120ms, border-color 120ms;
 }
-.resources a {
-  color: var(--ink);
-}
-.resources a:first-child {
-  background: var(--ink);
-  color: white;
+.resource-link::-webkit-details-marker { display: none; }
+.resource-link:is(:hover, :focus-visible) {
+  background: #f4f5f5;
   border-color: var(--ink);
 }
-.resources a:first-child:hover {
-  background: #363b40;
+.resource-link:active, .resources details[open] > summary {
+  background: #e9ebed;
+  border-color: var(--ink);
 }
-.resources button {
-  border-color: #c6c9cd;
+.resource-link :is(svg, img) {
+  height: 1.2rem;
+  width: 1.2rem;
+  flex: none;
+}
+.resource-note {
+  position: absolute;
+  inset: calc(100% + 0.45rem) 0 auto;
+  color: var(--muted);
+  font-size: 0.91rem;
+  line-height: 1.35;
+  text-align: center;
 }
 .teaser {
   max-width: 54rem;
@@ -958,10 +972,17 @@ pre {
   .venue {
     font-size: 0.93rem;
   }
-  .resources a,
-  .resources button {
-    padding: 0.3rem 0.77rem;
-    min-height: 2.35rem;
+  .resources {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    gap: 0.5rem;
+  }
+  .resource-link {
+    width: 100%;
+    padding-inline: 0.58rem;
+  }
+  .paper-head:has(.resources details[open]) {
+    padding-bottom: 1.2rem;
   }
   .teaser-art {
     grid-template-columns: 1fr;
