@@ -3,304 +3,219 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f7ef">
-  <meta name="description" content="ShelfTaught learns to distinguish newly stocked grocery products from unlabeled store frames. Read the WACV workshop paper and try the retrieval quiz.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval</title>
+  <meta name="description" content="ShelfTaught uses unlabeled store frames to distinguish newly stocked products. Step through the paper’s algorithm and inspect the predictions on individual frames.">
   <meta name="author" content="Emmanuel G. Maminta, Rowel O. Atienza">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ShelfTaught · Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval">
-  <meta property="og:description" content="A box, a can, and two very close scores. Explore how unlabeled store frames help distinguish look-alike products.">
+  <meta property="og:title" content="Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval">
+  <meta property="og:description" content="Emmanuel G. Maminta and Rowel O. Atienza. Oral presentation at the Physical Retail AI Workshop, WACV 2027.">
   <meta property="og:url" content="https://egmaminta.github.io/shelftaught/">
   <meta property="og:image" content="https://egmaminta.github.io/shelftaught/assets/preview.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta name="citation_title" content="Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval">
+  <meta name="citation_author" content="Maminta, Emmanuel G.">
+  <meta name="citation_author" content="Atienza, Rowel O.">
+  <meta name="citation_conference_title" content="Physical Retail AI Workshop at WACV 2027">
+  <meta name="citation_pdf_url" content="https://egmaminta.github.io/shelftaught/assets/shelftaught.pdf">
   <link rel="canonical" href="https://egmaminta.github.io/shelftaught/">
   <link rel="preconnect" href="https://cdn.openai.com" crossorigin>
   <link rel="preload" href="https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./style.css">
-  <link rel="icon" href="./assets/icon.png" sizes="64x64" type="image/png">
+  <link rel="stylesheet" href="./style.css?v=2">
+  <link rel="icon" href="./assets/icon.png" type="image/png">
+  <script src="./trace.js" defer></script>
+  <script src="./algorithm.js" defer></script>
   <script src="./data.js" defer></script>
-  <script src="./site.js" defer></script>
-  <title>ShelfTaught · Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval</title>
+  <script src="./site.js?v=2" defer></script>
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a class="wordmark" href="#home"><i aria-hidden="true" class="barcode"></i>ShelfTaught</a>
-      <nav aria-label="Page sections">
-        <a href="#abstract">Abstract</a>
-        <a href="#walkthrough">Explainer</a>
-        <a href="#quiz">Shelf quiz</a>
-        <a href="#results">Results</a>
-      </nav>
-      <a class="nav-paper" href="./assets/shelftaught.pdf">Paper PDF</a>
-    </div>
-  </header>
-  <main id="main">
-    <section class="hero wrap" id="home" aria-labelledby="title">
-      <div class="hero-copy">
-        <div class="venue">
-          <span class="oral"><i aria-hidden="true"></i>Oral Presentation</span>
-          <a href="https://praw-workshop.github.io/#program">WACV 2027 · PRAW</a>
-        </div>
-        <h1 id="title">Thinking Fast <b>and Slow</b> <span>for Label-Free <b>Open-Catalog</b> Product Retrieval</span></h1>
-        <p class="authors"><a href="https://egmaminta.github.io/">Emmanuel G. Maminta</a><a href="https://roatienza.github.io/">Rowel O. Atienza</a></p>
-        <p class="affiliation">Artificial Intelligence Graduate Program, University of the Philippines Diliman</p>
-        <div class="actions">
-          <a class="button primary" href="./assets/shelftaught.pdf">Read the paper</a>
-          <a class="button outline" href="./assets/supplement.pdf">Supplement</a>
-          <a class="button text-button" href="#quiz">Try the shelf quiz</a>
-        </div>
+  <a href="#abstract" class="skip">Skip to the abstract</a>
+  <main id="home">
+    <header class="paper-head">
+      <h1><span>Thinking Fast and Slow for <span class="keep">Label-Free</span></span> <span><span class="keep">Open-Catalog</span> Product Retrieval</span></h1>
+      <p class="authors"><a href="https://egmaminta.github.io/">Emmanuel G. Maminta</a><a href="https://roatienza.github.io/">Rowel O. Atienza</a></p>
+      <p class="affiliation">Artificial Intelligence Graduate Program, University of the Philippines, Diliman, Quezon City</p>
+      <p class="venue"><a href="https://praw-workshop.github.io/#program">Physical Retail AI Workshop, WACV 2027</a> <span aria-hidden="true">·</span> <strong>Oral Presentation</strong></p>
+      <div class="resources" role="group" aria-label="Paper resources">
+        <a href="./assets/shelftaught.pdf">Paper</a>
+        <a href="./assets/supplement.pdf">Supplement</a>
+        <button disabled type="button">Code (soon)</button>
       </div>
-      <figure class="hero-example">
-        <div class="hero-lab">
-          <div class="lab-cap"><span>GroceryVision</span><span>Held-out brand</span></div>
-          <div class="lab-body">
-            <div class="hero-image">
-              <img src="./assets/beans-frame.webp" alt="A shopper holds a box of 365 Organic Garbanzo Beans. The green band and beans on the front are visible." fetchpriority="high" width="380" height="541">
-              <span class="camera-label">Store frame</span>
-            </div>
-            <div class="hero-decision">
-              <div class="decision-card">
-                <img src="./assets/beans-can.webp" alt="" width="66" height="78">
-                <div><span>Fast thinker</span><strong>Can</strong></div>
-              </div>
-              <div class="trace-line" aria-hidden="true"></div>
-              <div class="decision-card picked">
-                <img src="./assets/beans-box.webp" alt="" width="66" height="78">
-                <div><span>After reranking</span><strong>Box</strong></div>
-              </div>
-              <p>365 Organic<br><em>Garbanzo Beans</em></p>
-            </div>
-          </div>
-        </div>
-        <figcaption>The frozen retriever picks the can. ShelfTaught recovers the box.</figcaption>
-      </figure>
-    </section>
+    </header>
 
-    <section class="abstract-section" id="abstract" aria-labelledby="abstract-title">
-      <div class="wrap section-layout">
-        <header>
-          <h2 id="abstract-title">Abstract</h2>
-          <p class="section-side">Physical Retail AI Workshop<br>January 4, 2027 · 9:00–9:15 a.m.</p>
-          <a class="underlink" href="https://praw-workshop.github.io/#program">Workshop program</a>
-        </header>
-        <div class="abstract-copy">
-          <p>Grocery retrieval systems match a camera frame to catalog texts with a frozen vision-language model (VLM) and a reranker trained on labels. New brands enter an open catalog with text and at most one picture per product, but no labeled frames. Store cameras gradually record unlabeled views as shoppers pick up these products. To adapt from these frames, we propose <strong>ShelfTaught</strong>, a fast thinker (System 1) and slow thinker (System 2) approach.</p>
-          <p>The frozen fast thinker ranks new products at insertion and answers when its calibrated shortlist holds one entry or its top choice has too few training targets. Otherwise the slow thinker matches image patches to tokens in the shortlisted descriptions. An offline VLM teacher answers multiple choice questions about candidate texts, with catalog pictures for ambiguous frames. A label model combines its answers and retrieval scores with a von Mises–Fisher mixture of frame embeddings, balancing assignments across products to select training targets. We calibrate on validation labels across brands and verify packaging cues on unlabeled images from all folds.</p>
-          <p>On held-out brands, Recall@1 rises from 78.7% to 91.2% on GroceryVision, from 94.4% to 95.5% on Retail-786k and from 75.8% to 93.1% on Klasson. TransCLIP with teacher answers reaches 97.0% on Retail-786k. When invoked, reranking adds 0.02% to the image tower’s FLOPs at test time and 1.4% to measured latency.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="wrap motivation" id="motivation" aria-labelledby="motivation-title">
-      <div>
-        <h2 id="motivation-title">Motivation</h2>
-        <p class="big-copy">The shopper picked up the box. Why did the retriever pick the can?</p>
-      </div>
-      <div class="motivation-copy">
-        <p>For a shopper, the flat front and square corners settle it. The retriever sees two descriptions with almost the same words and puts the can ahead by 0.002 cosine points. On GroceryVision, 65% of its errors on new brands pick another product of the same brand.</p>
-        <p>At catalog insertion, the store has a description and sometimes a picture. Later, it also has camera frames of the new products in shoppers’ hands. ShelfTaught uses those frames to train a small reranker. The frozen retriever remains available from the first query.</p>
-      </div>
-    </section>
-
-    <section class="explainer-section" id="walkthrough" aria-labelledby="walkthrough-title">
-      <div class="wrap">
-        <header class="section-heading">
-          <h2 id="walkthrough-title">How the box moves to first place</h2>
-          <p>Follow one checkout frame from the frozen retriever to the reranked answer.</p>
-        </header>
-        <div class="explainer" id="explainer">
-          <div class="chapter-nav" aria-label="Explainer chapters">
-            <button type="button" data-chapter="0" aria-current="step">Rank the catalog</button>
-            <button type="button" data-chapter="1">Collect views</button>
-            <button type="button" data-chapter="2">Build training targets</button>
-            <button type="button" data-chapter="3">Rerank at checkout</button>
-          </div>
-
-          <div class="scene" data-scene="0" id="scene-rank">
-            <div class="scene-copy">
-              <h3>Compare the whole frame.</h3>
-              <p>SigLIP2 embeds the image and each catalog description. It keeps enough candidates to cover 99% of the calibrated probability, up to ten entries.</p>
-              <p>In this frame the can leads the box by a fraction. All three entries survive the shortlist.</p>
-            </div>
-            <div class="scene-art rank-art">
-              <div class="scene-photo">
-                <img src="./assets/beans-frame.webp" alt="Store view of the boxed garbanzo beans." loading="lazy" width="380" height="541">
-              </div>
-              <div class="scene-scores" aria-label="Frozen retriever cosine similarities">
-                <span class="scene-label">Cosine similarity</span>
-                <div class="scene-score" style="--score:95%"><span>Can</span><b>0.220</b></div>
-                <div class="scene-score" style="--score:94%"><span>Box</span><b>0.218</b></div>
-                <div class="scene-score" style="--score:79%"><span>Bag</span><b>0.184</b></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="scene" data-scene="1" id="scene-views" hidden>
-            <div class="scene-copy">
-              <h3>Let the store collect views.</h3>
-              <p>The frozen retriever can rank an entry as soon as its description is in the catalog. The slow thinker needs training targets for the products it will compare.</p>
-              <p>The store already sees different poses, lighting, and partial labels as people handle the products. These frames have no frame-level annotations.</p>
-            </div>
-            <div class="scene-art film-art">
-              <div class="filmstrip">
-                <img src="./assets/sample-1.webp" alt="Unlabeled view of a soup can." loading="lazy" width="140" height="185">
-                <img src="./assets/sample-2.webp" alt="Unlabeled view of a jar of dip." loading="lazy" width="140" height="185">
-                <img src="./assets/sample-3.webp" alt="Unlabeled view of a green carton." loading="lazy" width="140" height="185">
-              </div>
-              <p class="scene-label">Unlabeled training views</p>
-            </div>
-          </div>
-
-          <div class="scene" data-scene="2" id="scene-targets" hidden>
-            <div class="scene-copy">
-              <h3>Check the teacher against the frames.</h3>
-              <p>An offline vision-language teacher chooses among catalog descriptions. On ambiguous frames it gets a second question with reference pictures.</p>
-              <p>Similar views tend to belong together. The label model uses that structure, the retriever’s scores, and the teacher’s answers to select confident training targets.</p>
-            </div>
-            <div class="scene-art cluster-art">
-              <div id="cluster-plot" class="cluster-plot" aria-hidden="true"></div>
-              <p class="scene-label">Illustration · dots are frame embeddings</p>
-            </div>
-          </div>
-
-          <div class="scene" data-scene="3" id="scene-rerank" hidden>
-            <div class="scene-copy">
-              <h3>Compare patches with shortlisted descriptions.</h3>
-              <p>Each image patch takes its best match among the tokens of a candidate description. The slow thinker averages those matches to get a score for the candidate.</p>
-              <p>The fast thinker supplies the image tokens. It answers directly when only one candidate remains or its first choice has too few training targets.</p>
-              <div class="gate-control" id="gate-control" hidden>
-                <div class="gate-heading">
-                  <label for="coverage-slider">Training targets for the can</label>
-                  <output id="coverage-count" for="coverage-slider">8</output>
-                </div>
-                <input type="range" id="coverage-slider" min="0" max="12" value="8" step="1" aria-describedby="gate-note">
-                <p id="gate-note">Try a coverage threshold of five training targets.</p>
-              </div>
-            </div>
-            <div class="scene-art rank-art rerank-art">
-              <div class="scene-photo">
-                <img src="./assets/beans-frame.webp" alt="The same checkout frame with an illustrative image-patch grid." loading="lazy" width="380" height="541">
-                <div class="patch-grid" aria-hidden="true"></div>
-              </div>
-              <div class="scene-scores" aria-label="Reranker probabilities">
-                <span class="scene-label">Reranker probabilities</span>
-                <div class="scene-score win" style="--score:92%"><span>Box</span><b>0.92</b></div>
-                <div class="scene-score" style="--score:5%"><span>Can</span><b>0.05</b></div>
-                <div class="scene-score" style="--score:3%"><span>Bag</span><b>0.03</b></div>
-              </div>
-              <div class="gate-choice" id="gate-choice" aria-live="polite" hidden>
-                <span class="scene-label">Reranker skipped</span>
-                <strong>Can</strong>
-                <p>The retriever keeps its first choice.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="playback">
-            <button id="play-explainer" class="button play" type="button">Play explainer</button>
-            <div class="chapter-progress" aria-hidden="true"><span></span></div>
-            <p id="chapter-count" aria-live="polite">1 of 4</p>
-            <button id="previous-scene" class="button quiet" type="button" disabled>Back</button>
-            <button id="next-scene" class="button quiet" type="button">Next</button>
-          </div>
-        </div>
-        <p class="dark-caption">The garbanzo scores replay Figure 1. The dots and patch grid explain the method schematically.</p>
-      </div>
-    </section>
-
-    <section class="wrap quiz-section" id="quiz" aria-labelledby="quiz-title">
-      <div class="section-heading">
-        <h2 id="quiz-title">Can you beat the fast thinker?</h2>
-        <p>Look at the store frame and choose the exact product. Then compare your answer with both thinkers on three held-out GroceryVision cases.</p>
-      </div>
-      <div class="quiz" id="shelf-quiz">
-        <div class="quiz-toolbar">
-          <div class="quiz-tabs" id="case-buttons" role="group" aria-label="Choose a quiz case"></div>
-          <p id="quiz-tally" class="quiz-tally" aria-live="polite"></p>
-        </div>
-        <div class="quiz-stage">
-          <figure class="quiz-frame">
-            <div class="quiz-image"><img id="quiz-photo" src="./assets/jello-frame.webp" alt="A shopper holds a box of Jell-O gelatin." loading="lazy" width="420" height="470"></div>
+    <figure class="teaser wide">
+      <div class="teaser-art">
+        <div class="specimens">
+          <figure class="shop-photo">
+            <img src="./assets/apple-train.webp" width="348" height="348" fetchpriority="high" alt="A bin of red apples photographed in a grocery store.">
             <figcaption>Store frame</figcaption>
           </figure>
-          <div class="quiz-shelf">
-            <h3 id="case-title">Which entry matches the frame?</h3>
-            <div id="case-choices" class="case-choices" role="group" aria-labelledby="case-title"></div>
-            <div id="case-result" class="case-result" aria-live="polite"></div>
+          <div class="references">
+            <figure><img src="./assets/catalog-2.webp" width="190" height="190" alt="Pink Lady catalog photograph"><figcaption>Pink Lady</figcaption></figure>
+            <figure><img src="./assets/catalog-4.webp" width="190" height="190" alt="Royal Gala catalog photograph"><figcaption>Royal Gala</figcaption></figure>
           </div>
         </div>
-        <div class="quiz-footer">
-          <p id="quiz-note">Recorded predictions from Figure 3. Choose an entry to reveal the result.</p>
-          <div class="quiz-actions">
-            <button class="button outline" id="quiz-reset" type="button" hidden>Reset quiz</button>
-            <button class="button primary" id="quiz-next" type="button" hidden>Next case</button>
+        <svg class="teaser-plot" viewBox="0 0 480 218" role="img" aria-labelledby="teaser-graph-title teaser-graph-desc">
+          <title id="teaser-graph-title">Teacher answers and inferred product identity for the same frame</title>
+          <desc id="teaser-graph-desc">With text and then with pictures, the teacher gives Pink Lady 3.8% and 5.9%, and Royal Gala 86.5% and 81.0%. The fitted label model gives Pink Lady 99.5% and Royal Gala 0.4%. Other candidates are omitted.</desc>
+          <g class="guides"><path d="M48 28H362 M48 100H362 M48 172H362"/><path class="vertical-guide" d="M55 28V172 M199 28V172 M347 28V172"/></g>
+          <g class="axis-text" text-anchor="end"><text x="39" y="32">100%</text><text x="39" y="104">50%</text><text x="39" y="176">0%</text></g>
+          <g class="series-pink"><path class="series" d="M55 166.5L199 163.5L347 28.8"/><circle cx="55" cy="166.5" r="3.8"/><circle cx="199" cy="163.5" r="3.8"/><circle cx="347" cy="28.8" r="4.5"/><text x="356" y="33">Pink Lady</text><text x="356" y="51" class="graph-value">99.5%</text></g>
+          <g class="series-gala"><path class="series" d="M55 47.4L199 55.4L347 171.4"/><rect x="51.6" y="44" width="6.8" height="6.8"/><rect x="195.6" y="52" width="6.8" height="6.8"/><rect x="343.4" y="167.8" width="7.2" height="7.2"/><text x="356" y="158">Royal Gala</text><text x="356" y="176" class="graph-value">0.4%</text></g>
+          <g class="axis-stage" text-anchor="middle"><text x="55" y="196">Teacher</text><text x="55" y="212">text</text><text x="199" y="196">Teacher</text><text x="199" y="212">text + pictures</text><text x="347" y="196">Label model</text></g>
+        </svg>
+      </div>
+      <figcaption>Both teacher answers favor Royal Gala. Across other views of these apples, the teacher often makes the same mistake. The label model assigns 99.5% probability to Pink Lady, the correct variety. <a href="#label-model">Inspect this frame.</a></figcaption>
+    </figure>
+
+    <nav class="contents" aria-label="On this page"><a href="#abstract">Abstract</a><a href="#motivation">Motivation</a><a href="#walkthrough">Algorithm 1</a><a href="#results">Results</a><a href="#quiz">Shelf quiz</a><a href="#cite">BibTeX</a></nav>
+
+    <section id="abstract" class="section prose">
+      <h2>Abstract</h2>
+      <p>Grocery retrieval systems match a camera frame to catalog texts with a frozen vision-language model (VLM) and a reranker trained on labels. New brands enter an open catalog with text and at most one picture per product, but no labeled frames. Store cameras gradually record unlabeled views as shoppers pick up these products. To adapt from these frames, we propose <strong>ShelfTaught</strong>, a fast thinker (System 1) and slow thinker (System 2) approach.</p>
+      <p>The frozen fast thinker ranks new products at insertion and answers when its calibrated shortlist holds one entry or its top choice has too few training targets. Otherwise the slow thinker matches image patches to tokens in the shortlisted descriptions. An offline VLM teacher answers multiple choice questions about candidate texts, with catalog pictures for ambiguous frames. A label model combines its answers and retrieval scores with a von Mises–Fisher mixture of frame embeddings, balancing assignments across products to select training targets. We calibrate on validation labels across brands and verify packaging cues on unlabeled images from all folds.</p>
+      <p>On held-out brands, Recall@1 rises from 78.7% to 91.2% on GroceryVision, from 94.4% to 95.5% on Retail-786k and from 75.8% to 93.1% on Klasson. TransCLIP with teacher answers reaches 97.0% on Retail-786k. When invoked, reranking adds 0.02% to the image tower’s FLOPs at test time and 1.4% to measured latency.</p>
+    </section>
+
+    <section id="motivation" class="section prose">
+      <h2>Motivation</h2>
+      <p>A shopper picks up a box of 365 Organic Garbanzo Beans. The frozen retriever ranks the can first and the box second. Both descriptions contain the right brand and the right food. Checkout requires the right package. On GroceryVision, 65% of the retriever’s errors on new brands are substitutions within the same brand.</p>
+      <p>A store can rank new products from their descriptions on the day they arrive. Over time, its cameras also record those products in shoppers’ hands. We use these unlabeled views to train a small reranker. Seen-brand supervision alone improves retrieval, but it gives the reranker no examples of the newly stocked packages.</p>
+    </section>
+
+    <section id="walkthrough" class="section wide">
+      <div class="prose">
+        <h2>Inside Algorithm 1</h2>
+        <p>A <strong>label model</strong> estimates the unknown product in each training frame. It observes which entries the retriever ranks highly, how the teacher answers two questions, and which other store frames look similar. A teacher that repeatedly calls Pink Lady apples Royal Gala can still be informative once the model learns that pattern.</p>
+        <p>The first five steps below follow one Klasson training frame. The last step applies the trained reranker to a different photograph. The scores come from the experiment.</p>
+      </div>
+      <div class="algorithm" id="algorithm">
+        <nav class="algorithm-nav" aria-label="Algorithm steps" hidden>
+          <h3>Offline adaptation</h3>
+          <ol>
+            <li><button type="button" data-step="0" aria-current="step">Rank the catalog</button></li>
+            <li><button type="button" data-step="1">Ask the teacher</button></li>
+            <li><button type="button" data-step="2">Fit the label model</button></li>
+            <li><button type="button" data-step="3">Select training targets</button></li>
+            <li><button type="button" data-step="4">Train the reranker</button></li>
+          </ol>
+          <h3>Inference</h3>
+          <ol start="6"><li><button type="button" data-step="5">Identify a new frame</button></li></ol>
+          <a class="algorithm-source" href="./assets/shelftaught.pdf#page=4">Algorithm in the paper</a>
+        </nav>
+        <div class="algorithm-figure" id="label-model">
+          <div id="step-content">
+            <h3>Rank the catalog</h3>
+            <p>Frozen SigLIP2 compares the frame with all 81 catalog descriptions. Pink Lady ranks first. The teacher receives the ten highest scoring descriptions.</p>
+          </div>
+          <p class="instruction" id="current-line" hidden></p>
+          <div class="transport" hidden>
+            <button id="play" type="button">Play</button>
+            <button id="back" type="button" disabled>Back</button>
+            <span id="position" role="status">Step 1 of 6</span>
+            <button id="next" type="button">Next</button>
           </div>
         </div>
-        <noscript><p class="no-script">The fast thinker chose orange gelatin. The slow thinker recovered the red gelatin. Enable JavaScript to try the quiz.</p></noscript>
+      </div>
+      <noscript><p class="prose">For this training photo, the teacher chooses Royal Gala twice. The fitted model retains Pink Lady as a training target. In a separate test photo the reranker corrects the retriever’s Royal Gala prediction. The equations, figures, and complete algorithm are in the paper.</p></noscript>
+    </section>
+
+    <section id="results" class="section reading">
+      <div class="prose">
+        <h2>Results</h2>
+        <p>We report the percentage of held-out queries for which the first catalog entry is correct (Recall@1). Each dataset has ten brand splits. We average three reranker runs per split for the main result.</p>
+      </div>
+      <table class="research-table" id="benchmark-table">
+        <caption>Retrieval on held-out brands, Recall@1 (%)</caption>
+        <thead><tr><th scope="col">Method</th><th scope="col">Grocery<wbr>Vision</th><th scope="col">Retail-<wbr>786k</th><th scope="col">Klasson</th></tr></thead>
+        <tbody>
+          <tr class="table-group"><th colspan="4" scope="rowgroup">Frozen retrieval and adaptation on unlabeled frames</th></tr>
+          <tr><th scope="row">Frozen SigLIP2</th><td>78.7</td><td>94.4</td><td>75.8</td></tr>
+          <tr><th scope="row">TDA</th><td>79.7</td><td>94.7</td><td>77.7</td></tr>
+          <tr><th scope="row">Tip-Adapter cache</th><td>78.5</td><td>93.1</td><td>70.9</td></tr>
+          <tr><th scope="row">TransCLIP</th><td>87.7</td><td>95.5</td><td>84.9</td></tr>
+          <tr><th scope="row">ReCLIP</th><td>82.3</td><td>94.9</td><td>85.5</td></tr>
+          <tr><th scope="row">OTTER</th><td>76.5</td><td>83.9</td><td>75.8</td></tr>
+          <tr><th scope="row">DPA</th><td>84.6</td><td>95.7</td><td>81.4</td></tr>
+          <tr><th scope="row">TransCLIP + teacher</th><td>89.3</td><td><strong>97.0</strong></td><td>86.3</td></tr>
+        </tbody>
+        <tbody>
+          <tr class="table-group"><th colspan="4" scope="rowgroup">Supervised transfer from seen brands</th></tr>
+          <tr><th scope="row">ROADMAP</th><td>47.2</td><td>73.8</td><td>29.4</td></tr>
+          <tr><th scope="row">CSO</th><td>65.9</td><td>79.3</td><td>38.9</td></tr>
+          <tr><th scope="row">PEFT-DML</th><td>61.5</td><td>82.2</td><td>70.8</td></tr>
+          <tr><th scope="row">TCM</th><td>54.0</td><td>72.3</td><td>45.8</td></tr>
+          <tr><th scope="row">UDON</th><td>60.3</td><td>78.6</td><td>60.0</td></tr>
+          <tr><th scope="row">DoRA fine-tune</th><td>85.2</td><td>95.2</td><td>85.9</td></tr>
+        </tbody>
+        <tbody>
+          <tr class="table-group"><th colspan="4" scope="rowgroup">Other training and inference settings</th></tr>
+          <tr><th scope="row">Cat2Real (external pretraining)</th><td>83.2</td><td>84.9</td><td>84.7</td></tr>
+          <tr><th scope="row">Fast thinker + teacher at test time</th><td>88.7</td><td>95.1</td><td>85.1</td></tr>
+        </tbody>
+        <tbody>
+          <tr><th scope="row">ShelfTaught</th><td><strong>91.2</strong></td><td>95.5</td><td><strong>93.1</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="prose">
+        <p>Teacher-assisted TransCLIP uses the same offline first answers and clusters all test queries together. ShelfTaught answers one query at a time. It reaches 91.2% versus 89.3% on GroceryVision and 93.1% versus 86.3% on Klasson. On Retail-786k, the frozen retriever already reaches 94.4%, and teacher-assisted TransCLIP leads at 97.0%.</p>
+        <p>TDA, TransCLIP and OTTER adapt on test frames. DPA uses the training and validation folds, and ReCLIP uses all three folds. The Tip-Adapter cache stores confident teacher predictions. Supervised transfer methods train on labeled products from other brands. Per-draw calibration results and standard deviations are in <a href="./assets/shelftaught.pdf#page=5">Table 1</a>.</p>
+        <h3>Which parts of the label model matter?</h3>
+        <p>The feature mixture supplies more usable labels. On Klasson, removing it leaves target accuracy at 92.9%, but reduces the fraction of frames retained from 89.8% to 64.2%. The resulting reranker loses 7.5 percentage points of recall. Fitting the teacher’s confusion matrices adds 0.5 points on the same dataset.</p>
+      </div>
+      <table class="research-table ablations" id="ablation-table">
+        <caption>Training target accuracy and held-out Recall@1 (%), one reranker run per split</caption>
+        <thead>
+          <tr><th rowspan="2" scope="col">Label model</th><th colspan="2" scope="colgroup">Target accuracy</th><th colspan="2" scope="colgroup">Held-out Recall@1</th></tr>
+          <tr><th scope="col">Grocery<wbr>Vision</th><th scope="col">Klasson</th><th scope="col">Grocery<wbr>Vision</th><th scope="col">Klasson</th></tr>
+        </thead>
+        <tbody>
+          <tr class="table-group"><th colspan="5" scope="rowgroup">ShelfTaught and ablations</th></tr>
+          <tr><th scope="row">Full label model</th><td>92.7</td><td><strong>92.9</strong></td><td><strong>91.4</strong></td><td><strong>93.1</strong></td></tr>
+          <tr><th scope="row">Without equipartition</th><td>92.0</td><td>89.3</td><td>90.7</td><td>88.7</td></tr>
+          <tr><th scope="row">Without feature mixture</th><td>91.5</td><td><strong>92.9</strong></td><td>85.0</td><td>85.6</td></tr>
+          <tr><th scope="row">Without picture question</th><td>89.9</td><td>89.5</td><td>90.0</td><td>88.9</td></tr>
+          <tr><th scope="row">Without first question</th><td>91.5</td><td>90.7</td><td>90.8</td><td>92.8</td></tr>
+          <tr><th scope="row">Without teacher</th><td>90.0</td><td>88.0</td><td>86.5</td><td>84.4</td></tr>
+          <tr><th scope="row">Fixed confusion matrices</th><td><strong>93.0</strong></td><td>90.2</td><td>91.2</td><td>92.6</td></tr>
+          <tr><th scope="row">Score fusion</th><td>87.8</td><td>79.5</td><td>87.1</td><td>78.3</td></tr>
+        </tbody>
+        <tbody>
+          <tr class="table-group"><th colspan="5" scope="rowgroup">Other label models</th></tr>
+          <tr><th scope="row">Majority vote</th><td>87.4</td><td>78.5</td><td>89.4</td><td>77.5</td></tr>
+          <tr><th scope="row">Dawid–Skene</th><td>87.6</td><td>80.7</td><td>87.4</td><td>83.3</td></tr>
+          <tr><th scope="row">GLAD</th><td>89.3</td><td>78.6</td><td>89.2</td><td>81.1</td></tr>
+          <tr><th scope="row">Snorkel</th><td>88.0</td><td>77.8</td><td>89.3</td><td>80.5</td></tr>
+          <tr><th scope="row">Hyper label model</th><td>88.7</td><td>81.0</td><td>89.4</td><td>80.9</td></tr>
+        </tbody>
+      </table>
+      <div class="prose">
+        <p>Majority vote counts the sources’ first choices. Dawid–Skene learns which entries each source tends to confuse. ShelfTaught also uses the teacher’s answer probabilities and similarities among store frames. With the same number of training targets, their rerankers reach 77.5%, 83.3%, and 93.1% on Klasson, respectively. Target accuracy is measured on validation frames of seen brands. See <a href="./assets/shelftaught.pdf#page=8">Table 2</a>.</p>
+        <h3>Inference cost and cold start</h3>
+        <p>The reranker reuses the frozen image features. On frames it handles, it adds 0.24 GFLOPs to the image tower’s 1,393 GFLOPs and 0.22 ms to its 16.2 ms measured latency. The 27B teacher runs offline. With zero retained frames per new GroceryVision product, the coverage gate gives 77.9% recall, compared with 41.5% for ungated reranking and 78.7% for the frozen retriever.</p>
       </div>
     </section>
 
-    <section class="results-section" id="results" aria-labelledby="results-title">
-      <div class="wrap">
-        <header class="section-heading">
-          <h2 id="results-title">Results</h2>
-          <p>Recall@1 on held-out brands, averaged over ten brand splits and three training runs per split for ShelfTaught. It improves the frozen retriever on 29 of 30 splits.</p>
-        </header>
-        <div class="results-grid">
-          <div class="result-chart">
-            <div id="dataset-buttons" class="dataset-buttons" role="group" aria-label="Benchmark for the comparison"></div>
-            <div id="dataset-chart" class="dataset-chart" aria-live="polite"></div>
-            <noscript><p class="no-script">The full benchmark comparison is shown in the table.</p></noscript>
-          </div>
-          <dl class="efficiency">
-            <div>
-              <dt>0.02%</dt>
-              <dd>Extra test-time FLOPs relative to the image tower when the reranker runs</dd>
-            </div>
-            <div>
-              <dt>+0.22 ms</dt>
-              <dd>Measured latency per reranked frame (about 1.4% over the image tower)</dd>
-            </div>
-            <div>
-              <dt>0.34M</dt>
-              <dd>Trainable parameters in the slow thinker. The teacher runs offline.</dd>
-            </div>
-          </dl>
-        </div>
-        <div class="table-frame">
-          <table id="benchmark-table">
-            <caption>Selected comparisons from Table 1 · Recall@1 (%)</caption>
-            <thead>
-              <tr><th scope="col">Method</th><th scope="col">GroceryVision</th><th scope="col">Retail-786k</th><th scope="col">Klasson</th></tr>
-            </thead>
-            <tbody>
-              <tr data-method="fast"><th scope="row">Fast thinker alone</th><td>78.7</td><td>94.4</td><td>75.8</td></tr>
-              <tr data-method="teacher"><th scope="row">Fast thinker + teacher at test time</th><td>88.7</td><td>95.1</td><td>85.1</td></tr>
-              <tr data-method="transclip"><th scope="row">TransCLIP + teacher, all frames</th><td>89.3</td><td><strong>97.0</strong></td><td>86.3</td></tr>
-              <tr data-method="shelftaught"><th scope="row">ShelfTaught</th><td><strong>91.2</strong></td><td>95.5</td><td><strong>93.1</strong></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="findings">
-          <div>
-            <h3>Where it helps</h3>
-            <p>The largest gains are on GroceryVision and Klasson, where the frozen retriever often confuses variants of the same brand. On Retail-786k, teacher-assisted TransCLIP reaches 97.0% and leads ShelfTaught’s 95.5%.</p>
-          </div>
-          <div>
-            <h3>When views are scarce</h3>
-            <p>With zero retained frames per new product on GroceryVision, the coverage gate raises recall from 41.5% to 77.9%, close to the frozen retriever’s 78.7%. The main results use shared validation calibration. The supplement reports draw-isolated results and the effect of uneven product frequencies.</p>
-          </div>
-        </div>
+    <section id="quiz" class="section reading">
+      <div class="prose">
+        <h2>Shelf quiz</h2>
+        <p>Which catalog entry matches the store frame? Choose an entry to see the recorded predictions from both models. These three GroceryVision examples include one reranking error.</p>
       </div>
+      <div id="quiz-controls" hidden>
+        <label for="quiz-example">Store frame</label> <select id="quiz-example"></select>
+        <span id="quiz-score"></span>
+      </div>
+      <div id="quiz-display"></div>
+      <div id="quiz-answer" role="status"></div>
+      <div id="quiz-actions" hidden>
+        <button type="button" id="quiz-next">Next frame</button>
+        <button type="button" id="quiz-reset">Start over</button>
+      </div>
+      <noscript><p class="prose">The recorded cases and their predictions are shown in <a href="./assets/shelftaught.pdf#page=7">Figure 3</a>.</p></noscript>
     </section>
-
-    <section class="wrap citation-section" id="cite" aria-labelledby="citation-title">
-      <div class="citation-heading">
-        <h2 id="citation-title">BibTeX</h2>
-        <button type="button" id="copy-citation" class="button outline" hidden>Copy BibTeX</button>
-      </div>
+    <section class="section prose citation" id="cite">
+      <div class="citation-title"><h2>BibTeX</h2><button type="button" id="copy" hidden>Copy</button></div>
       <pre><code id="bibtex">@inproceedings{maminta2027shelftaught,
   title={Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval},
   author={Maminta, Emmanuel G. and Atienza, Rowel O.},
@@ -309,11 +224,5 @@
 }</code></pre>
     </section>
   </main>
-  <footer class="site-footer">
-    <div class="wrap footer-content">
-      <p>Emmanuel G. Maminta and Rowel O. Atienza</p>
-      <div><a href="https://praw-workshop.github.io/">Physical Retail AI Workshop</a><a href="#home">Back to top</a></div>
-    </div>
-  </footer>
 </body>
 </html>
