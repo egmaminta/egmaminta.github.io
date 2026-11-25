@@ -13,7 +13,7 @@ import numpy as np
 from narration import PRONUNCIATION, checkout_sounds
 
 PAGE = Path(__file__).resolve().parents[1]
-MEDIA = "./assets/shelftaught-explainer.mp4?v=3"
+MEDIA = "./assets/shelftaught-explainer.mp4?v=4"
 
 
 def stamp(value):

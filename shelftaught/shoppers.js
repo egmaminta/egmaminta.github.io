@@ -71,7 +71,7 @@ function arm(parent, side, color) {
   const thumb = ellipsoid(hand, color.skin, -side * 0.038, -0.009, 0.011, 0.016, 0.034, 0.017);
   thumb.rotation.z = -side * 0.48;
 
-  return (goal, grip = 0) => {
+  function solve(goal, grip = 0) {
     const s = v(side * 0.196, 1.418, 0.004);
     const axis = goal.clone().sub(s);
     const distance = Math.min(0.668, Math.max(0.04, axis.length()));
@@ -94,7 +94,8 @@ function arm(parent, side, color) {
     elbowCap.position.copy(e);
     hand.position.copy(wrist);
     hand.rotation.set(-0.12 + grip * 0.53, side * grip * 0.72, -side * (0.1 + grip * 0.19));
-  };
+  }
+  return { hand, forearm: lower, solve };
 }
 
 function leg(parent, side, color) {
@@ -223,12 +224,19 @@ export function makeShopper(scene, variant = 0) {
     for (const [i, side] of [-1, 1].entries()) {
       const goal = i ? left : right;
       const rest = v(side * 0.235, 0.925, 0.078 + Math.sin(phase + i * Math.PI) * stride * 0.23);
-      arms[i](goal ? torso.worldToLocal(goal.clone()) : rest, goal ? grasp : 0);
+      arms[i].solve(goal ? torso.worldToLocal(goal.clone()) : rest, goal ? grasp : 0);
       legs[i](phase + i * Math.PI, stride);
     }
   }
   pose();
-  return { root, pose };
+  return {
+    root,
+    pose,
+    head,
+    leftHand: arms[1].hand,
+    rightHand: arms[0].hand,
+    forearms: arms.map((arm) => arm.forearm),
+  };
 }
 
 export const pickupDuration = 4.3;

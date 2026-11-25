@@ -2,6 +2,7 @@
 
 import argparse
 import base64
+import json
 import os
 import subprocess
 from pathlib import Path
@@ -50,8 +51,26 @@ def capture(args):
         if args.proof:
             for shot, positions in {
                 "pickup": [0.12, 0.44, 0.60, 0.70, 0.86, 1],
-                "exit": [0.08, 0.31, 0.48, 0.53, 0.68, 0.74, 0.94],
+                "exit": [
+                    0.08,
+                    0.30,
+                    0.38,
+                    0.405,
+                    0.43,
+                    0.455,
+                    0.485,
+                    0.52,
+                    0.55,
+                    0.59,
+                    0.64,
+                    0.672,
+                    0.70,
+                    0.74,
+                    0.94,
+                ],
             }.items():
+                if args.shot and shot != args.shot:
+                    continue
                 for t in positions:
                     (args.proof / f"{shot}-{round(100 * t):02d}.jpg").write_bytes(frame(shot, t))
             browser.close()
@@ -59,11 +78,17 @@ def capture(args):
 
         import io
 
-        Image.open(io.BytesIO(frame("poster", 0))).save(
-            HERE.parent / "assets/checkout-aisle.webp", quality=92
-        )
-        for shot, seconds, file in [("pickup", 9, "shelf-pickup.mp4"), ("exit", 18, "store-exit.mp4")]:
-            fps = 24
+        if args.shot in (None, "pickup"):
+            Image.open(io.BytesIO(frame("poster", 0))).save(
+                HERE.parent / "assets/checkout-aisle.webp", quality=92
+            )
+        exit_seconds = json.loads((HERE / "exit-cues.json").read_text())["seconds"]
+        for shot, seconds, fps, file in [
+            ("pickup", 9, 24, "shelf-pickup.mp4"),
+            ("exit", exit_seconds, 30, "store-exit.mp4"),
+        ]:
+            if args.shot and shot != args.shot:
+                continue
             encoder = subprocess.Popen(
                 [
                     "ffmpeg",
@@ -107,6 +132,9 @@ def capture(args):
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--url", default="http://127.0.0.1:8772/shelftaught/_film/camera.html")
-    p.add_argument("--fonts", type=Path, help="Optional directory of cached OpenAI Sans WOFF2 files")
+    p.add_argument(
+        "--fonts", type=Path, help="Optional directory of cached OpenAI Sans WOFF2 files"
+    )
     p.add_argument("--proof", type=Path, help="Write representative frames for review")
+    p.add_argument("--shot", choices=["pickup", "exit"], help="Film just this sequence")
     capture(p.parse_args())

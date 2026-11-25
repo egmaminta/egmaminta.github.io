@@ -24,8 +24,9 @@
   <script type="module">
     import * as T from '../three-r180/three.module.min.js';
     import { buildRoom, lightRoom } from '../store.js';
-    import { stageShoppers, captureAt } from '../shoppers.js';
+    import { stageShoppers, captureAt, makeShopper } from '../shoppers.js';
     import { exitSequence } from './exit.js';
+    import { focusLens } from './focus.js';
     await Promise.all(['400', '600'].map((w) => document.fonts.load(w + ' 16px "OpenAI Sans"')));
     const canvas = document.querySelector('canvas');
     const renderer = new T.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
@@ -38,11 +39,26 @@
     const { heroes } = buildRoom(scene);
     const actors = stageShoppers(scene, heroes);
     const camera = new T.PerspectiveCamera(44, 16 / 9, 0.018, 45);
-    const leave = exitSequence(scene, actors.people.beans, heroes.beans);
+    const cues = await (await fetch('./exit-cues.json')).json();
+    let exterior, leave, focus;
     const s = (n) => T.MathUtils.smoothstep(n, 0, 1);
     window.frameAt = (shot, u) => {
-      if (shot === 'exit') leave(camera, u);
-      else if (shot === 'poster') {
+      if (exterior) exterior.visible = shot === 'exit';
+      actors.people.beans.root.visible = heroes.beans.visible = shot !== 'exit';
+      if (shot === 'exit') {
+        if (!leave) {
+          exterior = new T.Group();
+          scene.add(exterior);
+          const carton = heroes.beans.clone();
+          carton.visible = true;
+          exterior.add(carton);
+          leave = exitSequence(exterior, makeShopper(exterior), carton, cues);
+          focus = focusLens(renderer);
+        }
+        const { distance, radius } = leave(camera, u);
+        focus(scene, camera, distance, radius);
+        return;
+      } else if (shot === 'poster') {
         actors.reset('beans', heroes.beans);
         actors.reset('ranch', heroes.ranch);
         camera.position.set(0.15, 1.65, 4.05);

@@ -37,7 +37,7 @@ CHAPTERS = [
         [
             "On its first day, a new product may have a description and one catalog picture. The store can already search for it, even though nobody has labeled a checkout photograph of it.",
             "As people shop, the camera collects views of the new package under store lighting and in different hands. These views show what the catalog picture leaves out. The store still has no product label for each frame.",
-            "Why not just fine-tune the retriever? Labels from brands the store already sells help it recognize groceries. But those labels never show it the new brand’s box in a shopper’s hand. We keep the retriever frozen and use the new, unlabeled views to train a small reranker. First we need a likely product label for each view.",
+            "Why not just fine-tune the retriever? Labels from brands the store already sells help it recognize groceries. But those labels never show it the new brand’s box in a shopper’s hand. ShelfTaught keeps the retriever frozen and uses the new, unlabeled views to train its reranker. First we need a likely product label for each view.",
         ],
     ),
     (
@@ -57,9 +57,9 @@ CHAPTERS = [
         ],
     ),
     (
-        "What the reranker looks at",
+        "Inside ShelfTaught’s reranker",
         [
-            "Those examples train the slow thinker. It takes the image patches already computed by the frozen retriever. For each patch, it finds the strongest match among the tokens of a candidate description.",
+            "Those examples train ShelfTaught’s reranker, the slow thinker. It takes the image patches already computed by the frozen retriever. For each patch, it finds the strongest match among the tokens of a candidate description.",
             "Move to another patch and the best match can change. Averaging these best matches gives one score for the description. The same calculation scores its competitors.",
         ],
     ),
@@ -73,9 +73,9 @@ CHAPTERS = [
     (
         "What changes when the model sees the new products?",
         [
-            "On GroceryVision, fine-tuning on labeled brands raises first-choice accuracy from 78.7 to 85.2 percent on new brands. Training our reranker on unlabeled views of those new products brings it to 91.2 percent.",
+            "On GroceryVision, fine-tuning on labels from previously stocked brands raises first-choice accuracy from 78.7 to 85.2 percent on new brands. ShelfTaught learns from unlabeled views of the new products and reaches 91.2 percent.",
             "On Klasson, fine-tuning reaches 85.9 percent. ShelfTaught reaches 93.1. On Retail-786k the difference is small: 95.2 and 95.5 percent. TransCLIP with teacher answers leads there at 97.0.",
-            "What if we give fine-tuning the very same labels our model inferred? On GroceryVision the adapted retriever reaches 92.3 percent, slightly ahead of our frozen retriever and reranker. It trains 63.5 million parameters and takes about nine times as long. Our reranker trains just 340 thousand parameters and reuses the store’s existing image features.",
+            "ShelfTaught updates 340 thousand parameters in its reranker and reuses the store’s image features. Fine-tuning the image tower on the same training targets updates 63.5 million adapter parameters. On GroceryVision that takes about nine times as long.",
         ],
     ),
     (
@@ -105,7 +105,6 @@ PRONUNCIATION = {
     "85.2": "eighty-five point two",
     "85.9": "eighty-five point nine",
     "95.2": "ninety-five point two",
-    "92.3": "ninety-two point three",
     "63.5": "sixty-three point five",
     "75.8": "seventy-five point eight",
     "93.1": "ninety-three point one",
@@ -116,11 +115,12 @@ PRONUNCIATION = {
 
 def checkout_sounds(chapters):
     pickup = chapters[1]["lines"][0]
-    outside = chapters[-1]["lines"][1]
+    exit_scene = chapters[-1]
+    cues = json.loads(Path(__file__).with_name("exit-cues.json").read_text())
     return {
         "Camera shutter": pickup["start"] + 0.95 * 0.90 * (pickup["end"] - pickup["start"]),
-        "Phone chimes": outside["start"]
-        + 0.94 * (0.62 - 0.58) / 0.42 * (outside["end"] - outside["start"]),
+        "Phone chimes": exit_scene["start"]
+        + cues["chime"] / cues["seconds"] * (exit_scene["end"] - exit_scene["start"]),
     }
 
 

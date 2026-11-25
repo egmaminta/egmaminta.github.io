@@ -336,8 +336,8 @@ def corrected(d, scene, t):
         d.text(851, 422, "Run the slow thinker", 27, "medium", maxw=346)
     else:
         v = ease((q - 0.13) / 0.35)
-        d.text(374, 192, "Shortlist", 30, "medium")
-        d.text(749, 237, "Reranker probability", 19, grey=SUB, anchor="right")
+        d.text(374, 192, "ShelfTaught", 30, "medium")
+        d.text(749, 237, "Shortlist probability", 19, grey=SUB, anchor="right")
         d.line([(374, 270), (756, 270)], RULE, 1.4)
         for k, (name, score, target) in enumerate(
             [("Can", "4.8%", 1), ("Box", "91.9%", 0), ("Bag", "3.2%", 2)]
@@ -352,53 +352,40 @@ def corrected(d, scene, t):
 def results(d, scene, t):
     j, q = segment(scene, t)
     if j == 2:
-        methods = [("Reranker", TEAL), ("Fine-tuned tower", BLUE)]
-        if q < 0.50:
-            d.text(97, 167, "GroceryVision", 34, "medium")
-            d.text(97, 226, "Same inferred labels", 26, grey=MID)
-            x0, x1 = 482, 1130
-
-            def on_axis(value):
-                return lerp(x0, x1, (value - 85) / 10)
-
-            for value in (85, 90, 95):
-                x = on_axis(value)
-                d.line([(x, 289), (x, 512)], PALE, 1.5)
-                d.text(x, 245, f"{value}%", 23, grey=SUB, anchor="center")
-            d.text(x1, 167, "Recall@1", 30, "medium", anchor="right")
-            for i, ((name, ink), value) in enumerate(zip(methods, [91.2, 92.3])):
-                y = 349 + 111 * i
-                x = on_axis(value)
-                stop = lerp(x0, x, ramp(q, 0.025 + i * 0.135, 0.14))
-                d.text(97, y - 18, name, 31, "medium", ink)
-                d.line([(x0, y), (stop, y)], ink, 3)
-                d.circle(stop, y, 7, ink)
-                if abs(stop - x) < 1:
-                    d.text(x + 18, y - 19, f"{value:.1f}%", 32, "medium", ink)
-        else:
-            for i, (name, ink) in enumerate(methods):
-                x = 98 + i * 256
-                d.circle(x, 172, 7, ink)
-                d.text(x + 18, 156, name, 29, "medium", ink)
-            measures = [
-                ("Trainable parameters", [0.34, 63.5], ["0.34 M", "63.5 M"], 0.50),
-                ("Training time", [1, 9], ["1×", "~9×"], 0.66),
-            ]
-            for k, (label, values, labels, start) in enumerate(measures):
-                y = 272 + k * 161
+        methods = [("ShelfTaught", TEAL), ("Image tower fine-tune", BLUE)]
+        for i, (name, ink) in enumerate(methods):
+            x = 98 + i * 277
+            d.circle(x, 172, 7, ink)
+            d.text(x + 18, 156, name, 29, "medium", ink)
+        measures = [
+            ("Trainable parameters", [0.34, 63.5], ["0.34 M", "63.5 M"], [0.03, 0.42]),
+            ("Training time", [1, 9], ["1×", "~9×"], [0.66, 0.74]),
+        ]
+        for k, (label, values, labels, starts) in enumerate(measures):
+            y = 272 + k * 161
+            if q < starts[0]:
+                continue
+            d.text(89, y + 25, label, 28, "medium")
+            for i, ((_, ink), value, quantity, start) in enumerate(
+                zip(methods, values, labels, starts)
+            ):
                 if q < start:
                     continue
-                d.text(89, y + 25, label, 28, "medium")
-                for i, ((_, ink), value, quantity) in enumerate(zip(methods, values, labels)):
-                    yy = y + 19 + i * 49
-                    length = 563 * value / max(values) * ramp(q, start, 0.14)
-                    d.rect(448, yy, max(2, length), 14, ink)
+                yy = y + 19 + i * 49
+                reveal = ramp(q, start, 0.13)
+                length = 563 * value / max(values) * reveal
+                d.rect(448, yy, max(2, length), 14, ink)
+                if reveal >= 0.99:
                     d.text(466 + length, yy - 9, quantity, 26, "medium", ink)
         return
-    cols = [(632, "Frozen", MID), (900, "Fine-tuned", BLUE), (1186, "ShelfTaught", TEAL)]
+    cols = [
+        (569, "Frozen retriever", MID),
+        (919, "Seen-brand fine-tune", BLUE),
+        (1186, "ShelfTaught", TEAL),
+    ]
     d.text(92, 141, "New-brand Recall@1", 31, "medium")
     for x, label, ink in cols:
-        d.text(x, 217, label, 29, "medium", ink, "right")
+        d.text(x, 217, label, 27, "medium", ink, "right")
     rows = [
         ("GroceryVision", 78.7, 85.2, 91.2),
         ("Klasson", 75.8, 85.9, 93.1),
@@ -424,9 +411,7 @@ def results(d, scene, t):
 
 
 def finish(d, scene, t):
-    j, q = segment(scene, t)
-    u = 0.58 * q if j == 0 else 0.58 + 0.42 * clamp(q / 0.94)
-    d.film_shot("store-exit", u)
+    d.film_shot("store-exit", clamp((t - scene["start"]) / (scene["end"] - scene["start"])))
 
 
 SCENES = [
