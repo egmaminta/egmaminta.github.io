@@ -1,5 +1,10 @@
 (() => {
   'use strict';
+  // Browser PDF viewers interpret page= as a page number within the document.
+  document.querySelectorAll('a[data-pdf-page]').forEach((link) => {
+    link.hash = 'page=' + link.dataset.pdfPage;
+  });
+
   const select = document.getElementById('quiz-example');
   const display = document.getElementById('quiz-display');
   const answer = document.getElementById('quiz-answer');

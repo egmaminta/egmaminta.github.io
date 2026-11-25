@@ -102,7 +102,7 @@
           </ol>
           <h3>Inference</h3>
           <ol start="6"><li><button type="button" data-step="5">Identify a new frame</button></li></ol>
-          <a class="algorithm-source" href="./assets/shelftaught.pdf#page=4">Algorithm in the paper</a>
+          <a class="algorithm-source" href="./assets/shelftaught.pdf" data-pdf-page="4">Algorithm in the paper</a>
         </nav>
         <div class="algorithm-figure" id="label-model">
           <div id="step-content">
@@ -160,7 +160,7 @@
       </table>
       <div class="prose">
         <p>Teacher-assisted TransCLIP uses the same offline first answers and clusters all test queries together. ShelfTaught answers one query at a time. It reaches 91.2% versus 89.3% on GroceryVision and 93.1% versus 86.3% on Klasson. On Retail-786k, the frozen retriever already reaches 94.4%, and teacher-assisted TransCLIP leads at 97.0%.</p>
-        <p>TDA, TransCLIP and OTTER adapt on test frames. DPA uses the training and validation folds, and ReCLIP uses all three folds. The Tip-Adapter cache stores confident teacher predictions. Supervised transfer methods train on labeled products from other brands. Per-draw calibration results and standard deviations are in <a href="./assets/shelftaught.pdf#page=5">Table 1</a>.</p>
+        <p>TDA, TransCLIP and OTTER adapt on test frames. DPA uses the training and validation folds, and ReCLIP uses all three folds. The Tip-Adapter cache stores confident teacher predictions. Supervised transfer methods train on labeled products from other brands. Per-draw calibration results and standard deviations are in <a href="./assets/shelftaught.pdf" data-pdf-page="5">Table 1</a>.</p>
         <h3>Which parts of the label model matter?</h3>
         <p>The feature mixture supplies more usable labels. On Klasson, removing it leaves target accuracy at 92.9%, but reduces the fraction of frames retained from 89.8% to 64.2%. The resulting reranker loses 7.5 percentage points of recall. Fitting the teacher’s confusion matrices adds 0.5 points on the same dataset.</p>
       </div>
@@ -191,7 +191,7 @@
         </tbody>
       </table>
       <div class="prose">
-        <p>Majority vote counts the sources’ first choices. Dawid–Skene learns which entries each source tends to confuse. ShelfTaught also uses the teacher’s answer probabilities and similarities among store frames. With the same number of training targets, their rerankers reach 77.5%, 83.3%, and 93.1% on Klasson, respectively. Target accuracy is measured on validation frames of seen brands. See <a href="./assets/shelftaught.pdf#page=8">Table 2</a>.</p>
+        <p>Majority vote counts the sources’ first choices. Dawid–Skene learns which entries each source tends to confuse. ShelfTaught also uses the teacher’s answer probabilities and similarities among store frames. With the same number of training targets, their rerankers reach 77.5%, 83.3%, and 93.1% on Klasson, respectively. Target accuracy is measured on validation frames of seen brands. See <a href="./assets/shelftaught.pdf" data-pdf-page="8">Table 2</a>.</p>
         <h3>Inference cost and cold start</h3>
         <p>The reranker reuses the frozen image features. On frames it handles, it adds 0.24 GFLOPs to the image tower’s 1,393 GFLOPs and 0.22 ms to its 16.2 ms measured latency. The 27B teacher runs offline. With zero retained frames per new GroceryVision product, the coverage gate gives 77.9% recall, compared with 41.5% for ungated reranking and 78.7% for the frozen retriever.</p>
       </div>
@@ -212,7 +212,7 @@
         <button type="button" id="quiz-next">Next frame</button>
         <button type="button" id="quiz-reset">Start over</button>
       </div>
-      <noscript><p class="prose">The recorded cases and their predictions are shown in <a href="./assets/shelftaught.pdf#page=7">Figure 3</a>.</p></noscript>
+      <noscript><p class="prose">The recorded cases and their predictions are shown in <a href="./assets/shelftaught.pdf" data-pdf-page="7">Figure 3 on page 7</a>.</p></noscript>
     </section>
     <section class="section prose citation" id="cite">
       <div class="citation-title"><h2>BibTeX</h2><button type="button" id="copy" hidden>Copy</button></div>
