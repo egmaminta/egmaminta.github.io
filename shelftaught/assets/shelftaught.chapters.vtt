@@ -1,19 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:24.535
-The first retrieval pass
+00:00:00.000 --> 00:00:09.369
+Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval
 
-00:00:24.535 --> 00:00:49.028
-An offline teacher
+00:00:09.369 --> 00:00:41.717
+From the shelf to the bill
 
-00:00:49.028 --> 00:01:24.230
-Inferring the training label
+00:00:41.717 --> 00:01:21.425
+When two packages share a name
 
-00:01:24.230 --> 00:01:46.995
-Training the reranker
+00:01:21.425 --> 00:01:55.032
+When a new brand arrives
 
-00:01:46.995 --> 00:02:09.653
-Back at checkout
+00:01:55.032 --> 00:02:25.801
+An imperfect teacher
 
-00:02:09.653 --> 00:02:26.849
-Held-out brands
+00:02:25.801 --> 00:03:07.664
+How a label model infers the product
+
+00:03:07.664 --> 00:03:31.224
+What the reranker looks at
+
+00:03:31.224 --> 00:03:56.725
+Correcting the cart
+
+00:03:56.725 --> 00:04:22.803
+How often is the first entry correct?
+
+00:04:22.803 --> 00:04:36.231
+One box on the bill

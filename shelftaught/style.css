@@ -1545,3 +1545,85 @@ em,
   .flow-landscape { display: block; }
   .pipeline .flow-portrait, #checkout-controls, .return-pipeline { display: none; }
 }
+
+@font-face {
+  font-family: 'OpenAI Sans';
+  src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-RegularItalic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+.paper-film video { background: white; }
+.store-view {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #eeece5;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+.store-view > img, .store-view canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.store-view canvas { touch-action: none; cursor: grab; }
+.store-view canvas:focus-visible { outline-offset: -4px; }
+#shelf-picks { position: absolute; inset: 0; pointer-events: none; }
+#shelf-picks button {
+  position: absolute;
+  transform: translate(-50%, 0.35rem);
+  font-size: clamp(0.73rem, 1.8vw, 0.87rem);
+  line-height: 1.2;
+  padding: 0.37rem 0.48rem;
+  border: 1px solid #343632;
+  background: #fffef9;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+.store-nav { display: flex; flex-wrap: wrap; gap: 0.32rem 0.75rem; margin-top: 0.48rem; }
+.store-nav button {
+  background: none; color: var(--muted); border: 0; border-radius: 0;
+  border-bottom: 2px solid transparent; min-height: 2.25rem;
+  padding: 0.15rem 0.1rem; font-size: 0.91rem;
+}
+.store-nav button[aria-pressed='true'] { color: var(--ink); border-bottom-color: var(--ink); }
+.store-guide { color: var(--muted); font-size: 0.86rem; line-height: 1.45; margin: 0.3rem 0 1.15rem; }
+.basket { width: min(100%, 40rem); margin: 1.1rem auto 0; border-top: 1px solid var(--line); padding-top: 0.75rem; }
+.basket-head { display: flex; align-items: baseline; justify-content: space-between; }
+.basket-head h4 { font-weight: 500; }
+.basket-head button, .basket th button { background: none; border: none; padding: 0; color: var(--indigo); text-decoration: underline; text-underline-offset: .16em; }
+.basket-head button { font-size: .85rem; }
+.basket table { width: 100%; border-collapse: collapse; text-align: left; font-size: .93rem; line-height: 1.45; margin-top: .35rem; }
+.basket th, .basket td { font-weight: 400; padding: .25rem .4rem; }
+.basket thead th { border-bottom: 1px solid var(--line); color: var(--muted); }
+.basket td:last-child { font-weight: 500; }
+.basket .corrected td:last-child { background: #edf3ed; }
+.basket th button { text-align: left; font-size: inherit; }
+.visually-hidden { position: absolute; clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; white-space: nowrap; }
+@media (max-width: 39rem) {
+  .store-view { aspect-ratio: 1.22; }
+  .store-nav { gap: 0.15rem 0.65rem; }
+  .store-nav button { font-size: 0.83rem; }
+}
+#store-till {
+  position: absolute; left: 0.55rem; bottom: 0.55rem; z-index: 1;
+  background: white; color: var(--ink); border-left: 3px solid var(--ink);
+  padding: 0.25rem 0.55rem; font-size: 0.84rem; line-height: 1.45;
+  pointer-events: none;
+}
+#store-till strong { margin-right: 0.35rem; }
+@font-face {
+  font-family: 'OpenAI Sans';
+  src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+.venue strong { font-weight: 700; text-underline-offset: 0.16em; }
+.citation-sources a + a { margin-inline-start: 1rem; }
+#shelf-picks small { display: block; font-size: 0.9em; }
+@media (max-width: 39rem) {
+  .checkout-intro { text-align: start; }
+}

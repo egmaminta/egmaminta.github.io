@@ -119,7 +119,7 @@
       intro(
         'Qwen3.8-27B answers a multiple choice question for each frame. If several entries remain plausible, we ask it again with pictures of those entries and verified descriptions of packaging cues when available.',
       ) +
-      '<div class="field-line"><label for="question">Teacher input</label><select id="question"><option value="0">Question 1 · texts</option><option value="1">Question 2 · texts and pictures</option></select></div>' +
+      '<div class="field-line"><label for="question">Teacher input</label><select id="question"><option value="0">Question 1 (catalog descriptions)</option><option value="1">Question 2 (descriptions and pictures)</option></select></div>' +
       '<div id="teacher-art" class="step-visual"></div>';
     const control = document.getElementById('question');
     control.value = question;
@@ -355,7 +355,7 @@
     document.getElementById('em-values').innerHTML =
       '<strong class="pink-text">Pink Lady ' +
       percent(s.p[pinkIndex]) +
-      '</strong> · <strong class="gala-text">Royal Gala ' +
+      '</strong>, <strong class="gala-text">Royal Gala ' +
       percent(s.p[galaIndex]) +
       '</strong>';
     drawCloud(s);
@@ -526,7 +526,7 @@
       intro(
         'On a new frame, the frozen retriever builds a shortlist using the fitted temperature (β = 89.8). It returns its first choice if the shortlist has one entry or that choice has too few retained training targets. Otherwise the slow thinker reranks the shortlist.',
       ) +
-      '<div class="field-line"><label for="test-frame">Held-out query</label><select id="test-frame"><option value="0">Frame 050 · four candidates</option><option value="1">Frame 022 · one candidate</option></select></div>' +
+      '<div class="field-line"><label for="test-frame">Held-out query</label><select id="test-frame"><option value="0">Frame 050 (four candidates)</option><option value="1">Frame 022 (one candidate)</option></select></div>' +
       '<div id="query-art" class="step-visual"></div>';
     const sel = document.getElementById('test-frame');
     sel.value = queryIndex;

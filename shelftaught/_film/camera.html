@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Checkout aisle camera shot</title>
+<style>html,body{margin:0;background:white}canvas{display:block}</style>
+<canvas width="1120" height="630"></canvas>
+<script type="module">
+import * as THREE from '../three-r180/three.module.min.js';
+import {buildRoom, lightRoom} from '../store.js';
+const canvas=document.querySelector('canvas');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
+renderer.setSize(1120,630,false);
+renderer.setClearColor(0xeae7df);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();
+lightRoom(scene);
+const {heroes}=buildRoom(scene);
+const box=heroes.beans;
+const origin=box.position.clone();
+const camera=new THREE.PerspectiveCamera(44,16/9,.06,25);
+function ease(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);}
+window.frameAt=(p)=>{
+  const move=ease(p/.79);
+  const lift=ease((p-.66)/.32);
+  camera.position.set(1.09-2.01*move,1.69-0.12*move,3.95-5.59*move);
+  camera.lookAt(-0.08-1.04*move,1.50+0.15*lift,-2.66+0.52*lift);
+  box.position.copy(origin);
+  box.position.z+=.53*lift;
+  box.position.y+=.136*lift;
+  box.rotation.x=-.17*lift;box.rotation.y=-.09*lift;
+  renderer.render(scene,camera);
+};
+window.frameAt(0);
+</script></html>
