@@ -1,0 +1,149 @@
+WEBVTT
+
+00:00:00.420 --> 00:00:03.317
+A shopper picks up a box of garbanzo
+beans.
+
+00:00:03.317 --> 00:00:07.503
+The checkout camera sees the box, a hand,
+and the shelf behind them.
+
+00:00:07.823 --> 00:00:13.652
+The frozen retriever compares this whole
+image with every catalog description.
+
+00:00:13.652 --> 00:00:17.892
+The can scores 0.220. The box scores
+0.218.
+
+00:00:18.212 --> 00:00:21.353
+A difference of two thousandths puts the
+wrong package first.
+
+00:00:21.353 --> 00:00:23.865
+Where can a reranker learn to distinguish
+them?
+
+00:00:24.955 --> 00:00:29.019
+As shoppers handle new products, the
+store collects more views.
+
+00:00:29.019 --> 00:00:31.051
+Their product identities are unknown.
+
+00:00:31.051 --> 00:00:33.489
+Consider this training photograph of
+apples.
+
+00:00:33.809 --> 00:00:39.218
+Given ten candidate names, the teacher
+assigns 86.5% to Royal Gala.
+
+00:00:39.218 --> 00:00:43.153
+Adding catalog pictures still leaves
+Royal Gala first.
+
+00:00:43.473 --> 00:00:47.660
+Both answers are wrong. Should this frame
+teach the reranker to recognize
+
+00:00:47.660 --> 00:00:48.358
+Royal Gala?
+
+00:00:49.448 --> 00:00:52.372
+A label model treats the product as
+unknown.
+
+00:00:52.372 --> 00:00:56.757
+It combines the retrieval scores and both
+teacher answers with evidence from
+
+00:00:56.757 --> 00:00:57.853
+other store frames.
+
+00:00:58.173 --> 00:01:03.027
+Each dot is a frame. Its position shows
+similarity to two fitted product
+
+00:01:03.027 --> 00:01:05.640
+clusters. Follow the ring around our
+photograph.
+
+00:01:05.960 --> 00:01:10.896
+At initialization, Pink Lady has less
+than one percent probability.
+
+00:01:10.896 --> 00:01:14.351
+After one update it passes ninety
+percent.
+
+00:01:14.351 --> 00:01:16.819
+After fifteen, it reaches 99.5%.
+
+00:01:17.139 --> 00:01:19.783
+The retriever also voted for Pink Lady.
+
+00:01:19.783 --> 00:01:23.560
+The frame meets both conditions and
+becomes a training example.
+
+00:01:24.650 --> 00:01:26.743
+The slow thinker learns two projections.
+
+00:01:26.743 --> 00:01:31.626
+One maps image patches and the other maps
+catalog tokens into the same space.
+
+00:01:31.946 --> 00:01:34.645
+For each patch, take its best token
+match.
+
+00:01:34.645 --> 00:01:37.343
+Moving to a different patch changes the
+similarities.
+
+00:01:37.663 --> 00:01:41.310
+Average the best matches across all 576
+patches.
+
+00:01:41.310 --> 00:01:46.325
+During training, the inferred target
+competes with the other nine entries.
+
+00:01:47.415 --> 00:01:51.852
+Return to the box of beans. At checkout
+the teacher stays offline.
+
+00:01:51.852 --> 00:01:54.071
+The frozen retriever builds a shortlist.
+
+00:01:54.391 --> 00:01:56.676
+A single candidate is returned directly.
+
+00:01:56.676 --> 00:02:01.629
+An ambiguous frame is reranked only when
+the first choice has enough retained
+
+00:02:01.629 --> 00:02:02.391
+training targets.
+
+00:02:02.711 --> 00:02:08.087
+Here three entries remain. The patch
+comparisons put the box first with
+
+00:02:08.087 --> 00:02:08.983
+probability 0.92.
+
+00:02:10.073 --> 00:02:16.553
+On GroceryVision and Klasson, reranking
+raises recall by 12.5 and 17.3
+
+00:02:16.553 --> 00:02:17.731
+percentage points.
+
+00:02:18.051 --> 00:02:22.115
+On Retail-786k, the gain is 1.1 points.
+
+00:02:22.115 --> 00:02:26.179
+TransCLIP with teacher answers reaches
+97.0% there.

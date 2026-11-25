@@ -124,3 +124,18 @@
     }, 2200);
   };
 })();
+
+(() => {
+  const film = document.getElementById('method-film');
+  if (!film.canPlayType('video/mp4')) return;
+  document.querySelectorAll('[data-seek]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      film.currentTime = Number(link.dataset.seek);
+      film.focus({ preventScroll: true });
+      film.scrollIntoView({ block: 'center' });
+      film.play().catch(() => { /* The native play control remains available. */ });
+    });
+  });
+})();

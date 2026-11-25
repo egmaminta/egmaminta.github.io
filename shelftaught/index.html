@@ -17,17 +17,18 @@
   <meta name="citation_title" content="Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval">
   <meta name="citation_author" content="Maminta, Emmanuel G.">
   <meta name="citation_author" content="Atienza, Rowel O.">
-  <meta name="citation_conference_title" content="Physical Retail AI Workshop at WACV 2027">
+  <meta name="citation_conference_title" content="2027 IEEE/CVF Winter Conference on Applications of Computer Vision Workshops (WACVW)">
   <meta name="citation_pdf_url" content="https://egmaminta.github.io/shelftaught/assets/shelftaught.pdf">
   <link rel="canonical" href="https://egmaminta.github.io/shelftaught/">
   <link rel="preconnect" href="https://cdn.openai.com" crossorigin>
   <link rel="preload" href="https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./style.css?v=2">
+  <link rel="stylesheet" href="./style.css?v=3">
   <link rel="icon" href="./assets/icon.png" type="image/png">
   <script src="./trace.js" defer></script>
-  <script src="./algorithm.js" defer></script>
+  <script src="./algorithm.js?v=3" defer></script>
   <script src="./data.js" defer></script>
-  <script src="./site.js?v=2" defer></script>
+  <script src="./site.js?v=3" defer></script>
+  <script src="./checkout.js" defer></script>
 </head>
 <body>
   <a href="#abstract" class="skip">Skip to the abstract</a>
@@ -36,7 +37,7 @@
       <h1><span>Thinking Fast and Slow for <span class="keep">Label-Free</span></span> <span><span class="keep">Open-Catalog</span> Product Retrieval</span></h1>
       <p class="authors"><a href="https://egmaminta.github.io/">Emmanuel G. Maminta</a><a href="https://roatienza.github.io/">Rowel O. Atienza</a></p>
       <p class="affiliation">Artificial Intelligence Graduate Program, University of the Philippines, Diliman, Quezon City</p>
-      <p class="venue"><a href="https://praw-workshop.github.io/#program">Physical Retail AI Workshop, WACV 2027</a> <span aria-hidden="true">·</span> <strong>Oral Presentation</strong></p>
+      <p class="venue"><a href="https://praw-workshop.github.io/#program">Physical Retail AI Workshop (PRAW)</a>, IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) 2027 <strong>(Oral Presentation)</strong></p>
       <div class="resources" role="group" aria-label="Paper resources">
         <a href="./assets/shelftaught.pdf">Paper</a>
         <a href="./assets/supplement.pdf">Supplement</a>
@@ -69,7 +70,7 @@
       <figcaption>Both teacher answers favor Royal Gala. Across other views of these apples, the teacher often makes the same mistake. The label model assigns 99.5% probability to Pink Lady, the correct variety. <a href="#label-model">Inspect this frame.</a></figcaption>
     </figure>
 
-    <nav class="contents" aria-label="On this page"><a href="#abstract">Abstract</a><a href="#motivation">Motivation</a><a href="#walkthrough">Algorithm 1</a><a href="#results">Results</a><a href="#quiz">Shelf quiz</a><a href="#cite">BibTeX</a></nav>
+    <nav class="contents" aria-label="On this page"><a href="#abstract">Abstract</a><a href="#explainer">Video</a><a href="#motivation">Motivation</a><a href="#walkthrough">Inside our algorithm</a><a href="#results">Results</a><a href="#quiz">Shelf quiz</a><a href="#cite">BibTeX</a></nav>
 
     <section id="abstract" class="section prose">
       <h2>Abstract</h2>
@@ -78,18 +79,142 @@
       <p>On held-out brands, Recall@1 rises from 78.7% to 91.2% on GroceryVision, from 94.4% to 95.5% on Retail-786k and from 75.8% to 93.1% on Klasson. TransCLIP with teacher answers reaches 97.0% on Retail-786k. When invoked, reranking adds 0.02% to the image tower’s FLOPs at test time and 1.4% to measured latency.</p>
     </section>
 
-    <section id="motivation" class="section prose">
-      <h2>Motivation</h2>
-      <p>A shopper picks up a box of 365 Organic Garbanzo Beans. The frozen retriever ranks the can first and the box second. Both descriptions contain the right brand and the right food. Checkout requires the right package. On GroceryVision, 65% of the retriever’s errors on new brands are substitutions within the same brand.</p>
-      <p>A store can rank new products from their descriptions on the day they arrive. Over time, its cameras also record those products in shoppers’ hands. We use these unlabeled views to train a small reranker. Seen-brand supervision alone improves retrieval, but it gives the reranker no examples of the newly stocked packages.</p>
+    <section id="explainer" class="section reading">
+      <div class="prose"><h2>Video explainer</h2></div>
+      <figure class="paper-film">
+        <video id="method-film" controls playsinline tabindex="0" preload="none" width="1280" height="720" poster="./assets/explainer-poster.webp" aria-label="How ShelfTaught learns to rerank grocery products" aria-describedby="film-caption">
+          <source src="./assets/shelftaught-explainer.mp4" type="video/mp4">
+          <track kind="captions" srclang="en" label="English" src="./assets/shelftaught.en.vtt">
+          <track kind="chapters" srclang="en" label="Chapters" src="./assets/shelftaught.chapters.vtt">
+          <a href="./assets/shelftaught-explainer.mp4">Download the narrated explainer</a>
+        </video>
+        <figcaption id="film-caption">A box of beans illustrates the retrieval error. A training photograph of apples shows how the label model learns from a teacher that makes the same mistake twice. The animation follows the recorded scores, frame assignments, and patch similarities.</figcaption>
+      </figure>
+      <details class="film-transcript prose"><summary>Chapters and transcript</summary>
+        <ol>
+          <li><a href="./assets/shelftaught-explainer.mp4" data-seek="0.0">0:00</a><div><strong>The first retrieval pass</strong><p>A shopper picks up a box of garbanzo beans. The checkout camera sees the box, a hand, and the shelf behind them. The frozen retriever compares this whole image with every catalog description. The can scores 0.220. The box scores 0.218. A difference of two thousandths puts the wrong package first. Where can a reranker learn to distinguish them?</p></div></li>
+          <li><a href="./assets/shelftaught-explainer.mp4" data-seek="24.54">0:24</a><div><strong>An offline teacher</strong><p>As shoppers handle new products, the store collects more views. Their product identities are unknown. Consider this training photograph of apples. Given ten candidate names, the teacher assigns 86.5% to Royal Gala. Adding catalog pictures still leaves Royal Gala first. Both answers are wrong. Should this frame teach the reranker to recognize Royal Gala?</p></div></li>
+          <li><a href="./assets/shelftaught-explainer.mp4" data-seek="49.03">0:49</a><div><strong>Inferring the training label</strong><p>A label model treats the product as unknown. It combines the retrieval scores and both teacher answers with evidence from other store frames. Each dot is a frame. Its position shows similarity to two fitted product clusters. Follow the ring around our photograph. At initialization, Pink Lady has less than one percent probability. After one update it passes ninety percent. After fifteen, it reaches 99.5%. The retriever also voted for Pink Lady. The frame meets both conditions and becomes a training example.</p></div></li>
+          <li><a href="./assets/shelftaught-explainer.mp4" data-seek="84.23">1:24</a><div><strong>Training the reranker</strong><p>The slow thinker learns two projections. One maps image patches and the other maps catalog tokens into the same space. For each patch, take its best token match. Moving to a different patch changes the similarities. Average the best matches across all 576 patches. During training, the inferred target competes with the other nine entries.</p></div></li>
+          <li><a href="./assets/shelftaught-explainer.mp4" data-seek="106.99">1:46</a><div><strong>Back at checkout</strong><p>Return to the box of beans. At checkout the teacher stays offline. The frozen retriever builds a shortlist. A single candidate is returned directly. An ambiguous frame is reranked only when the first choice has enough retained training targets. Here three entries remain. The patch comparisons put the box first with probability 0.92.</p></div></li>
+          <li><a href="./assets/shelftaught-explainer.mp4" data-seek="129.65">2:09</a><div><strong>Held-out brands</strong><p>On GroceryVision and Klasson, reranking raises recall by 12.5 and 17.3 percentage points. On Retail-786k, the gain is 1.1 points. TransCLIP with teacher answers reaches 97.0% there.</p></div></li>
+        </ol>
+      </details>
+    </section>
+
+    <section id="motivation" class="section reading">
+      <div class="prose">
+        <h2>Motivation</h2>
+        <p>Automated checkout systems in groceries employ computer vision models that perform <em>multimodal</em> product retrieval. One input is a photograph of the product, often taken by a camera mounted inside the store. Shelves and other items fill the background, a shopper’s hand can cover the label, and motion can blur the print. The other input is the product catalog. Each text entry names the brand and variant, describes the product, and may list attributes such as price and net weight.</p>
+        <p>A shopper picks up a box of 365 Organic Garbanzo Beans. The frozen retriever puts the can first and the box second because both entries match much of what it sees. On GroceryVision, 65% of its errors on new brands are substitutions within the same brand. A common solution in retrieval systems is to search the full catalog quickly, then use a reranker to compare the few remaining candidates more closely.</p>
+      </div>
+      <div id="checkout" class="checkout">
+        <h3>Automated retail checkout</h3>
+        <p class="checkout-intro">Scan a recorded store frame to see the first cart entry, then rerank its shortlist. Both passes use scores from the experiment.</p>
+        <div id="checkout-controls" hidden>
+          <label for="checkout-item">Product</label>
+          <select id="checkout-item"><option value="beans">365 Organic Garbanzo Beans</option><option value="ranch">Hidden Valley Ranch</option></select>
+          <button type="button" id="checkout-action">Scan product</button>
+        </div>
+        <div class="checkout-figure">
+          <figure class="checkout-camera"><img id="checkout-photo" src="./assets/beans-frame.webp" width="183" height="260" alt="A shopper holding the boxed garbanzo beans"><figcaption>Store camera</figcaption></figure>
+          <div class="checkout-output"><div id="checkout-ranking"></div><p id="checkout-cart" role="status"></p></div>
+        </div>
+        <noscript><p>The first pass selects the can (cosine 0.220). The box comes second (0.218). The reranker returns the box with probability 0.92.</p></noscript>
+      </div>
+      <div class="prose"><p>A new product can enter the first pass as soon as the store adds its description. As cameras record more views of the product in shoppers’ hands, ShelfTaught uses them to train the reranker.</p></div>
     </section>
 
     <section id="walkthrough" class="section wide">
       <div class="prose">
-        <h2>Inside Algorithm 1</h2>
+        <h2>Inside our algorithm</h2>
         <p>A <strong>label model</strong> estimates the unknown product in each training frame. It observes which entries the retriever ranks highly, how the teacher answers two questions, and which other store frames look similar. A teacher that repeatedly calls Pink Lady apples Royal Gala can still be informative once the model learns that pattern.</p>
         <p>The first five steps below follow one Klasson training frame. The last step applies the trained reranker to a different photograph. The scores come from the experiment.</p>
       </div>
+      <figure class="pipeline" id="pipeline" aria-labelledby="pipeline-title">
+        <figcaption>
+          <h3 id="pipeline-title">ShelfTaught pipeline</h3>
+          <p>Select a component to see what it reads and returns. The training frame and the checkout queries show the same apple variety, Pink Lady. <a href="./assets/shelftaught.pdf" data-pdf-page="2">Figure 1 in the paper.</a></p>
+        </figcaption>
+        <svg class="flow-landscape" viewBox="0 0 960 442" role="group" aria-label="ShelfTaught at checkout and during offline adaptation">
+          <defs>
+          <marker id="flow-ink-landscape" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#65717b"/></marker>
+          <marker id="flow-trained-landscape" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#39714e"/></marker>
+          </defs>
+          <text class="flow-heading" x="8" y="27">At checkout</text>
+          <path class="flow-edge ink" data-connects="query fast" d="M162 104H191" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="fast gate" d="M349 104H380" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="gate slow" d="M542 104H575" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="slow output" d="M748 104H785" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="gate shortcut" d="M461 72V46H871V70" marker-end="url(#flow-ink-landscape)"/>
+          <a href="./assets/shelftaught.pdf" data-component="shortcut" class="flow-shortcut" aria-label="Inspect the direct return for a single candidate"><rect class="shortcut-hit" x="498" y="7" width="332" height="36"/>
+          <text class="flow-bypass" x="664" y="34" text-anchor="middle">Return first entry if alone or coverage is low</text>
+          </a>
+          <text class="flow-heading" x="8" y="200">Offline adaptation</text>
+          <text class="flow-annotation" x="233" y="221">Teacher (Qwen3.8-27B)</text>
+          <path class="flow-edge ink" data-connects="frames q1" d="M170 306H197V267H231" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="frames q2" d="M170 326H197V379H231" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="frames label" d="M170 316H484" marker-end="url(#flow-ink-landscape)"/>
+          <text class="flow-annotation" x="322" y="310" text-anchor="middle">Retrieval scores and frame embeddings</text>
+          <path class="flow-edge ink" data-connects="q1 label" d="M420 267H450V294H484" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="q2 label" d="M420 379H450V341H484" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge ink" data-connects="label targets" d="M672 316H759" marker-end="url(#flow-ink-landscape)"/>
+          <path class="flow-edge trained" data-connects="targets slow" d="M856 279V187H661V141" marker-end="url(#flow-trained-landscape)"/>
+          <text class="flow-train" x="756" y="178" text-anchor="middle">Train the reranker</text>
+          <text class="flow-annotation" x="234" y="432">Asked if |S₀(x)| ≥ 2</text>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="query" aria-label="Inspect a new checkout frame" transform="translate(7 72)"><rect class="node-shape" x="0" y="0" width="155" height="68" rx="3"/><g transform="translate(8 16)" aria-hidden="true"><image href="./assets/apple-test-0.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="46" y="31" class="node-title">Store frame</text><text x="46" y="51" class="node-note">New query</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="fast" aria-label="Inspect the frozen retriever and its shortlist" transform="translate(193 72)"><rect class="node-shape" x="0" y="0" width="156" height="68" rx="3"/><g transform="translate(8 16)" aria-hidden="true"><g class="flow-icon"><path d="M2 8H30 M2 17H23 M2 26H14"/></g></g><text x="46" y="31" class="node-title">Fast thinker</text><text x="46" y="51" class="node-note">Frozen SigLIP2</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="gate" aria-label="Inspect the coverage gate for the first entry" transform="translate(382 72)"><rect class="node-shape" x="0" y="0" width="160" height="68" rx="3"/><g transform="translate(8 16)" aria-hidden="true"><g class="flow-icon"><path d="M2 18H11 M11 18L21 8H28 M11 18L21 28H28"/><circle cx="11" cy="18" r="2"/></g></g><text x="46" y="31" class="node-title">Coverage gate</text><text x="46" y="51" class="node-note">Training count</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="slow" aria-label="Inspect patch and token matches in the slow thinker" transform="translate(577 72)"><rect class="node-shape" x="0" y="0" width="171" height="68" rx="3"/><g transform="translate(8 16)" aria-hidden="true"><g class="flow-icon"><path d="M1 6H19V29H1Z M7 6V29 M13 6V29 M1 13H19 M1 21H19 M19 13L29 8 M19 20L29 26"/><rect x="7" y="13" width="6" height="8"/></g></g><text x="46" y="31" class="node-title">Slow thinker</text><text x="46" y="51" class="node-note">Patch–token scores</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="output" aria-label="Inspect the final catalog prediction" transform="translate(787 72)"><rect class="node-shape" x="0" y="0" width="165" height="68" rx="3"/><g transform="translate(8 16)" aria-hidden="true"><image href="./assets/catalog-2.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="46" y="31" class="node-title">Catalog entry</text><text x="46" y="51" class="node-note">Pink Lady</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="frames" aria-label="Inspect a frame used for adaptation" transform="translate(7 280)"><rect class="node-shape" x="0" y="0" width="163" height="73" rx="3"/><g transform="translate(8 18)" aria-hidden="true"><image href="./assets/apple-train.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="46" y="33" class="node-title">Store frames</text><text x="46" y="53" class="node-note">Frozen features</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="q1" aria-label="Inspect teacher question one with candidate texts" transform="translate(233 235)"><rect class="node-shape" x="0" y="0" width="187" height="64" rx="3"/><g transform="translate(8 14)" aria-hidden="true"><g class="flow-icon"><path d="M2 8H29 M2 17H21 M2 26H25"/><circle cx="2" cy="8" r="2"/></g></g><text x="46" y="29" class="node-title">Text question</text><text x="46" y="49" class="node-note">Top 10 entries</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="q2" aria-label="Inspect teacher question two with catalog pictures" transform="translate(233 347)"><rect class="node-shape" x="0" y="0" width="187" height="64" rx="3"/><g transform="translate(8 14)" aria-hidden="true"><image href="./assets/catalog-4.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="46" y="29" class="node-title">Picture question</text><text x="46" y="49" class="node-note">Shortlist + photos</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="label" aria-label="Inspect the evidence in the label model" transform="translate(486 279)"><rect class="node-shape" x="0" y="0" width="186" height="75" rx="3"/><g transform="translate(8 19)" aria-hidden="true"><g class="flow-icon"><path d="M5 7L16 25L27 7 M16 7V25"/><circle class="observed" cx="5" cy="7" r="3"/><circle class="observed" cx="16" cy="7" r="3"/><circle class="observed" cx="27" cy="7" r="3"/><circle class="latent" cx="16" cy="25" r="5"/></g></g><text x="46" y="34" class="node-title">Label model</text><text x="46" y="54" class="node-note">Product posterior</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="targets" aria-label="Inspect the training target decision" transform="translate(761 279)"><rect class="node-shape" x="0" y="0" width="191" height="75" rx="3"/><g transform="translate(8 19)" aria-hidden="true"><g class="flow-icon"><path d="M4 17L12 25L28 8 M4 30H28"/></g></g><text x="46" y="34" class="node-title">Training targets</text><text x="46" y="54" class="node-note">Confidence + vote</text></a>
+          </svg>
+        <svg class="flow-portrait" viewBox="0 0 360 718" role="group" aria-label="ShelfTaught at checkout and during offline adaptation">
+          <defs>
+          <marker id="flow-ink-portrait" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#65717b"/></marker>
+          <marker id="flow-trained-portrait" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#39714e"/></marker>
+          </defs>
+          <text class="flow-heading" x="7" y="25">At checkout</text>
+          <path class="flow-edge ink" data-connects="query fast" d="M161 76H198" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge ink" data-connects="fast gate" d="M275 109V154" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge ink" data-connects="gate slow" d="M200 189H162" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge ink" data-connects="slow output" d="M84 224V266" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge ink" data-connects="gate shortcut" d="M275 224V300H162" marker-end="url(#flow-ink-portrait)"/>
+          <a href="./assets/shelftaught.pdf" data-component="shortcut" class="flow-shortcut" aria-label="Inspect the direct return for a single candidate"><rect class="shortcut-hit" x="181" y="227" width="165" height="49"/>
+          <text class="flow-bypass" x="262" y="248" text-anchor="middle">Return first entry if alone</text>
+          <text class="flow-bypass" x="262" y="266" text-anchor="middle">or coverage is low</text>
+          </a>
+          <text class="flow-heading" x="7" y="375">Offline adaptation</text>
+          <text class="flow-annotation" x="199" y="404">Teacher (Qwen3.8-27B)</text>
+          <path class="flow-edge ink" data-connects="frames q1" d="M161 443H198" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge ink" data-connects="frames label" d="M84 479V541" marker-end="url(#flow-ink-portrait)"/>
+          <text class="flow-annotation" x="6" y="509">Scores and</text>
+          <text class="flow-annotation" x="6" y="527">embeddings</text>
+          <path class="flow-edge ink" data-connects="q1 q2" d="M283 479V541" marker-end="url(#flow-ink-portrait)"/>
+          <text class="flow-annotation" x="292" y="506">if |S₀(x)|</text>
+          <text class="flow-annotation" x="292" y="523">≥ 2</text>
+          <path class="flow-edge ink" data-connects="q1 label" d="M220 479V493H131V541" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge ink" data-connects="q2 label" d="M200 577H162" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge ink" data-connects="label targets" d="M84 612V651" marker-end="url(#flow-ink-portrait)"/>
+          <path class="flow-edge trained" data-connects="targets slow" d="M161 685H357V134H84V154" marker-end="url(#flow-trained-portrait)"/>
+          <text class="flow-train" x="256" y="673" text-anchor="middle">Train the reranker</text>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="query" aria-label="Inspect a new checkout frame" transform="translate(7 42)"><rect class="node-shape" x="0" y="0" width="154" height="67" rx="3"/><g transform="translate(5 15)" aria-hidden="true"><image href="./assets/apple-test-0.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="42" y="30" class="node-title">Store frame</text><text x="42" y="50" class="node-note">New query</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="fast" aria-label="Inspect the frozen retriever and its shortlist" transform="translate(200 42)"><rect class="node-shape" x="0" y="0" width="150" height="67" rx="3"/><g transform="translate(5 15)" aria-hidden="true"><g class="flow-icon"><path d="M2 8H30 M2 17H23 M2 26H14"/></g></g><text x="42" y="30" class="node-title">Fast thinker</text><text x="42" y="50" class="node-note">Frozen SigLIP2</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="gate" aria-label="Inspect the coverage gate for the first entry" transform="translate(200 156)"><rect class="node-shape" x="0" y="0" width="150" height="68" rx="3"/><g transform="translate(5 16)" aria-hidden="true"><g class="flow-icon"><path d="M2 18H11 M11 18L21 8H28 M11 18L21 28H28"/><circle cx="11" cy="18" r="2"/></g></g><text x="42" y="31" class="node-title">Coverage gate</text><text x="42" y="51" class="node-note">Training count</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="slow" aria-label="Inspect patch and token matches in the slow thinker" transform="translate(7 156)"><rect class="node-shape" x="0" y="0" width="154" height="68" rx="3"/><g transform="translate(5 16)" aria-hidden="true"><g class="flow-icon"><path d="M1 6H19V29H1Z M7 6V29 M13 6V29 M1 13H19 M1 21H19 M19 13L29 8 M19 20L29 26"/><rect x="7" y="13" width="6" height="8"/></g></g><text x="42" y="31" class="node-title">Slow thinker</text><text x="42" y="51" class="node-note">Token matches</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="output" aria-label="Inspect the final catalog prediction" transform="translate(7 268)"><rect class="node-shape" x="0" y="0" width="154" height="66" rx="3"/><g transform="translate(5 15)" aria-hidden="true"><image href="./assets/catalog-2.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="42" y="30" class="node-title">Catalog entry</text><text x="42" y="50" class="node-note">Pink Lady</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="frames" aria-label="Inspect a frame used for adaptation" transform="translate(7 412)"><rect class="node-shape" x="0" y="0" width="154" height="67" rx="3"/><g transform="translate(5 15)" aria-hidden="true"><image href="./assets/apple-train.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="42" y="30" class="node-title">Store frames</text><text x="42" y="50" class="node-note">Frozen features</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="q1" aria-label="Inspect teacher question one with candidate texts" transform="translate(200 412)"><rect class="node-shape" x="0" y="0" width="150" height="67" rx="3"/><g transform="translate(5 15)" aria-hidden="true"><g class="flow-icon"><path d="M2 8H29 M2 17H21 M2 26H25"/><circle cx="2" cy="8" r="2"/></g></g><text x="42" y="30" class="node-title">Text question</text><text x="42" y="50" class="node-note">Top 10 entries</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="q2" aria-label="Inspect teacher question two with catalog pictures" transform="translate(200 543)"><rect class="node-shape" x="0" y="0" width="150" height="68" rx="3"/><g transform="translate(5 16)" aria-hidden="true"><image href="./assets/catalog-4.webp" width="32" height="36" preserveAspectRatio="xMidYMid meet"/></g><text x="42" y="31" class="node-title">Picture question</text><text x="42" y="51" class="node-note">Shortlist + photos</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="label" aria-label="Inspect the evidence in the label model" transform="translate(7 543)"><rect class="node-shape" x="0" y="0" width="154" height="68" rx="3"/><g transform="translate(5 16)" aria-hidden="true"><g class="flow-icon"><path d="M5 7L16 25L27 7 M16 7V25"/><circle class="observed" cx="5" cy="7" r="3"/><circle class="observed" cx="16" cy="7" r="3"/><circle class="observed" cx="27" cy="7" r="3"/><circle class="latent" cx="16" cy="25" r="5"/></g></g><text x="42" y="31" class="node-title">Label model</text><text x="42" y="51" class="node-note">Product posterior</text></a>
+          <a href="./assets/shelftaught.pdf" class="flow-node" data-component="targets" aria-label="Inspect the training target decision" transform="translate(7 653)"><rect class="node-shape" x="0" y="0" width="154" height="64" rx="3"/><g transform="translate(5 14)" aria-hidden="true"><g class="flow-icon"><path d="M4 17L12 25L28 8 M4 30H28"/></g></g><text x="42" y="29" class="node-title">Training targets</text><text x="42" y="49" class="node-note">Confidence + vote</text></a>
+          </svg>
+        <p class="flow-note">The teacher gets catalog pictures when its preliminary shortlist S₀(x) has at least two entries. At checkout, the retriever uses the temperature fitted by the label model. Retained targets train the slow thinker and supply the per-product counts used by the gate.</p>
+      </figure>
       <div class="algorithm" id="algorithm">
         <nav class="algorithm-nav" aria-label="Algorithm steps" hidden>
           <h3>Offline adaptation</h3>
@@ -105,11 +230,13 @@
           <a class="algorithm-source" href="./assets/shelftaught.pdf" data-pdf-page="4">Algorithm in the paper</a>
         </nav>
         <div class="algorithm-figure" id="label-model">
-          <div id="step-content">
+          <p class="component-context" id="component-context" hidden></p>
+          <div id="step-content" tabindex="-1">
             <h3>Rank the catalog</h3>
             <p>Frozen SigLIP2 compares the frame with all 81 catalog descriptions. Pink Lady ranks first. The teacher receives the ten highest scoring descriptions.</p>
           </div>
           <p class="instruction" id="current-line" hidden></p>
+          <a class="return-pipeline" id="return-pipeline" href="#pipeline" hidden>Back to the pipeline</a>
           <div class="transport" hidden>
             <button id="play" type="button">Play</button>
             <button id="back" type="button" disabled>Back</button>
@@ -127,37 +254,46 @@
         <p>We report the percentage of held-out queries for which the first catalog entry is correct (Recall@1). Each dataset has ten brand splits. We average three reranker runs per split for the main result.</p>
       </div>
       <table class="research-table" id="benchmark-table">
-        <caption>Retrieval on held-out brands, Recall@1 (%)</caption>
-        <thead><tr><th scope="col">Method</th><th scope="col">Grocery<wbr>Vision</th><th scope="col">Retail-<wbr>786k</th><th scope="col">Klasson</th></tr></thead>
+        <caption>First-ranked catalog match on held-out brands</caption>
+        <thead><tr><th rowspan="2" scope="col">Retrieval method and source</th><th colspan="3" scope="colgroup">Held-out brand Recall@1 (%) <span class="up" role="img" aria-label="higher is better">↑</span></th></tr>
+          <tr><th scope="col">Grocery<wbr>Vision</th><th scope="col">Retail-<wbr>786k</th><th scope="col">Klasson</th></tr></thead>
         <tbody>
           <tr class="table-group"><th colspan="4" scope="rowgroup">Frozen retrieval and adaptation on unlabeled frames</th></tr>
-          <tr><th scope="row">Frozen SigLIP2</th><td>78.7</td><td>94.4</td><td>75.8</td></tr>
-          <tr><th scope="row">TDA</th><td>79.7</td><td>94.7</td><td>77.7</td></tr>
-          <tr><th scope="row">Tip-Adapter cache</th><td>78.5</td><td>93.1</td><td>70.9</td></tr>
-          <tr><th scope="row">TransCLIP</th><td>87.7</td><td>95.5</td><td>84.9</td></tr>
-          <tr><th scope="row">ReCLIP</th><td>82.3</td><td>94.9</td><td>85.5</td></tr>
-          <tr><th scope="row">OTTER</th><td>76.5</td><td>83.9</td><td>75.8</td></tr>
-          <tr><th scope="row">DPA</th><td>84.6</td><td>95.7</td><td>81.4</td></tr>
-          <tr><th scope="row">TransCLIP + teacher</th><td>89.3</td><td><strong>97.0</strong></td><td>86.3</td></tr>
+          <tr><th scope="row">Frozen SigLIP2 <span class="pub-source">arXiv’25</span></th><td>78.7</td><td>94.4</td><td>75.8</td></tr>
+          <tr><th scope="row">TDA <span class="pub-source">CVPR’24</span></th><td>79.7</td><td>94.7</td><td>77.7</td></tr>
+          <tr><th scope="row">Tip-Adapter cache <span class="pub-source">ECCV’22</span></th><td>78.5</td><td>93.1</td><td>70.9</td></tr>
+          <tr><th scope="row">TransCLIP <span class="pub-source">NeurIPS’24</span></th><td>87.7</td><td>95.5</td><td>84.9</td></tr>
+          <tr><th scope="row">ReCLIP <span class="pub-source">WACV’24</span></th><td>82.3</td><td>94.9</td><td>85.5</td></tr>
+          <tr><th scope="row">OTTER <span class="pub-source">NeurIPS’24</span></th><td>76.5</td><td>83.9</td><td>75.8</td></tr>
+          <tr><th scope="row">DPA <span class="pub-source">WACV’25</span></th><td>84.6</td><td>95.7</td><td>81.4</td></tr>
+          <tr><th scope="row">TransCLIP + teacher <span class="pub-source">NeurIPS’24, teacher variant evaluated here</span></th><td>89.3</td><td><strong>97.0</strong></td><td>86.3</td></tr>
         </tbody>
         <tbody>
           <tr class="table-group"><th colspan="4" scope="rowgroup">Supervised transfer from seen brands</th></tr>
-          <tr><th scope="row">ROADMAP</th><td>47.2</td><td>73.8</td><td>29.4</td></tr>
-          <tr><th scope="row">CSO</th><td>65.9</td><td>79.3</td><td>38.9</td></tr>
-          <tr><th scope="row">PEFT-DML</th><td>61.5</td><td>82.2</td><td>70.8</td></tr>
-          <tr><th scope="row">TCM</th><td>54.0</td><td>72.3</td><td>45.8</td></tr>
-          <tr><th scope="row">UDON</th><td>60.3</td><td>78.6</td><td>60.0</td></tr>
-          <tr><th scope="row">DoRA fine-tune</th><td>85.2</td><td>95.2</td><td>85.9</td></tr>
+          <tr><th scope="row">ROADMAP <span class="pub-source">NeurIPS’21</span></th><td>47.2</td><td>73.8</td><td>29.4</td></tr>
+          <tr><th scope="row">CSO <span class="pub-source">ICML’23</span></th><td>65.9</td><td>79.3</td><td>38.9</td></tr>
+          <tr><th scope="row">PEFT-DML <span class="pub-source">ICLR’24</span></th><td>61.5</td><td>82.2</td><td>70.8</td></tr>
+          <tr><th scope="row">TCM <span class="pub-source">ICLR’24</span></th><td>54.0</td><td>72.3</td><td>45.8</td></tr>
+          <tr><th scope="row">UDON <span class="pub-source">NeurIPS’24</span></th><td>60.3</td><td>78.6</td><td>60.0</td></tr>
+          <tr><th scope="row">DoRA fine-tune <span class="pub-source">ICML’24</span></th><td>85.2</td><td>95.2</td><td>85.9</td></tr>
         </tbody>
         <tbody>
           <tr class="table-group"><th colspan="4" scope="rowgroup">Other training and inference settings</th></tr>
-          <tr><th scope="row">Cat2Real (external pretraining)</th><td>83.2</td><td>84.9</td><td>84.7</td></tr>
-          <tr><th scope="row">Fast thinker + teacher at test time</th><td>88.7</td><td>95.1</td><td>85.1</td></tr>
+          <tr><th scope="row">Cat2Real (external pretraining) <span class="pub-source">arXiv’26</span></th><td>83.2</td><td>84.9</td><td>84.7</td></tr>
+          <tr><th scope="row">Fast thinker + teacher at test time <span class="pub-source">Qwen model card, 2026</span></th><td>88.7</td><td>95.1</td><td>85.1</td></tr>
         </tbody>
         <tbody>
-          <tr><th scope="row">ShelfTaught</th><td><strong>91.2</strong></td><td>95.5</td><td><strong>93.1</strong></td></tr>
+          <tr class="ours"><th scope="row">ShelfTaught (Ours) <span class="pub-source">WACVW’27</span></th><td><strong>91.2</strong></td><td>95.5</td><td><strong>93.1</strong></td></tr>
         </tbody>
       </table>
+      <div id="qualitative" class="qualitative">
+        <div class="prose"><h3>Qualitative results</h3><p>These held-out queries show a corrected ranking, a query answered by the first pass, and a reranking error.</p></div>
+        <div class="benchmark-photos">
+          <figure><img src="./assets/gv-chowder.webp" width="279" height="400" loading="lazy" alt="A shopper holds a blue can of Progresso chowder"><figcaption><strong>GroceryVision</strong> The first pass picks creamy potato soup with bacon. The reranker selects the correct potato, broccoli and cheese chowder (82.6%).</figcaption></figure>
+          <figure><img src="./assets/retail-ketchup.webp" width="199" height="256" loading="lazy" alt="A promotional leaflet crop showing a 430 ml bottle of Hellmann’s ketchup and its price"><figcaption><strong>Retail-786k</strong> In this leaflet crop, Hellmann’s ketchup (430 ml) scores 0.214 against 0.143 for the runner-up. It is the only entry in the calibrated shortlist, so the fast thinker answers.</figcaption></figure>
+          <figure><img src="./assets/klasson-melon.webp" width="348" height="348" loading="lazy" alt="A store photograph of a Galia melon"><figcaption><strong>Klasson</strong> The first pass correctly selects Galia melon. The reranker changes the answer to cantaloupe (74.1%).</figcaption></figure>
+        </div>
+      </div>
       <div class="prose">
         <p>Teacher-assisted TransCLIP uses the same offline first answers and clusters all test queries together. ShelfTaught answers one query at a time. It reaches 91.2% versus 89.3% on GroceryVision and 93.1% versus 86.3% on Klasson. On Retail-786k, the frozen retriever already reaches 94.4%, and teacher-assisted TransCLIP leads at 97.0%.</p>
         <p>TDA, TransCLIP and OTTER adapt on test frames. DPA uses the training and validation folds, and ReCLIP uses all three folds. The Tip-Adapter cache stores confident teacher predictions. Supervised transfer methods train on labeled products from other brands. Per-draw calibration results and standard deviations are in <a href="./assets/shelftaught.pdf" data-pdf-page="5">Table 1</a>.</p>
@@ -165,14 +301,14 @@
         <p>The feature mixture supplies more usable labels. On Klasson, removing it leaves target accuracy at 92.9%, but reduces the fraction of frames retained from 89.8% to 64.2%. The resulting reranker loses 7.5 percentage points of recall. Fitting the teacher’s confusion matrices adds 0.5 points on the same dataset.</p>
       </div>
       <table class="research-table ablations" id="ablation-table">
-        <caption>Training target accuracy and held-out Recall@1 (%), one reranker run per split</caption>
+        <caption>Label model ablation, one reranker run per brand split</caption>
         <thead>
-          <tr><th rowspan="2" scope="col">Label model</th><th colspan="2" scope="colgroup">Target accuracy</th><th colspan="2" scope="colgroup">Held-out Recall@1</th></tr>
+          <tr><th rowspan="2" scope="col">Training target source</th><th colspan="2" scope="colgroup">Pseudo-label accuracy on seen-brand validation frames (%) <span class="up" role="img" aria-label="higher is better">↑</span></th><th colspan="2" scope="colgroup">Reranker Recall@1 on held-out brands (%) <span class="up" role="img" aria-label="higher is better">↑</span></th></tr>
           <tr><th scope="col">Grocery<wbr>Vision</th><th scope="col">Klasson</th><th scope="col">Grocery<wbr>Vision</th><th scope="col">Klasson</th></tr>
         </thead>
         <tbody>
-          <tr class="table-group"><th colspan="5" scope="rowgroup">ShelfTaught and ablations</th></tr>
-          <tr><th scope="row">Full label model</th><td>92.7</td><td><strong>92.9</strong></td><td><strong>91.4</strong></td><td><strong>93.1</strong></td></tr>
+          <tr class="table-group"><th colspan="5" scope="rowgroup">ShelfTaught and ablations from this study</th></tr>
+          <tr class="ours"><th scope="row">ShelfTaught (Ours) <span class="pub-source">WACVW’27</span></th><td>92.7</td><td><strong>92.9</strong></td><td><strong>91.4</strong></td><td><strong>93.1</strong></td></tr>
           <tr><th scope="row">Without equipartition</th><td>92.0</td><td>89.3</td><td>90.7</td><td>88.7</td></tr>
           <tr><th scope="row">Without feature mixture</th><td>91.5</td><td><strong>92.9</strong></td><td>85.0</td><td>85.6</td></tr>
           <tr><th scope="row">Without picture question</th><td>89.9</td><td>89.5</td><td>90.0</td><td>88.9</td></tr>
@@ -183,17 +319,17 @@
         </tbody>
         <tbody>
           <tr class="table-group"><th colspan="5" scope="rowgroup">Other label models</th></tr>
-          <tr><th scope="row">Majority vote</th><td>87.4</td><td>78.5</td><td>89.4</td><td>77.5</td></tr>
-          <tr><th scope="row">Dawid–Skene</th><td>87.6</td><td>80.7</td><td>87.4</td><td>83.3</td></tr>
-          <tr><th scope="row">GLAD</th><td>89.3</td><td>78.6</td><td>89.2</td><td>81.1</td></tr>
-          <tr><th scope="row">Snorkel</th><td>88.0</td><td>77.8</td><td>89.3</td><td>80.5</td></tr>
-          <tr><th scope="row">Hyper label model</th><td>88.7</td><td>81.0</td><td>89.4</td><td>80.9</td></tr>
+          <tr><th scope="row">Majority vote <span class="pub-source">Voting rule</span></th><td>87.4</td><td>78.5</td><td>89.4</td><td>77.5</td></tr>
+          <tr><th scope="row">Dawid–Skene <span class="pub-source">JRSS Series C’79</span></th><td>87.6</td><td>80.7</td><td>87.4</td><td>83.3</td></tr>
+          <tr><th scope="row">GLAD <span class="pub-source">NeurIPS’09</span></th><td>89.3</td><td>78.6</td><td>89.2</td><td>81.1</td></tr>
+          <tr><th scope="row">Snorkel <span class="pub-source">AAAI’19</span></th><td>88.0</td><td>77.8</td><td>89.3</td><td>80.5</td></tr>
+          <tr><th scope="row">Hyper label model <span class="pub-source">ICLR’23</span></th><td>88.7</td><td>81.0</td><td>89.4</td><td>80.9</td></tr>
         </tbody>
       </table>
       <div class="prose">
         <p>Majority vote counts the sources’ first choices. Dawid–Skene learns which entries each source tends to confuse. ShelfTaught also uses the teacher’s answer probabilities and similarities among store frames. With the same number of training targets, their rerankers reach 77.5%, 83.3%, and 93.1% on Klasson, respectively. Target accuracy is measured on validation frames of seen brands. See <a href="./assets/shelftaught.pdf" data-pdf-page="8">Table 2</a>.</p>
         <h3>Inference cost and cold start</h3>
-        <p>The reranker reuses the frozen image features. On frames it handles, it adds 0.24 GFLOPs to the image tower’s 1,393 GFLOPs and 0.22 ms to its 16.2 ms measured latency. The 27B teacher runs offline. With zero retained frames per new GroceryVision product, the coverage gate gives 77.9% recall, compared with 41.5% for ungated reranking and 78.7% for the frozen retriever.</p>
+        <p>The reranker has 0.34 million parameters and reuses the frozen image features. On frames it handles, it adds 0.24 GFLOPs to the image tower’s 1,393 GFLOPs and 0.22 ms to its 16.2 ms measured latency. The 27B teacher runs offline. With zero retained frames per new GroceryVision product, the coverage gate gives 77.9% recall, compared with 41.5% for ungated reranking and 78.7% for the frozen retriever.</p>
       </div>
     </section>
 
@@ -219,9 +355,13 @@
       <pre><code id="bibtex">@inproceedings{maminta2027shelftaught,
   title={Thinking Fast and Slow for Label-Free Open-Catalog Product Retrieval},
   author={Maminta, Emmanuel G. and Atienza, Rowel O.},
-  booktitle={Physical Retail AI Workshop at WACV},
-  year={2027}
+  booktitle={2027 IEEE/CVF Winter Conference on Applications of Computer Vision Workshops (WACVW)},
+  year={2027},
+  month=jan,
+  publisher={IEEE},
+  note={Physical Retail AI Workshop (PRAW)}
 }</code></pre>
+      <p class="citation-sources"><a href="https://praw-workshop.github.io/#program">Workshop program</a> · <a href="https://www.computer.org/communities/tcpami">IEEE conference listing</a></p>
     </section>
   </main>
 </body>

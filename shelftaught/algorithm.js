@@ -3,7 +3,10 @@
   'use strict';
   const data = appleTrace;
   const figure = document.getElementById('step-content');
-  const nav = Array.from(document.querySelectorAll('[data-step]'));
+  const nav = Array.from(document.querySelectorAll('.algorithm-nav [data-step]'));
+  const nodes = Array.from(document.querySelectorAll('#pipeline [data-component]'));
+  const returnLink = document.getElementById('return-pipeline');
+  let selectedNode = null;
   const transport = document.querySelector('.transport');
   const play = document.getElementById('play');
   const back = document.getElementById('back');
@@ -412,7 +415,7 @@
   function showTrain() {
     figure.innerHTML =
       intro(
-        'We train two linear projections on the retained targets. Each of the 576 image patches takes its highest cosine similarity with a token in the candidate’s description. The mean of those 576 matches is the product’s score.',
+        'The reranker learns two linear maps into a shared space of 128 dimensions from the retained targets. Each of the 576 image patches takes its highest cosine similarity with a token in the candidate’s description. The mean of those 576 matches is the product’s score.',
       ) +
       '<div class="field-line"><label for="description-choice">Candidate description</label><select id="description-choice"><option value="0">Pink Lady, Apple</option><option value="1">Royal Gala, Apple</option></select><label for="train-epoch">Checkpoint</label><select id="train-epoch"><option value="3">Epoch 3</option><option value="8">Epoch 8</option></select></div>' +
       '<div class="step-visual patch-layout"><div><div class="patch-figure"><img src="./assets/apple-train.webp" width="348" height="348" alt="Apples in the training frame"><svg viewBox="0 0 240 240" id="patch-grid" tabindex="0" role="slider" aria-label="Image patch" aria-valuemin="1" aria-valuemax="576" aria-describedby="patch-guide">' +
@@ -610,7 +613,7 @@
     const link = document.createElement('a');
     link.href = './assets/shelftaught.pdf#page=4';
     link.textContent =
-      'Algorithm 1, ' +
+      'Pseudocode, ' +
       (instructions[step][0].includes('–') ? 'lines ' : 'line ') +
       instructions[step][0];
     const code = document.createElement('code');
@@ -624,6 +627,17 @@
       else b.removeAttribute('aria-current');
     });
     drawStage[step]();
+    nodes.forEach((node) => {
+      if (node.dataset.component === selectedNode) node.setAttribute('aria-current', 'true');
+      else node.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('#pipeline [data-connects]').forEach((edge) => {
+      edge.classList.toggle('selected-edge', edge.dataset.connects.split(' ').includes(selectedNode));
+    });
+    returnLink.hidden = !selectedNode;
+    const context = document.getElementById('component-context');
+    context.hidden = !selectedNode;
+    if (selectedNode) context.textContent = components[selectedNode][1];
     lineOfAlgorithm();
     back.disabled = step === 0;
     next.disabled = step === steps.length - 1;
@@ -687,6 +701,7 @@
         return;
       }
       step++;
+      selectedNode = null;
       playPart = 0;
       if (step === 1) question = 0;
       if (step === 2) {
@@ -702,12 +717,60 @@
       schedule();
     }, tour[step][playPart].delay);
   }
-  function go(i) {
+  function go(i, component = null) {
     stop();
+    selectedNode = component;
     step = Math.min(steps.length - 1, Math.max(0, i));
     playPart = 0;
     render();
   }
+  const components = {
+    query: [5, 'Checkout input. Frame 050 is a photograph the reranker did not see during training.'],
+    fast: [5, 'Fast thinker. The frozen retriever puts Royal Gala first. Four entries survive its calibrated shortlist.'],
+    gate: [5, 'Coverage gate. Change the number of training targets to see which model answers this query.'],
+    shortcut: [5, 'Direct return. For frame 022, the shortlist already contains a single catalog entry.'],
+    slow: [4, 'Slow thinker. Select a patch to inspect the token similarities produced by the trained projections.'],
+    output: [5, 'Catalog entry. Compare the frozen scores with the final ordering for frame 050.'],
+    frames: [0, 'Offline input. Frame 029 enters adaptation as an unlabeled image, with one frozen retrieval score per catalog entry.'],
+    q1: [1, 'First teacher question. Each of the ten catalog descriptions is an answer option.'],
+    q2: [1, 'Second teacher question. This frame had several plausible entries. The teacher sees catalog photographs of the candidates in its preliminary shortlist.'],
+    label: [2, 'Label model. Move the iteration slider to see how the evidence changes the inferred product identity.'],
+    targets: [3, 'Training targets. A frame is retained when the posterior passes the threshold and at least one source names that entry.'],
+  };
+  nodes.forEach((node) => {
+    node.setAttribute('aria-controls', 'step-content');
+    node.addEventListener('click', (event) => {
+      if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+      event.preventDefault();
+      const key = node.dataset.component;
+      const [stage] = components[key];
+      if (stage === 5) {
+        queryIndex = key === 'shortcut' ? 1 : 0;
+        coverage = data.queries[queryIndex].coverage;
+      }
+      if (stage === 1) question = key === 'q2' ? 1 : 0;
+      if (stage === 2) {
+        iteration = last;
+        enabledTerms.fill(true);
+      }
+      if (stage === 3) threshold = 0.9;
+      if (stage === 4) {
+        epoch = 8;
+        candidate = 0;
+      }
+      go(stage, key);
+      figure.focus({ preventScroll: true });
+      document.getElementById('component-context').scrollIntoView({ block: 'start' });
+    });
+  });
+  returnLink.addEventListener('click', (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+    const visible = nodes.find((node) => node.dataset.component === selectedNode && node.getClientRects().length);
+    if (!visible) return;
+    event.preventDefault();
+    document.getElementById('pipeline').scrollIntoView({ block: 'start' });
+    visible.focus({ preventScroll: true });
+  });
   nav.forEach((b, i) => {
     b.setAttribute('aria-controls', 'step-content');
     b.onclick = () => go(i);
