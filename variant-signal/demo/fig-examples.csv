@@ -1,0 +1,19 @@
+panel,brand,draw,shuffled_fit_index,photo_row,photo_sku,description_col,description_sku,cosine,tikz_fill,row_best_match,photo_within_hits_of_10,source
+Fit on seen brands,Starbucks,9,,1,762111206244,1,762111206244,0.4423,60.50803858520903,1,10,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,1,762111206244,2,762111622914,0.3527,16.332261521972146,0,10,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,1,762111206244,3,762111795755,0.3934,36.39871382636658,0,10,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,2,762111622914,1,762111206244,0.4373,58.04287245444804,0,9,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,2,762111622914,2,762111622914,0.492,85.01178992497321,1,9,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,2,762111622914,3,762111795755,0.4663,72.34083601286174,0,9,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,3,762111795755,1,762111206244,0.4314,55.13397642015006,0,10,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,3,762111795755,2,762111622914,0.4078,43.49839228295821,0,10,task247_colorcontrol/A78_selection.json
+Fit on seen brands,Starbucks,9,,3,762111795755,3,762111795755,0.5224,99.99999999999999,1,10,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,1,762111206244,1,762111206244,0.3946,36.990353697749214,1,6,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,1,762111206244,2,762111622914,0.3358,8.0,0,6,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,1,762111206244,3,762111795755,0.3936,36.49732047159701,0,6,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,2,762111622914,1,762111206244,0.3625,21.163987138263668,0,0,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,2,762111622914,2,762111622914,0.4409,59.81779206859594,0,0,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,2,762111622914,3,762111795755,0.4608,69.62915326902466,1,0,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,3,762111795755,1,762111206244,0.3443,12.19078242229368,0,10,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,3,762111795755,2,762111622914,0.349,14.508038585208999,0,10,task247_colorcontrol/A78_selection.json
+Shuffled labels,Starbucks,9,1,3,762111795755,3,762111795755,0.4802,79.1939978563773,1,10,task247_colorcontrol/A78_selection.json

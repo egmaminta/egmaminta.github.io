@@ -1,0 +1,4 @@
+*.pdf binary
+*.webp binary
+*.npz binary
+*.f32 binary
