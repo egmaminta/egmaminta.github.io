@@ -4,7 +4,7 @@ This is the retrieval experiment on the [ACCV 2026 paper page](https://egmaminta
 
 ## Reproducing the interactive scores
 
-[page.js](../page.js) uses the stored coordinates of 30 Starbucks photos and 409 catalog descriptions. The byte layout of [coordinates.f32](coordinates.f32) is little-endian float32 with shape `(2, 439, 128)`. The first fit uses true variant labels. The second is the shuffled-label fit shown in Figure 2, the second fit from the seed-12345 generator. It was selected as the closest to the mean within-brand accuracy of ten shuffled fits.
+[page.js](../page.js) uses the stored coordinates of 30 Starbucks photos and 409 catalog descriptions. The byte layout of [coordinates.f32](coordinates.f32) is little-endian float32 with shape `(2, 439, 128)`. Both fits use the frozen image features from SigLIP2-gopt-384 training photos, with Starbucks excluded. The first groups those photos by their correct variety labels. At test time we project both the Starbucks photo vectors and the catalog text vectors from the same SigLIP2 model. The second is the shuffled-label fit shown in Figure 2, the second fit from the seed-12345 generator. It was selected as the closest to the mean within-brand accuracy of ten shuffled fits.
 
 Within each fit, rows 0–29 are photos and rows 30–438 are catalog texts, in the order of [catalog.json](catalog.json). The arrays store projections **before** normalization. Taking the first 16, 32, 64 or 128 coordinates and normalizing each row reproduces the interactive scores.
 
@@ -22,9 +22,9 @@ cosines = v[30:] @ v[query]
 print(catalog["products"][int(np.argmax(cosines))]["description"])
 ```
 
-At rank 64, the subspace fitted with original labels retrieves the correct Starbucks roast for 29 of 30 photos. The displayed shuffled-label fit retrieves 16 of 30 correctly. The matrices in [fig-examples.csv](fig-examples.csv) score each normalized **mean** of ten projected photos against the three texts. The browser starts with an **individual** photo. Select “Average the 10 image vectors (Figure 2)” at rank 64 with the three Starbucks descriptions to reproduce each published row. The supplement documents this brand’s selection as the largest within-brand gain among the eligible examples.
+At rank 64, the subspace fitted with original labels retrieves the correct Starbucks roast for 29 of 30 photos. When restricted to the same three descriptions, the displayed fit trained with shuffled labels identifies 16 of the same 30 photos correctly. The matrices in [fig-examples.csv](fig-examples.csv) score each normalized **mean** of ten projected photos against the three texts. The browser starts with an **individual** photo. Select “Average the 10 image vectors (Figure 2)” at rank 64 with the three Starbucks descriptions to reproduce each published row. The supplement documents this brand’s selection as the largest within-brand gain among the eligible examples.
 
-[supp-fig-transfer-panel.csv](supp-fig-transfer-panel.csv) contains the results across ten brand splits used to compare subspace ranks. [tab-panel.csv](tab-panel.csv) contains the fine-tuning comparison.
+[supp-fig-transfer-panel.csv](supp-fig-transfer-panel.csv) reports how often the correct description ranked first among all 409 entries at each rank. For each trial we averaged accuracy equally across test brands with at least two products. We then averaged across ten assignments of brands to training, validation and testing. [tab-panel.csv](tab-panel.csv) contains the fine-tuning comparison.
 
 ## Linear probe example
 

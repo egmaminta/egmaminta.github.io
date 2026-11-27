@@ -78,9 +78,10 @@ async function retrieval() {
       image.src = "assets/photos/" + photo.file;
       image.alt = "Store photo " + (frame+1) + " of Starbucks " + variant.name + " from GroceryVision.";
       select("#photo-back").disabled = select("#photo-next").disabled = average;
-      select("#photo-count").textContent = average ? "Mean of 10 image vectors" : "Photo " + (frame+1) + " of " + frames.length;
-      select("#catalog-key").textContent = scores.length > 3 ? "Top 3 catalog matches" : "Catalog match";
-      select("#rank-summary").textContent = variant.name + " ranks " + position + " of " + scores.length + (average ? " when the ten photo vectors are averaged." : " for this photo.");
+      select("#photo-count").textContent = average ? `Mean of ${frames.length} image vectors` : "Photo " + (frame+1) + " of " + frames.length;
+      select("#catalog-key").textContent = scores.length > 3 ? "Three highest-scoring descriptions" : "Roast description";
+      const queryLabel = average ? `the mean of the ${frames.length} projected photo vectors` : "this photo";
+      select("#rank-summary").textContent = `For ${queryLabel}, the correct description (${variant.name}) ranks ${position} of ${scores.length}.`;
       select("#top-wording").textContent = products[scores[0].id].description;
       const entries = scores.slice(0,3).map(row => {
         const item = document.createElement("li");
@@ -122,7 +123,7 @@ async function rankSweep() {
         select("i",cell).style.setProperty("--value", values[i]+"%");
         select("span",cell).textContent = values[i].toFixed(1)+"%";
       });
-      select("#sweep-summary").textContent = `At rank ${rank}, ${model} achieves ${values[0].toFixed(1)}% Recall@1 with original variant labels and ${values[1].toFixed(1)}% with shuffled labels.`;
+      select("#sweep-summary").textContent = `Across the full catalog, ${model} averages ${values[0].toFixed(1)}% correct first matches with ${rank} directions learned from correct labels and ${values[1].toFixed(1)}% with ${rank} directions learned from shuffled labels.`;
     }
     controls.forEach(el => el.addEventListener("change",render));
     render();
@@ -136,10 +137,10 @@ function checkoutPipeline() {
   const labels = {
     camera: "The query is a GroceryVision photograph of Campbell’s Creamy Tomato soup. The shopper’s fingers partially obscure the label.",
     catalog: "The catalog contains one description per product. The two soup descriptions identify the same brand and package type but specify different flavors.",
-    image: "The image encoder represents the full frame as a single vector. The retrieval model and the linear probe use the same frozen image features.",
-    text: "The text encoder produces one vector per catalog description. The same text vectors can be used for all query images.",
-    score: "For unit-length image and text vectors, the dot product equals their cosine similarity.",
-    match: "The highest-scoring description is Chicken Noodle. The correct description, Creamy Tomato, ranks second."
+    image: "SigLIP2’s image encoder turns the whole store photo into one vector of image features. Its weights stay fixed when we train the classifier to identify the variety.",
+    text: "SigLIP2’s text encoder turns each written product description into a vector of text features. We reuse the same catalog text vectors for every query photo.",
+    score: "SigLIP2 compares the photo vector with each catalog text vector. After both are scaled to unit length, a larger dot product means a closer match.",
+    match: "For this photo of Creamy Tomato, the Chicken Noodle description has the highest cosine similarity. The description for Creamy Tomato ranks second."
   };
   const buttons = selectAll("[data-pipe]");
   for (const button of buttons) {
@@ -193,8 +194,8 @@ async function linearProbe() {
       });
       select("#probe-training", root).replaceChildren(...rows);
       const correct = test.filter(photo => photo.predictions[fit] === photo.variant).length;
-      const label = fit ? "shuffled" : "original";
-      select("#probe-result", root).textContent = `With ${label} training labels, the classifier predicts the correct variety for ${correct} of ${test.length} test photos.`;
+      const label = fit ? "shuffled" : "correct";
+      select("#probe-result", root).textContent = `Trained on ${label} variety labels for the same 18 almond photos, the classifier correctly identifies ${correct} of ${test.length} test photos.`;
       renderPhoto();
     }
 
@@ -208,7 +209,7 @@ async function linearProbe() {
     renderFit();
     controls.forEach(control => { control.disabled = false; });
   } catch {
-    select("#probe-result", root).textContent = "Correct predictions on the 12 test photos totaled 12 with original labels and 5 with shuffled labels. Reload to inspect individual predictions.";
+    select("#probe-result", root).textContent = "Across the same twelve test photos, the probe identified the variety correctly for all twelve with correct training labels and five with shuffled labels. Reload to inspect individual predictions.";
   }
 }
 

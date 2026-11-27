@@ -9,10 +9,10 @@ const product = document.querySelector("#transfer-product");
 const tau = Math.PI / 180;
 const colors = ["#121212", "#606060"];
 const steps = [
-  ["Mean image features per product", "Each small mark represents one store photograph. Each large mark represents the mean feature vector for ten photographs of one product. Circles and squares distinguish the two brands."],
-  ["Center each product on its brand mean", "Subtract the mean product vector for each brand from each of its product vectors. Both brand means are now at the origin. Each arrow shows how one variant differs from its brand mean."],
-  ["Estimate the directions of greatest variation", "Each dot represents a centered product vector. The singular value decomposition gives the signed weights for each product (U), the singular values (Σ), and the directions in feature space (V). The plane shows the first two directions. The main experiment retains 64."],
-  ["Project a product from a new brand", "The solid lines show the projections of a coffee image and its catalog description onto the same two axes. The axes were estimated from other brands. Select a roast to compare the projected vectors."]
+  ["Mean image features per product", "Each small mark represents one store photo. Each large mark is the mean image vector of ten photos of one variety. Circles mark Blue Diamond almonds and squares mark Ocean Spray juice."],
+  ["Center each product on its brand mean", "For each brand, average its variety vectors and subtract that average from each variety. Both brand averages now lie at zero. Each arrow shows the difference between one variety and its own brand average."],
+  ["Estimate the directions of greatest variation", "Each dot is a training variety after subtracting its brand average. We use singular value decomposition to find the directions along which these dots spread out most. The plane shows the first two directions. We used 64 to rank catalog descriptions."],
+  ["Project a product from a new brand", "Select a Starbucks roast. The two solid lines show one photo vector and its written description projected onto the plane. The axes were learned entirely from other brands’ photos. The retrieval test applies the same projection to every candidate description."]
 ];
 let data, centroids, centers, active = 0, yaw = 33, elevation = 29, queued = false;
 let centerProgress = 0, shiftAnimation = 0;

@@ -9,8 +9,8 @@ const products = [
     truth: "Campbell’s Creamy Tomato",
     matches: [["Campbell’s Chicken Noodle"], ["Campbell’s Creamy Tomato"]],
     explanation:
-      "Frozen SigLIP2 ranks Campbell’s Chicken Noodle first for a photograph of Campbell’s Creamy Tomato. The correct variant ranks second.",
-    source: "Figure 1 of the paper reports this frozen SigLIP2 ranking.",
+      "For this photo of Campbell’s Creamy Tomato, SigLIP2 ranks the text for Chicken Noodle first. The description for the photographed flavor ranks second.",
+    source: "Figure 1 reports the ranking from comparing this photo with catalog text using the pretrained SigLIP2 encoders.",
   },
   {
     key: "sumatra",
@@ -25,9 +25,9 @@ const products = [
       ["Starbucks Pike Place", 0.0915],
     ],
     explanation:
-      "Frozen SigLIP2 ranks the correct roast, Sumatra, first among 409 catalog descriptions.",
+      "For this Sumatra photo, the Sumatra description ranks first among all 409 catalog descriptions.",
     source:
-      "Scores are cosine similarities between the frozen SigLIP2-gopt-384 image vector for this GroceryVision frame and the catalog text vectors.",
+      "SigLIP2-gopt-384 encoded the store photo and each written description. These scores compare their original vectors by cosine similarity, using all dimensions.",
   },
   {
     key: "breakfast",
@@ -42,9 +42,9 @@ const products = [
       ["Starbucks Sumatra", 0.1062],
     ],
     explanation:
-      "Breakfast Blend ranks first. The second- and third-ranked descriptions correspond to other Starbucks roasts.",
+      "For this Breakfast Blend photo, the Breakfast Blend description ranks first among all 409 catalog descriptions. The next two descriptions name other Starbucks roasts.",
     source:
-      "Scores are cosine similarities between the frozen SigLIP2-gopt-384 image vector for this GroceryVision frame and the catalog text vectors.",
+      "SigLIP2-gopt-384 encoded the store photo and each written description. These scores compare their original vectors by cosine similarity, using all dimensions.",
   },
 ];
 const asset = (path) => new URL("./assets/" + path, import.meta.url).href;
