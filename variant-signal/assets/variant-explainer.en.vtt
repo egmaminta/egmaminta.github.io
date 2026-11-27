@@ -1,274 +1,306 @@
 WEBVTT
 
-00:00:00.330 --> 00:00:04.010 line:74% align:center position:50% size:90%
-At a grocery store, a shopper
-picks one item from a shelf.
+00:00:00.330 --> 00:00:03.786 line:74% align:center position:50% size:90%
+In a grocery store, a shopper
+selects a product from a shelf.
 
-00:00:04.260 --> 00:00:07.520 line:74% align:center position:50% size:90%
+00:00:04.036 --> 00:00:07.637 line:74% align:center position:50% size:90%
 Amazon's Just Walk Out uses
 cameras and shelf sensors
 
-00:00:07.520 --> 00:00:10.580 line:74% align:center position:50% size:90%
-to keep track of what people take or put back.
+00:00:07.637 --> 00:00:10.521 line:74% align:center position:50% size:90%
+to identify the products
+shoppers take or return.
 
-00:00:10.830 --> 00:00:13.990 line:74% align:center position:50% size:90%
-Retail can also be studied in a virtual store.
+00:00:10.771 --> 00:00:14.536 line:74% align:center position:50% size:90%
+A virtual store can also serve
+as a research environment.
 
-00:00:13.990 --> 00:00:17.630 line:74% align:center position:50% size:90%
-Here a researcher moves through
-the Sari Sandbox simulation.
+00:00:14.536 --> 00:00:18.142 line:74% align:center position:50% size:90%
+This is a walkthrough of the
+Sari Sandbox retail simulation.
 
-00:00:17.880 --> 00:00:27.160 line:74% align:center position:50% size:90%
+00:00:18.392 --> 00:00:23.597 line:74% align:center position:50% size:90%
 Virtual try-on lets a shopper preview an
 item, such as glasses, on their own image.
 
-00:00:27.880 --> 00:00:32.760 line:74% align:center position:50% size:90%
+00:00:24.317 --> 00:00:28.434 line:74% align:center position:50% size:90%
 A Transferable Variant Signal That
 Grocery Retrieval Cannot Reach.
 
-00:00:33.020 --> 00:00:39.000 line:74% align:center position:50% size:90%
-Emmanuel G. Maminta and Rowel O. Atienza,
+00:00:28.694 --> 00:00:32.022 line:74% align:center position:50% size:90%
+Emmanuel G. Maminta and Rowel O. Atienza.
 
-00:00:39.000 --> 00:00:44.300 line:74% align:center position:50% size:90%
+00:00:32.022 --> 00:00:34.799 line:74% align:center position:50% size:90%
 Artificial Intelligence Graduate Program,
-University of the Philippines Diliman.
 
-00:00:44.560 --> 00:00:49.360 line:74% align:center position:50% size:90%
-An oral presentation at the Asian
+00:00:34.799 --> 00:00:38.273 line:74% align:center position:50% size:90%
+University of the Philippines
+Diliman, Quezon City.
+
+00:00:38.533 --> 00:00:44.058 line:74% align:center position:50% size:90%
+An oral presentation at the 18th Asian
 Conference on Computer Vision in Osaka.
 
-00:00:50.080 --> 00:00:56.880 line:74% align:center position:50% size:90%
-Our study asks how a checkout system
-identifies the exact product for a receipt.
+00:00:44.778 --> 00:00:49.685 line:74% align:center position:50% size:90%
+We study how a checkout system matches a
+photograph to the exact item on a receipt.
 
-00:00:57.130 --> 00:01:01.330 line:74% align:center position:50% size:90%
+00:00:49.935 --> 00:00:53.956 line:74% align:center position:50% size:90%
 A model compares a camera photo
 with written catalog descriptions.
 
-00:01:01.330 --> 00:01:03.770 line:74% align:center position:50% size:90%
+00:00:53.956 --> 00:00:56.495 line:74% align:center position:50% size:90%
 This is called multimodal product retrieval.
 
-00:01:04.020 --> 00:01:08.980 line:74% align:center position:50% size:90%
-The model turns the photo and each
-description into lists of numbers.
+00:00:56.745 --> 00:01:01.704 line:74% align:center position:50% size:90%
+The model encodes the photo and each
+description as a list of numbers, or vector.
 
-00:01:08.980 --> 00:01:12.980 line:74% align:center position:50% size:90%
-It scores each pair by how
-closely their directions line up.
+00:01:01.704 --> 00:01:04.702 line:74% align:center position:50% size:90%
+It ranks descriptions by cosine similarity,
 
-00:01:13.230 --> 00:01:21.190 line:74% align:center position:50% size:90%
-This can is Campbell's Creamy Tomato.
+00:01:04.702 --> 00:01:06.931 line:74% align:center position:50% size:90%
+which measures how closely the vectors align.
+
+00:01:07.181 --> 00:01:10.093 line:74% align:center position:50% size:90%
+The photograph shows
+Campbell's Creamy Tomato soup.
+
+00:01:10.093 --> 00:01:12.258 line:74% align:center position:50% size:90%
 The model ranks Chicken Noodle first.
 
-00:01:21.190 --> 00:01:24.350 line:74% align:center position:50% size:90%
-It found the brand, but missed the flavor.
+00:01:12.258 --> 00:01:15.522 line:74% align:center position:50% size:90%
+It identifies the brand
+and confuses two flavors.
 
-00:01:25.070 --> 00:01:34.830 line:74% align:center position:50% size:90%
-In earlier work, we tested 190 image
-and text encoders on GroceryVision.
+00:01:16.242 --> 00:01:22.151 line:74% align:center position:50% size:90%
+In an earlier GroceryVision study, we
+evaluated 190 image and text encoders.
 
-00:01:35.080 --> 00:01:40.480 line:74% align:center position:50% size:90%
-For SigLIP2 at 384 pixels, the correct
-product appeared in the first five choices
+00:01:22.401 --> 00:01:28.941 line:74% align:center position:50% size:90%
+For SigLIP2 at 384 pixels, the correct product
+appeared among the first five candidates
 
-00:01:40.480 --> 00:01:44.440 line:74% align:center position:50% size:90%
+00:01:28.941 --> 00:01:33.409 line:74% align:center position:50% size:90%
 17.5 percentage points more
 often than it ranked first.
 
-00:01:44.690 --> 00:01:49.010 line:74% align:center position:50% size:90%
-A shortlist can contain the right answer
-while the receipt still lists the wrong item.
+00:01:33.659 --> 00:01:36.382 line:74% align:center position:50% size:90%
+An exact match requires the correct variety
 
-00:01:49.730 --> 00:01:52.290 line:74% align:center position:50% size:90%
-When the model chooses the wrong flavor,
+00:01:36.382 --> 00:01:39.600 line:74% align:center position:50% size:90%
+to rank first. This is the
+measure called Recall@1.
 
-00:01:52.290 --> 00:01:55.970 line:74% align:center position:50% size:90%
-do its image measurements still
-tell the two flavors apart?
+00:01:40.320 --> 00:01:42.818 line:74% align:center position:50% size:90%
+When the model ranks the wrong flavor first,
 
-00:01:56.460 --> 00:01:57.920 line:74% align:center position:50% size:90%
-And can the differences learned
+00:01:42.818 --> 00:01:45.760 line:74% align:center position:50% size:90%
+do its image features still
+distinguish the two flavors?
 
-00:01:57.920 --> 00:02:01.500 line:74% align:center position:50% size:90%
-from some brands help identify
-products from a new brand?
+00:01:46.250 --> 00:01:47.519 line:74% align:center position:50% size:90%
+Can differences learned
 
-00:02:02.890 --> 00:02:08.570 line:74% align:center position:50% size:90%
-First, we freeze the image encoder.
-Its measurements of a photo stay fixed.
+00:01:47.519 --> 00:01:51.178 line:74% align:center position:50% size:90%
+from one set of brands help
+identify products from other brands?
 
-00:02:08.820 --> 00:02:12.520 line:74% align:center position:50% size:90%
+00:01:52.568 --> 00:01:57.336 line:74% align:center position:50% size:90%
+We keep the image encoder frozen. Its
+measurements of each photograph remain fixed.
+
+00:01:57.586 --> 00:02:00.830 line:74% align:center position:50% size:90%
 We train a small classifier,
 called a linear probe,
 
-00:02:12.520 --> 00:02:17.460 line:74% align:center position:50% size:90%
-to distinguish varieties within one
-brand. Here the varieties are almonds.
+00:02:00.830 --> 00:02:03.335 line:74% align:center position:50% size:90%
+to distinguish varieties within one brand.
 
-00:02:17.710 --> 00:02:24.550 line:74% align:center position:50% size:90%
-On separate photos, SigLIP2 features
-give 97.1 percent balanced accuracy.
+00:02:03.335 --> 00:02:06.236 line:74% align:center position:50% size:90%
+This example uses three varieties of almonds.
 
-00:02:24.550 --> 00:02:27.310 line:74% align:center position:50% size:90%
+00:02:06.486 --> 00:02:08.209 line:74% align:center position:50% size:90%
+On separate test photos,
+
+00:02:08.209 --> 00:02:14.219 line:74% align:center position:50% size:90%
+the classifier reaches 97.1 percent
+balanced accuracy with SigLIP2 features.
+
+00:02:14.219 --> 00:02:16.822 line:74% align:center position:50% size:90%
 Each variety counts equally within its brand.
 
-00:02:27.560 --> 00:02:35.240 line:74% align:center position:50% size:90%
-So the image features retain distinctions
+00:02:17.072 --> 00:02:21.530 line:74% align:center position:50% size:90%
+The image features retain distinctions
 that the comparison with text can miss.
 
-00:02:35.960 --> 00:02:42.280 line:74% align:center position:50% size:90%
-We make a second version of the
-training set. The photos stay in place.
+00:02:22.250 --> 00:02:27.210 line:74% align:center position:50% size:90%
+The control uses the same training
+photographs. Only their variety labels change.
 
-00:02:42.530 --> 00:02:47.810 line:74% align:center position:50% size:90%
-Shuffle the variety names within the
-brand. Each name still appears twice here.
+00:02:27.460 --> 00:02:32.398 line:74% align:center position:50% size:90%
+We shuffle labels within each brand. Each
+label still appears twice in this example.
 
-00:02:48.060 --> 00:02:52.660 line:74% align:center position:50% size:90%
-The test photo keeps its correct
-label. We will fit the directions again
+00:02:32.648 --> 00:02:36.734 line:74% align:center position:50% size:90%
+The test photo keeps its original
+label. We fit the directions again
 
-00:02:52.660 --> 00:02:56.540 line:74% align:center position:50% size:90%
-using the shuffled training
-groups, then compare the results.
+00:02:36.734 --> 00:02:40.061 line:74% align:center position:50% size:90%
+using these shuffled training
+groups and compare the results.
 
-00:02:57.260 --> 00:03:01.560 line:74% align:center position:50% size:90%
-Start with the correct names.
-Imagine one dot for each photo,
+00:02:40.781 --> 00:02:44.775 line:74% align:center position:50% size:90%
+With the original labels, each
+point represents one photograph,
 
-00:03:01.560 --> 00:03:04.540 line:74% align:center position:50% size:90%
-placed according to the
-features of that image.
+00:02:44.775 --> 00:02:47.416 line:74% align:center position:50% size:90%
+and its position reflects
+the features of that image.
 
-00:03:04.790 --> 00:03:09.590 line:74% align:center position:50% size:90%
-Average the dots for each product. Then find
-the center of the products in each brand.
+00:02:47.666 --> 00:02:50.196 line:74% align:center position:50% size:90%
+We average the points for each product. We
 
-00:03:09.840 --> 00:03:15.840 line:74% align:center position:50% size:90%
+00:02:50.196 --> 00:02:53.522 line:74% align:center position:50% size:90%
+then find the center of the
+product averages within each brand.
+
+00:02:53.772 --> 00:02:58.422 line:74% align:center position:50% size:90%
 An arrow from that center to a product shows
 how the variety differs from its brand.
 
-00:03:16.090 --> 00:03:25.450 line:74% align:center position:50% size:90%
+00:02:58.672 --> 00:03:03.717 line:74% align:center position:50% size:90%
 Each arrow becomes a row of a table. Each
 column corresponds to one image feature.
 
-00:03:26.170 --> 00:03:31.070 line:74% align:center position:50% size:90%
-Imagine turning a ruler through
+00:03:04.437 --> 00:03:07.818 line:74% align:center position:50% size:90%
+Consider a ruler passing through
 the center of the arrows.
 
-00:03:31.070 --> 00:03:34.570 line:74% align:center position:50% size:90%
-Drop each tip straight down onto the ruler.
+00:03:07.818 --> 00:03:10.890 line:74% align:center position:50% size:90%
+Mark the nearest point on
+the ruler for each arrow tip.
 
-00:03:34.820 --> 00:03:38.540 line:74% align:center position:50% size:90%
-Some angles spread the marks
-apart more than others.
+00:03:11.140 --> 00:03:14.223 line:74% align:center position:50% size:90%
+The spread of the marks
+changes as the ruler turns.
 
-00:03:38.540 --> 00:03:40.660 line:74% align:center position:50% size:90%
-Keep the direction with the greatest spread.
+00:03:14.223 --> 00:03:16.591 line:74% align:center position:50% size:90%
+The first direction gives the greatest spread.
 
-00:03:40.910 --> 00:03:43.890 line:74% align:center position:50% size:90%
+00:03:16.841 --> 00:03:20.413 line:74% align:center position:50% size:90%
 The next direction captures
 the most remaining variation
 
-00:03:43.890 --> 00:03:46.030 line:74% align:center position:50% size:90%
+00:03:20.413 --> 00:03:22.089 line:74% align:center position:50% size:90%
 at a right angle to the first.
 
-00:03:46.750 --> 00:03:51.470 line:74% align:center position:50% size:90%
+00:03:22.809 --> 00:03:27.267 line:74% align:center position:50% size:90%
 Singular value decomposition finds
 these directions in the full table.
 
-00:03:51.720 --> 00:03:58.640 line:74% align:center position:50% size:90%
+00:03:27.517 --> 00:03:32.317 line:74% align:center position:50% size:90%
 The first matrix is called U. Each column
 gives the weights for one direction.
 
-00:03:58.640 --> 00:04:03.480 line:74% align:center position:50% size:90%
-A plus or minus sign tells
-which way each variety lies.
+00:03:32.317 --> 00:03:35.965 line:74% align:center position:50% size:90%
+The sign records which side of
+the center each variety lies on.
 
-00:04:03.730 --> 00:04:06.950 line:74% align:center position:50% size:90%
+00:03:36.215 --> 00:03:38.785 line:74% align:center position:50% size:90%
 Sigma gives the strength of that direction.
 
-00:04:06.950 --> 00:04:11.570 line:74% align:center position:50% size:90%
+00:03:38.785 --> 00:03:43.414 line:74% align:center position:50% size:90%
 Each row of V transpose gives the
 direction in the original image features.
 
-00:04:11.820 --> 00:04:17.820 line:74% align:center position:50% size:90%
-We keep the strongest 64 directions.
+00:03:43.664 --> 00:03:48.603 line:74% align:center position:50% size:90%
+We retain the 64 strongest directions.
 Together they form the variant subspace.
 
-00:04:18.540 --> 00:04:23.260 line:74% align:center position:50% size:90%
-We learned those directions from the
-training brands. Starbucks was absent.
+00:03:49.323 --> 00:03:52.384 line:74% align:center position:50% size:90%
+We fit these directions
+using the training brands.
 
-00:04:23.510 --> 00:04:28.490 line:74% align:center position:50% size:90%
+00:03:52.384 --> 00:03:54.645 line:74% align:center position:50% size:90%
+The fit excludes all Starbucks photos.
+
+00:03:54.895 --> 00:03:58.831 line:74% align:center position:50% size:90%
 We project the photo and each
 description onto those directions.
 
-00:04:28.490 --> 00:04:32.610 line:74% align:center position:50% size:90%
-That means measuring both
-with the same rulers.
+00:03:58.831 --> 00:04:01.273 line:74% align:center position:50% size:90%
+This measures both along the same axes.
 
-00:04:32.610 --> 00:04:37.110 line:74% align:center position:50% size:90%
-We draw the arrows the same
-length, then compare their angles.
+00:04:01.273 --> 00:04:04.665 line:74% align:center position:50% size:90%
+We scale the arrows to the same
+length and compare their angles.
 
-00:04:37.360 --> 00:04:39.880 line:74% align:center position:50% size:90%
+00:04:04.915 --> 00:04:07.613 line:74% align:center position:50% size:90%
 Ten test photos show Sumatra coffee.
 
-00:04:39.880 --> 00:04:44.320 line:74% align:center position:50% size:90%
+00:04:07.613 --> 00:04:11.731 line:74% align:center position:50% size:90%
 Their average image vector scores
 highest against the Sumatra description.
 
-00:04:44.570 --> 00:04:48.030 line:74% align:center position:50% size:90%
-Using the directions
-fitted with shuffled names,
+00:04:11.981 --> 00:04:15.003 line:74% align:center position:50% size:90%
+After we refit the directions
+with shuffled labels,
 
-00:04:48.030 --> 00:04:50.890 line:74% align:center position:50% size:90%
-the same average ranks Pike Place first.
+00:04:15.003 --> 00:04:17.933 line:74% align:center position:50% size:90%
+Pike Place ranks first
+for the same ten photos.
 
-00:04:51.610 --> 00:04:54.550 line:74% align:center position:50% size:90%
+00:04:18.653 --> 00:04:20.924 line:74% align:center position:50% size:90%
 We repeat the experiment ten times.
 
-00:04:54.550 --> 00:04:59.610 line:74% align:center position:50% size:90%
+00:04:20.924 --> 00:04:25.042 line:74% align:center position:50% size:90%
 Each time we fit the directions on
 one set of brands and test on others.
 
-00:04:59.860 --> 00:05:05.040 line:74% align:center position:50% size:90%
-For SigLIP2, correct labels improve the
-first choice by 13.6 percentage points
+00:04:25.292 --> 00:04:32.307 line:74% align:center position:50% size:90%
+For SigLIP2, correct training labels
+improve Recall@1 by 13.6 percentage points
 
-00:05:05.040 --> 00:05:08.580 line:74% align:center position:50% size:90%
+00:04:32.307 --> 00:04:36.150 line:74% align:center position:50% size:90%
 over shuffled labels across
 all 409 descriptions.
 
-00:05:08.830 --> 00:05:14.510 line:74% align:center position:50% size:90%
+00:04:36.400 --> 00:04:41.158 line:74% align:center position:50% size:90%
 When every candidate belongs to the
 correct brand, the gain is 3.9 points.
 
-00:05:14.760 --> 00:05:19.700 line:74% align:center position:50% size:90%
-So most of the gain comes from
+00:04:41.408 --> 00:04:44.959 line:74% align:center position:50% size:90%
+Most of the gain comes from
 fewer matches to the wrong brand.
 
-00:05:19.700 --> 00:05:24.520 line:74% align:center position:50% size:90%
-The full, original embedding still
-gives the highest retrieval accuracy.
+00:04:44.959 --> 00:04:48.778 line:74% align:center position:50% size:90%
+The original, full embedding gives
+the highest retrieval accuracy.
 
-00:05:25.240 --> 00:05:30.600 line:74% align:center position:50% size:90%
-The shopper chose a particular flavor.
-The receipt needs to name that variety.
+00:04:49.498 --> 00:04:53.988 line:74% align:center position:50% size:90%
+On new brands, the largest gain came
+from fewer matches to the wrong brand.
 
-00:05:30.850 --> 00:05:36.150 line:74% align:center position:50% size:90%
-Our probe showed that image
-features could tell varieties apart.
+00:04:53.988 --> 00:04:56.634 line:74% align:center position:50% size:90%
+Checkout also requires the exact product.
 
-00:05:36.150 --> 00:05:41.570 line:74% align:center position:50% size:90%
-On new brands, the learned directions
-mostly corrected brand mistakes.
+00:04:56.884 --> 00:05:00.990 line:74% align:center position:50% size:90%
+These are the same Sumatra photographs
+and the same two descriptions.
 
-00:05:41.820 --> 00:05:47.480 line:74% align:center position:50% size:90%
-A useful visual representation preserves
-the difference between two products.
+00:05:00.990 --> 00:05:03.891 line:74% align:center position:50% size:90%
+With shuffled training labels,
+Pike Place ranks first.
 
-00:05:47.480 --> 00:05:53.260 line:74% align:center position:50% size:90%
-To identify the exact item, the comparison
-with text must use that difference too.
+00:05:04.141 --> 00:05:07.778 line:74% align:center position:50% size:90%
+With correct labels from other
+brands, Sumatra ranks first.
+
+00:05:07.778 --> 00:05:09.794 line:74% align:center position:50% size:90%
+The image features stayed fixed.
+
+00:05:09.794 --> 00:05:14.445 line:74% align:center position:50% size:90%
+Changing how we compared them with text
+changed which roast the model identified.
