@@ -6,26 +6,29 @@ What should appear on the receipt?
 00:00:29.234 --> 00:00:34.814
 A Transferable Variant Signal That Grocery Retrieval Cannot Reach
 
-00:00:34.814 --> 00:01:05.345
-One photo, two soup flavors
+00:00:34.814 --> 00:00:55.590
+Three questions about the wrong soup
 
-00:01:05.345 --> 00:01:18.198
-Did the image model miss the flavor?
+00:00:55.590 --> 00:01:29.621
+How a photo becomes a catalog match
 
-00:01:18.198 --> 00:01:52.130
-Can we read the variety from the photo alone?
+00:01:29.621 --> 00:02:16.609
+Can an image alone identify the flavor?
 
-00:01:52.130 --> 00:02:36.173
+00:02:16.609 --> 00:03:00.843
 Learning which differences to measure
 
-00:02:36.173 --> 00:02:58.834
+00:03:00.843 --> 00:03:23.505
 What if the flavor labels were wrong?
 
-00:02:58.834 --> 00:03:27.429
-Using those directions on a new brand
+00:03:23.505 --> 00:04:14.751
+Can the learned directions identify a new brand?
 
-00:03:27.429 --> 00:04:05.709
-Does the coffee result hold across brands?
+00:04:14.751 --> 00:05:14.834
+What changes when only the brand’s own varieties compete?
 
-00:04:05.709 --> 00:04:33.857
-What we learned from the soup error
+00:05:14.834 --> 00:05:47.755
+Three questions, three answers
+
+00:05:47.755 --> 00:06:29.164
+What this means for checkout and representation learning

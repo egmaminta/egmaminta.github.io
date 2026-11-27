@@ -123,3 +123,18 @@
   .catalog-finding { break-inside: avoid; }
   .catalog-finding .finding-track, .catalog-finding .finding-line, .catalog-finding .finding-mark { print-color-adjust: exact; }
 }
+
+.model-results {
+  max-width: 53rem;
+  margin: 2rem auto;
+  scroll-margin-top: 4rem;
+}
+.model-results h3 { margin: 0 0 .8rem; font-size: clamp(1.12rem, 2vw, 1.42rem); }
+.model-results table { table-layout: fixed; }
+.model-results thead th:first-child { width: 40%; }
+.model-results td, .model-results thead th:not(:first-child) { text-align: right; }
+.model-results caption { max-width: 76ch; }
+@media (max-width: 500px) {
+  .model-results th, .model-results td { padding: .52rem .22rem; }
+  .model-results tbody th, .model-results td { font-size: .88rem; }
+}
