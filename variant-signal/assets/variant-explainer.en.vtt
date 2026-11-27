@@ -1,0 +1,92 @@
+WEBVTT
+
+00:00:00.450 --> 00:00:04.354
+A Transferable Variant Signal That Grocery
+Retrieval Cannot Reach.
+
+00:00:04.814 --> 00:00:08.275
+In automated checkout, a camera sees a shopper
+lift a product.
+
+00:00:08.275 --> 00:00:09.849
+What goes in the cart?
+
+00:00:10.059 --> 00:00:14.901
+Multimodal product retrieval matches the
+photograph to a written catalog entry.
+
+00:00:15.361 --> 00:00:19.585
+The frozen model encodes each photo and each
+description as a vector.
+
+00:00:19.795 --> 00:00:24.809
+For this Campbell’s Creamy Tomato soup, cosine
+similarity ranks Chicken Noodle first.
+
+00:00:25.269 --> 00:00:28.156
+Did the image features lose the flavor?
+
+00:00:28.156 --> 00:00:31.455
+A linear probe reads variants from those same
+
+00:00:31.455 --> 00:00:35.167
+features with 97.1 percent balanced accuracy on
+seen brands.
+
+00:00:35.627 --> 00:00:40.619
+To test what carries over, average the photo
+vectors for each variant of a training brand.
+
+00:00:40.829 --> 00:00:42.125
+Subtract that brand’s center.
+
+00:00:42.125 --> 00:00:46.013
+Each arrow now shows how a variant differs from
+its own brand.
+
+00:00:46.473 --> 00:00:49.140
+Stack these differences across training brands.
+
+00:00:49.140 --> 00:00:54.473
+A singular value decomposition finds the
+directions along which variants differ most.
+
+00:00:54.683 --> 00:00:56.210
+We keep 64 directions.
+
+00:00:56.210 --> 00:00:58.118
+They span the variant subspace.
+
+00:00:58.578 --> 00:00:59.867
+Freeze those axes.
+
+00:00:59.867 --> 00:01:05.021
+Project a new brand’s images and descriptions
+onto them, normalize, and compare.
+
+00:01:05.231 --> 00:01:09.423
+For these ten Sumatra photos, the mean points
+closest to Sumatra.
+
+00:01:09.423 --> 00:01:12.090
+Shuffle the training labels within each brand,
+
+00:01:12.090 --> 00:01:13.615
+and Pike Place wins.
+
+00:01:14.075 --> 00:01:17.701
+Over ten splits, the learned subspace beats
+shuffled
+
+00:01:17.701 --> 00:01:21.328
+labels by 13.6 percentage points across the
+catalog.
+
+00:01:21.538 --> 00:01:24.802
+Within a brand, the gain falls to 3.9 points.
+
+00:01:24.802 --> 00:01:27.703
+Much of what transfers helps tell brands apart.
+
+00:01:27.703 --> 00:01:29.879
+The full embedding still retrieves best.

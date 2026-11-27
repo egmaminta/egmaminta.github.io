@@ -1,0 +1,109 @@
+.sumatra-teaser {
+  margin: 1.65rem auto 0;
+  color: #111;
+  background: #fff;
+}
+.sumatra-teaser .sumatra-figure-body {
+  display: grid;
+  grid-template-columns: minmax(11rem, .77fr) minmax(0, 1.42fr);
+  align-items: center;
+  gap: clamp(.9rem, 2.5vw, 2.1rem);
+}
+.sumatra-teaser .sumatra-query {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sumatra-teaser .sumatra-readout { min-width: 0; }
+.sumatra-teaser .sumatra-readout-title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.03rem, 1.5vw, 1.27rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -.022em;
+  text-align: left;
+}
+.sumatra-teaser .sumatra-ranks {
+  --sumatra-line: 3.2rem;
+  --sumatra-head: 2.2rem;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(1.25rem,.30fr) minmax(0,1fr);
+  gap: .35rem;
+  font-size: .92rem;
+  line-height: 1.2;
+}
+.sumatra-teaser .sumatra-rank-head {
+  display: flex;
+  align-items: end;
+  box-sizing: border-box;
+  min-height: var(--sumatra-head);
+  margin: 0;
+  border-bottom: 1px solid #333;
+  padding-bottom: .4rem;
+  font-size: .91rem;
+  text-align: left;
+  line-height: 1.2;
+  font-weight: 500;
+}
+.sumatra-teaser .sumatra-rank-column ol {
+  counter-reset: sumatra-rank;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sumatra-teaser .sumatra-rank-column li {
+  display: grid;
+  grid-template-columns: 1.05em minmax(0,1fr) auto;
+  align-items: center;
+  column-gap: .3em;
+  box-sizing: border-box;
+  min-height: var(--sumatra-line);
+  margin: 0;
+  line-height: 1.2;
+  counter-increment: sumatra-rank;
+}
+.sumatra-teaser .sumatra-rank-column li::before {
+  content: counter(sumatra-rank);
+  color: #555;
+  font-weight: 400;
+  font-size: .81em;
+  font-variant-numeric: tabular-nums;
+}
+.sumatra-teaser .sumatra-rank-column data {
+  font-variant-numeric: tabular-nums;
+  font-size: .92em;
+}
+.sumatra-teaser .sumatra-target { color: #000; font-weight: 700; }
+.sumatra-teaser .sumatra-bridge { padding-top: var(--sumatra-head); }
+.sumatra-teaser .sumatra-bridge svg {
+  display: block;
+  width: 100%;
+  height: calc(3 * var(--sumatra-line));
+  overflow: visible;
+}
+.sumatra-teaser .sumatra-bridge path { vector-effect: non-scaling-stroke; }
+.sumatra-teaser figcaption {
+  max-width: 79ch;
+  margin: 1rem auto 0;
+  font-size: .94rem;
+  line-height: 1.51;
+  text-align: left;
+}
+.sumatra-teaser figcaption a { color: inherit; text-underline-offset: .14em; }
+@media (max-width: 740px) {
+  .sumatra-teaser .sumatra-figure-body { grid-template-columns: minmax(0,1fr); gap: .35rem; }
+  .sumatra-teaser .sumatra-query { width: min(100%, 19rem); margin: 0 auto; }
+  .sumatra-teaser .sumatra-readout { width: min(100%, 32rem); margin: 0 auto; }
+  .sumatra-teaser .sumatra-readout-title { margin-bottom: .5rem; }
+}
+@media (max-width: 525px) {
+  .sumatra-teaser .sumatra-ranks { --sumatra-line: 3.2rem; --sumatra-head: 2.8rem; }
+  .sumatra-teaser .sumatra-rank-column li {
+    grid-template-columns: 1em minmax(0,1fr);
+    align-content: center;
+    row-gap: .14rem;
+  }
+  .sumatra-teaser .sumatra-rank-column li::before { grid-row: 1 / 3; }
+  .sumatra-teaser .sumatra-rank-column data { grid-column: 2; }
+  .sumatra-teaser figcaption { margin-top: .55rem; }
+}

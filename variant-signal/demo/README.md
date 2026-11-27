@@ -2,26 +2,6 @@
 
 This is the retrieval experiment on the [ACCV 2026 paper page](https://egmaminta.github.io/variant-signal/#retrieval) for *A Transferable Variant Signal That Grocery Retrieval Cannot Reach*, by Emmanuel G. Maminta and Rowel O. Atienza. The [paper](https://egmaminta.github.io/variant-signal/assets/paper.pdf) describes the brand splits and the [OpenMPR repository](https://github.com/upeee/openmpr) provides the grocery retrieval benchmark code.
 
-## Using the projection weights
-
-Download [the fitted projection](https://egmaminta.github.io/variant-signal/demo/siglip2-draw10-variant-basis.npz) and [subspace.py](subspace.py). The archive contains the leading 128 axes fit on images of seen brands in the paper’s tenth draw (split seed 9). It also records the backbone, the brands in the fit and the evaluated ranks. Starbucks belongs to the test brands on this draw.
-
-Use the 1,536-dimensional pooled image and text features from [timm/ViT-gopt-16-SigLIP2-384](https://huggingface.co/timm/ViT-gopt-16-SigLIP2-384). Rows of the basis are ordered by singular value. Both towers use the same basis. For new photos and text, project directly and normalize. Centering by brand is part of fitting only.
-
-```python
-import numpy as np
-from subspace import scores
-
-with np.load("siglip2-draw10-variant-basis.npz") as weights:
-    basis = weights["basis"][:64]  # 64 x 1536
-
-# images and texts are two-dimensional arrays of pooled SigLIP2 embeddings.
-cosines = scores(images, texts, basis)
-ranking = np.argsort(-cosines, axis=1)
-```
-
-The `fit_basis` function also fits new axes from images of seen brands. Pass an optional NumPy random generator to shuffle photo labels within each brand before fitting. This preserves the number of photos per variant.
-
 ## Reproducing the interactive scores
 
 [page.js](../page.js) uses the stored coordinates of 30 Starbucks photos and 409 catalog descriptions. The byte layout of [coordinates.f32](coordinates.f32) is little-endian float32 with shape `(2, 439, 128)`. The first fit uses true variant labels. The second is the shuffled-label fit shown in Figure 2, the second fit from the seed-12345 generator. It was selected as the closest to the mean within-brand accuracy of ten shuffled fits.

@@ -1,0 +1,242 @@
+#checkout-lab {
+  color: #151515;
+  margin: 1.65rem auto 0;
+  text-align: left;
+}
+#checkout-lab * {
+  box-sizing: border-box;
+}
+#checkout-lab [hidden] {
+  display: none !important;
+}
+.vs3d-stage {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 2.16;
+  max-height: 465px;
+  min-height: 250px;
+  background: #ecece8;
+  border: 1px solid #bcbcb8;
+}
+.vs3d-stage > img,
+.vs3d-stage canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.vs3d-stage > img {
+  position: absolute;
+  inset: 0;
+}
+.vs3d-stage canvas {
+  position: relative;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.vs3d-stage canvas:active {
+  cursor: grabbing;
+}
+.vs3d-stage canvas:focus-visible {
+  outline: 3px solid #222;
+  outline-offset: -4px;
+}
+.vs3d-stage.flash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  pointer-events: none;
+  animation: vs3d-shutter 0.26s ease-out forwards;
+}
+@keyframes vs3d-shutter {
+  from {
+    opacity: 0.95;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.vs3d-controls {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 15px 0 0;
+}
+.vs3d-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #353535;
+  line-height: 1.4;
+  font-family: inherit;
+  font-size: 0.89rem;
+  font-weight: 600;
+}
+.vs3d-controls select,
+.vs3d-controls button {
+  height: 41px;
+  border: 1px solid #767676;
+  font: inherit;
+  font-size: 0.95rem;
+  border-radius: 3px;
+  color: #111;
+  background-color: white;
+}
+.vs3d-controls select {
+  padding: 4px 30px 4px 10px;
+  min-width: 142px;
+}
+.vs3d-controls button {
+  font-weight: 600;
+  padding: 5px 16px;
+  cursor: pointer;
+}
+.vs3d-controls button:hover,
+.vs3d-controls button:focus-visible {
+  background: #f0f0ed;
+  border-color: #161616;
+}
+.vs3d-controls :disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+#checkout-lab .vs3d-help {
+  font-size: 0.87rem;
+  line-height: 1.53;
+  color: #424242;
+  margin: 9px 0 0;
+  text-align: left;
+}
+.vs3d-record {
+  display: grid;
+  grid-template-columns: minmax(145px, 0.64fr) minmax(0, 1.4fr);
+  align-items: start;
+  gap: 15px 28px;
+  border-top: 1px solid #bfbfba;
+  margin-top: 17px;
+  padding: 19px 0 0;
+}
+#checkout-lab .vs3d-record figure {
+  margin: 0;
+  max-width: none;
+}
+.vs3d-record img {
+  max-width: 100%;
+  width: 100%;
+  height: 192px;
+  object-fit: contain;
+  background: #f4f4f1;
+  border: 1px solid #d3d3ce;
+}
+#checkout-lab .vs3d-record figcaption,
+#checkout-lab .vs3d-record p {
+  font-size: 0.93rem;
+  line-height: 1.5;
+  margin: 5px 0;
+  text-align: left;
+}
+#checkout-lab .vs3d-record h3 {
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 1.23rem;
+  line-height: 1.3;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+  text-wrap: wrap;
+}
+.vs3d-record table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.91rem;
+  text-align: left;
+}
+.vs3d-record table th,
+.vs3d-record table td {
+  border: 0;
+  border-bottom: 1px solid #dededa;
+  font-size: 0.91rem;
+  font-weight: 400;
+  padding: 6px 3px;
+  text-align: left;
+}
+.vs3d-record table th {
+  color: #555;
+  font-size: 0.81rem;
+}
+.vs3d-record table td:last-child,
+.vs3d-record table th:last-child {
+  text-align: right;
+}
+.vs3d-record table .vs3d-row-label {
+  text-align: left !important;
+}
+.vs3d-inspection {
+  margin-top: 7px;
+  font-size: 0.9rem;
+}
+.vs3d-inspection summary {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#checkout-lab .vs3d-status {
+  margin: 8px 0 0;
+  font-size: 0.86rem;
+  color: #444;
+  text-align: left;
+}
+.vs3d-status:empty {
+  display: none;
+}
+@media (max-width: 620px) {
+  .vs3d-stage {
+    aspect-ratio: 1.4;
+    min-height: 230px;
+  }
+  .vs3d-controls {
+    gap: 9px 12px;
+  }
+  .vs3d-controls select {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .vs3d-controls label {
+    font-size: 0.83rem;
+  }
+  .vs3d-controls button {
+    height: 42px;
+  }
+  .vs3d-record {
+    grid-template-columns: minmax(0, 0.66fr) minmax(0, 1.2fr);
+    gap: 13px;
+  }
+  .vs3d-record img {
+    height: 150px;
+  }
+}
+@media (max-width: 460px) {
+  .vs3d-controls {
+    display: grid;
+    grid-template-columns: minmax(105px, 0.8fr) minmax(0, 1.3fr);
+  }
+  .vs3d-controls label:first-child {
+    grid-column: 1/-1;
+  }
+  .vs3d-controls button {
+    padding-inline: 8px;
+  }
+  .vs3d-record {
+    grid-template-columns: 1fr;
+  }
+  .vs3d-record img {
+    max-height: 165px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vs3d-stage.flash::after {
+    display: none;
+  }
+}
