@@ -9,7 +9,7 @@ const products = [
     truth: "Campbell’s Creamy Tomato",
     matches: [["Campbell’s Chicken Noodle"], ["Campbell’s Creamy Tomato"]],
     explanation:
-      "The first catalog entry has the right brand and the wrong soup. The photographed flavor ranks second in Figure 1.",
+      "Frozen SigLIP2 ranks Campbell’s Chicken Noodle first for a photograph of Campbell’s Creamy Tomato. The correct variant ranks second.",
     source: "Figure 1 of the paper reports this frozen SigLIP2 ranking.",
   },
   {
@@ -25,9 +25,9 @@ const products = [
       ["Starbucks Pike Place", 0.0915],
     ],
     explanation:
-      "For this photo, frozen SigLIP2 retrieves the correct coffee from the 409 catalog descriptions.",
+      "Frozen SigLIP2 ranks the correct roast, Sumatra, first among 409 catalog descriptions.",
     source:
-      "Cosines use the original frozen SigLIP2-gopt-384 image and text features for this GroceryVision frame.",
+      "Scores are cosine similarities between the frozen SigLIP2-gopt-384 image vector for this GroceryVision frame and the catalog text vectors.",
   },
   {
     key: "breakfast",
@@ -42,9 +42,9 @@ const products = [
       ["Starbucks Sumatra", 0.1062],
     ],
     explanation:
-      "The photographed blend ranks first. The next two descriptions belong to other coffees from the same brand.",
+      "Breakfast Blend ranks first. The second- and third-ranked descriptions correspond to other Starbucks roasts.",
     source:
-      "Cosines use the original frozen SigLIP2-gopt-384 image and text features for this GroceryVision frame.",
+      "Scores are cosine similarities between the frozen SigLIP2-gopt-384 image vector for this GroceryVision frame and the catalog text vectors.",
   },
 ];
 const asset = (path) => new URL("./assets/" + path, import.meta.url).href;
@@ -53,7 +53,7 @@ async function install(root) {
   root.innerHTML = `
     <div class="vs3d-tabs" role="group" aria-label="Checkout demonstration">
       <button type="button" class="vs3d-tab" data-view="shelf" aria-pressed="true" aria-controls="vs3d-shelf">Explore the shelf</button>
-      <button type="button" class="vs3d-tab" data-view="pickup" aria-pressed="false" aria-controls="vs3d-pickup">Watch a real pickup</button>
+      <button type="button" class="vs3d-tab" data-view="pickup" aria-pressed="false" aria-controls="vs3d-pickup">Recorded product pickup</button>
     </div>
     <div id="vs3d-shelf"><div class="vs3d-stage"><img class="vs3d-poster" width="1140" height="530" alt="A grocery shelf stocked with soup and coffee, viewed from the checkout aisle."></div>
     <div class="vs3d-controls">
@@ -112,7 +112,7 @@ async function install(root) {
     }
     cell(head, "th", "Rank");
     cell(head, "th", "Catalog entry", "vs3d-row-label");
-    if (hasScore) cell(head, "th", "Cosine ↑");
+    if (hasScore) cell(head, "th", "Cosine similarity ↑");
     get("thead").replaceChildren(head);
     get("tbody").replaceChildren(
       ...entry.matches.map((match, i) => {
@@ -234,7 +234,7 @@ function installRecording(panel) {
     <label>Camera<select class="vs3d-camera"><option value="side">Side</option><option value="above">Overhead</option><option value="front">Front</option></select></label>
   </div>
   <div class="vs3d-moments" role="group" aria-label="Jump to a moment in the pickup"><button type="button" data-frame="18">Reach</button><button type="button" data-frame="32">Grip</button><button type="button" data-frame="43">Lift</button><button type="button" data-frame="62">Hold</button></div>
-  <p class="vs3d-help vs3d-record-help">A participant picks up a coffee can. The cameras recorded the same hand at the same instant. Drag the frame slider or change cameras to follow the fingers around the label.</p>
+  <p class="vs3d-help vs3d-record-help">Three synchronized camera views show a participant grasping a coffee can. Select a frame or camera to inspect the grasp.</p>
   <p class="vs3d-credit">Coffee-can pickup from <a href="https://dex-ycb.github.io/">DexYCB (Chao et al.)</a>, licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Playback is at half speed. The catalog rankings on the shelf use photographs from GroceryVision.</p>`;
   const main = panel.querySelector(".vs3d-main-film"),
     other = panel.querySelector(".vs3d-second-film");
@@ -417,7 +417,7 @@ function installRecording(panel) {
       depthView.camera(spec, depth);
       depthView.frame(shown);
       panel.querySelector(".vs3d-record-help").textContent =
-        "A participant picks up a coffee can. Drag the first view sideways to move around the hand using the recorded depth. Pause or use the frame slider to inspect the grip from another camera.";
+        "The first view uses recorded depth. Drag to adjust the viewpoint, or pause playback and select a different camera to inspect the same grasp.";
     } catch {
       /* The original color recordings remain usable without the depth viewer. */
     }

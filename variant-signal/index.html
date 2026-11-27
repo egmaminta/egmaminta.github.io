@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <title>A Transferable Variant Signal That Grocery Retrieval Cannot Reach | ACCV 2026</title>
-  <meta name="description" content="Why does a checkout system recognize a brand yet ring up the wrong product? A study of what grocery photographs encode, how retrieval uses that information, and what carries over to new brands.">
+  <meta name="description" content="Frozen image features distinguish grocery product variants. On new brands, most of the measured gain from subspace transfer comes from fewer errors between brands.">
   <link rel="canonical" href="https://egmaminta.github.io/variant-signal/">
   <meta property="og:type" content="article">
   <meta property="og:title" content="A Transferable Variant Signal That Grocery Retrieval Cannot Reach">
   <meta property="og:description" content="Emmanuel G. Maminta and Rowel O. Atienza. Oral presentation, 18th Asian Conference on Computer Vision, Osaka.">
   <meta property="og:url" content="https://egmaminta.github.io/variant-signal/">
-  <meta property="og:image" content="https://egmaminta.github.io/variant-signal/assets/preview.jpg?v=f8187e9d7d">
-  <meta property="og:image:alt" content="Paper title and authors alongside a store photo and catalog choices from the GroceryVision study.">
+  <meta property="og:image" content="https://egmaminta.github.io/variant-signal/assets/preview.jpg?v=c93aefcbad">
+  <meta property="og:image:alt" content="Paper title and authors with a GroceryVision query image of Creamy Tomato soup and the top-ranked catalog entry, Chicken Noodle.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="citation_title" content="A Transferable Variant Signal That Grocery Retrieval Cannot Reach">
   <meta name="citation_author" content="Maminta, Emmanuel G.">
@@ -22,13 +22,13 @@
   <meta name="citation_pdf_url" content="https://egmaminta.github.io/variant-signal/assets/paper.pdf">
   <link rel="preconnect" href="https://cdn.openai.com" crossorigin>
   <link rel="preload" href="https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=1970464655">
+  <link rel="stylesheet" href="style.css?v=ff5ef2a518">
   <link rel="stylesheet" href="teaser.css?v=778ff885e3">
   <link rel="stylesheet" href="results.css?v=113c4c68bd">
   <link rel="stylesheet" href="store3d.css?v=076b952b7d">
-  <script defer src="page.js?v=6e4b4a36f7"></script>
-  <script type="module" src="store3d.js?v=49fec6a843"></script>
-  <script type="module" src="subspace-view.js?v=bef2177cd6"></script>
+  <script defer src="page.js?v=44faecabc5"></script>
+  <script type="module" src="store3d.js?v=03083cf859"></script>
+  <script type="module" src="subspace-view.js?v=a4b5fe3754"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to paper</a>
@@ -66,12 +66,12 @@
 
       <section id="abstract" class="section reading">
         <h2>Abstract</h2>
-        <p>Automated grocery checkout requires an exact match between a camera image and a product description. Two flavors can share a logo, package shape, and most of their catalog text. When a model chooses the wrong flavor, has it lost the visual detail, or does its comparison with text fail to use it? We study this question on GroceryVision. A frozen SigLIP2 model, whose weights we keep fixed, ranks the correct description first for 81.3% of photos from brands used in training. A simple classifier that reads the same image features can distinguish variants within a known brand with 97.1% balanced accuracy, giving each variant equal weight within its brand. We then learn the directions in image features along which a brand’s variants differ and use those directions to compare photos and text from new brands. Across nine vision-language models, grouping training photos by their actual variants gives better retrieval than randomly reassigning their variant labels within each brand. On the two models we examine in detail, most of that gain comes from avoiding matches to the wrong brand. Fine-tuning the full image encoder on familiar brands also improves retrieval on new brands at the lower of two learning rates and hurts it at the higher one. The image carries information about the exact product that the usual comparison with catalog text only partly uses.</p>
+        <p>Automated grocery checkout requires matching a product photograph to its exact catalog entry. Products of the same brand often differ only in flavor, size, or packaging. We examine whether a retrieval error reflects a missing distinction in the image features or a failure to match that distinction to text. On GroceryVision, SigLIP2 with fixed encoder weights ranks the correct description first for 81.3% of photographs from training brands. A linear classifier that uses the same image features to distinguish variants within each brand achieves 97.1% balanced accuracy, giving each variant equal weight within its brand. To test transfer, we estimate shared directions from the differences between each variant’s features and its brand mean. We then project photographs and descriptions of new brands onto those directions. Across nine models, average retrieval accuracy is higher with the original variant labels than with labels randomly reassigned among training photographs of the same brand. On the two models examined in detail, most of this gain comes from fewer errors between brands. Compared with frozen SigLIP2, fine-tuning the full image encoder improves retrieval on new brands at the lower of two learning rates and reduces accuracy at the higher rate. These results show that frozen image features encode distinctions between variants that image-to-text similarity does not consistently recover.</p>
       </section>
 
       <section id="tldr" class="section">
         <div class="reading"><h2>TLDR</h2>
-        <p>A checkout model can recognize the brand and still ring up the wrong item. We found that its image features often distinguish the variants it confuses. We learned directions from <em>differences within a brand</em> and used them to recognize products from other brands. Most of the improvement came from avoiding matches to the wrong brand. When we narrowed the catalog to the correct brand, the gain in choosing the right flavor, size, or package was much smaller.</p></div>
+        <p>A grocery retrieval model can return an incorrect variant of the correct brand. A classifier can distinguish these variants using the same frozen image features. We asked whether the visual differences between one brand’s variants also help identify products from other brands. We learned directions from correctly labeled photos and repeated the experiment after randomly reassigning the product names within each training brand. On the two models we examined in detail, correct labels mainly reduced matches to the wrong brand. For SigLIP2, the advantage was 13.6 percentage points across the full catalog and 3.9 points when all candidates belonged to the correct brand.</p></div>
         <figure class="sumatra-teaser" aria-labelledby="sumatra-figure-caption">
           <div class="sumatra-figure-body">
             <svg class="sumatra-query" viewBox="0 0 342 273" role="img" aria-labelledby="sumatra-query-title sumatra-query-desc">
@@ -93,7 +93,7 @@
               <rect x="147" y="202" width="187" height="50" fill="none" stroke="black" stroke-width="1"/>
             </svg>
             <div class="sumatra-readout">
-              <p class="sumatra-readout-title">Which Starbucks roast is in the bag?</p>
+              <p class="sumatra-readout-title">Catalog rankings for Starbucks Sumatra</p>
               <div class="sumatra-ranks">
                 <div class="sumatra-rank-column">
                   <p class="sumatra-rank-head" id="sumatra-fit-label">Original variant labels</p>
@@ -122,39 +122,54 @@
               </div>
             </div>
           </div>
-          <figcaption id="sumatra-figure-caption"><strong>The brand name fits all three descriptions.</strong> To choose among them, the model has to distinguish the roast. Sumatra ranks first when the training photos are grouped by their actual variants. Shuffling their variant labels within each training brand keeps the same group sizes and puts Pike Place first.<span class="sumatra-source">These scores compare the average features of ten photos of this roast with the three catalog descriptions. Both sets of directions were learned from other brands. <a href="assets/paper.pdf">Paper, Figure 2</a>. <a href="#retrieval">Try the individual photos</a>.</span></figcaption>
+          <figcaption id="sumatra-figure-caption"><strong>All three catalog entries share the same brand.</strong> The ranking must therefore distinguish the roast. Sumatra ranks first when the subspace is fitted with the original variant labels. Pike Place ranks first after those labels are randomly reassigned within each training brand, preserving the number of photos per variant.<span class="sumatra-source">Scores are cosine similarities between the mean of ten projected Sumatra image vectors and each of the three text vectors. Both subspaces were fitted using other brands. <a href="assets/paper.pdf">Paper, Figure 2</a>. <a href="#retrieval">View rankings for individual photos</a>.</span></figcaption>
         </figure>
       </section>
 
       <section id="motivation" class="section">
         <div class="reading"><h2>Motivation</h2>
-          <p>A grocery receipt records a particular item, down to its flavor, size, or packaging. In an automated checkout, a camera supplies a photograph of the product and the store supplies a catalog of written descriptions. Matching an image to a catalog entry across these two kinds of input is called <em>multimodal product retrieval</em> (MPR). The photo may include a hand over the label, while several descriptions in the catalog may differ by a single word. <a class="ref" href="#ref-grocery" aria-label="Reference 1, GroceryVision">[1]</a></p>
-          <p>Our earlier study of 190 image encoders gave us a clue. The share of photos with a correct match in the first five results was 17.5 percentage points higher than the share with a correct match in first place. The right item was often within reach. Why did another description outrank it? <a class="ref" href="#ref-matters" aria-label="Reference 2, prior retrieval study">[2]</a></p>
-          <p>Consider two Campbell’s soups. Their red packaging can help a model find Campbell’s, yet the flavor determines which soup the shopper bought. We kept the image encoder fixed and separated two questions. Could we identify the variant from the image features alone? And if we learned which visual differences mattered for familiar products, could we use them to recognize products from another brand?</p>
-          <nav class="section-links" aria-label="Explore the paper"><a href="#checkout">Try the checkout</a><a href="#film">Watch the study</a><a href="#probe">Test the image features</a><a href="#results">Read the results</a></nav>
+          <p>An automated grocery checkout system must identify the specific product a shopper selects. Its <em>multimodal product retrieval</em> (MPR) model uses an in-store photograph as the query and written product descriptions as the catalog. Variants of the same brand can share a logo and package design. The distinction between them may depend on a single word, and a shopper’s hand can obscure that word in the photograph. <a class="ref" href="#ref-grocery" aria-label="Reference 1, GroceryVision">[1]</a></p>
+          <p>In an earlier study, we tested 190 frozen vision-language models on GroceryVision. SigLIP2-gopt-384 placed the correct description among its first five candidates for 94.5% of photos (Recall@5). It ranked that description first for 77.0% (Recall@1). The difference of 17.5 percentage points measures how often the correct item was already on the shortlist but another product ranked above it. <a class="ref" href="#ref-matters" aria-label="Reference 2, prior retrieval study">[2]</a></p>
+          <p>Figure 1 illustrates a retrieval error within one brand. Given a photograph of Campbell’s Creamy Tomato soup, frozen SigLIP2 ranks Chicken Noodle first and Creamy Tomato second. We first test whether the frozen image features distinguish such variants independently of the catalog text. We then test whether the directions that distinguish variants of training brands also support retrieval for brands excluded from training.</p>
+          <nav class="section-links" aria-label="Explore the paper"><a href="#checkout">Checkout demonstration</a><a href="#film">Video explainer</a><a href="#probe">Linear probe</a><a href="#results">Results</a></nav>
         </div>
-        <h3 class="subhead" id="checkout">Try the camera’s view of the shelf</h3>
+        <h3 class="subhead" id="checkout">Shelf camera and catalog retrieval</h3>
         <div id="checkout-lab"></div>
-        <noscript><p>The store camera records a shopper lifting Creamy Tomato. In Figure 1 of the paper, the frozen retriever assigns the photo to Chicken Noodle.</p></noscript>
+        <noscript><p>The GroceryVision query image shows Campbell’s Creamy Tomato soup. Frozen SigLIP2 ranks Campbell’s Chicken Noodle first, as shown in Figure 1 of the paper.</p></noscript>
       </section>
 
       <section id="film" class="section">
         <div class="reading"><h2>Video explainer</h2></div>
         <figure class="film">
-          <video id="explainer" controls playsinline preload="none" poster="assets/variant-explainer-poster.jpg?v=83acaccd68" width="1600" height="900" aria-label="Narrated explainer for A Transferable Variant Signal That Grocery Retrieval Cannot Reach">
-            <source src="assets/variant-explainer.mp4?v=292edefb48" type="video/mp4">
-            <track kind="captions" src="assets/variant-explainer.en.vtt?v=1d977fd7de" srclang="en" label="English">
-            <track kind="chapters" src="assets/variant-explainer.chapters.vtt?v=5bb4beb616" srclang="en" label="Chapters">
-            <a href="assets/variant-explainer.mp4?v=292edefb48">Download the narrated video</a>
+          <video id="explainer" controls playsinline preload="none" poster="assets/variant-explainer-poster.jpg?v=bf26e3fa62" width="1600" height="900" aria-label="Narrated explainer for A Transferable Variant Signal That Grocery Retrieval Cannot Reach">
+            <source src="assets/variant-explainer.mp4?v=a340a8d0fd" type="video/mp4">
+            <track kind="captions" src="assets/variant-explainer.en.vtt?v=8c20b1e9f3" srclang="en" label="English">
+            <track kind="chapters" src="assets/variant-explainer.chapters.vtt?v=8f452d4e5b" srclang="en" label="Chapters">
+            <a href="assets/variant-explainer.mp4?v=a340a8d0fd">Download the narrated video</a>
           </video>
-          <div class="film-tools"><label for="film-chapter">Jump to chapter<select id="film-chapter"><option value="0.000">0:00 Opening titles</option><option value="4.633">0:04 What belongs on the receipt?</option><option value="17.185">0:17 Where did the flavor go?</option><option value="30.506">0:30 A readout for frozen features</option><option value="51.951">0:51 One row for each variant</option><option value="67.576">1:07 Reading the singular value decomposition</option><option value="83.901">1:23 A brand the fit has never seen</option><option value="99.825">1:39 Shuffling the training labels</option><option value="111.716">1:51 How much transfers?</option></select></label><div class="film-links"><a href="assets/variant-explainer.mp4?v=292edefb48" download>Download video</a><a href="assets/variant-explainer.en.vtt?v=1d977fd7de" download>English captions</a></div></div>
-          <details class="transcript"><summary>Read the transcript</summary><p><time>0:00</time> A Transferable Variant Signal That Grocery Retrieval Cannot Reach.</p><p><time>0:04</time> At a camera-based checkout, a shopper takes one product off the shelf. Which catalog entry belongs on the receipt? Matching a store photograph to a catalog description is called multimodal product retrieval.</p><p><time>0:17</time> Frozen encoders turn photos and descriptions into vectors. The closest direction wins. This is tomato soup. Chicken noodle comes first. Was the flavor missing from the image features, or lost in the match to text?</p><p><time>0:30</time> With the image encoder frozen, fit a linear classifier to labeled photos of variants within one brand. Only its weights change. Test it on different photos of those variants. It reaches 97.1 percent balanced accuracy on seen brands. Each variant counts equally. The probe needs that brand&#x27;s labels. What can carry over without refitting?</p><p><time>0:51</time> Average the normalized photo vectors for each product. Within each brand, subtract the mean of its product averages. Each arrow now shows one variant&#x27;s departure from its brand. Stack them as rows. The columns are the frozen image feature coordinates.</p><p><time>1:07</time> Split that matrix with a singular value decomposition. U gives the signed pattern across variants for each direction. Sigma gives its strength. The rows of V transpose give the directions in the original feature space. We keep the strongest 64 directions.</p><p><time>1:23</time> Starbucks contributed no photos to this fit. Using those same axes, project its photos and the catalog texts, normalize, and score by cosine. For these ten Sumatra photos, the mean projected photo points closest to the Sumatra description.</p><p><time>1:39</time> For a control, shuffle labels among photos within each training brand, keeping group sizes fixed. Fit the axes again. Project the same Sumatra photos again. Now Pike Place comes first.</p><p><time>1:51</time> We held out different brands on ten splits. For SigLIP2, the gain over shuffled labels was 13.6 points across the catalog, and 3.9 once the brand was given. We learned these directions from differences within a brand. On new brands, they mostly helped choose the brand. The full embedding still ranks best.</p></details>
+          <div class="film-tools"><label for="film-chapter">Select chapter<select id="film-chapter"><option value="0.000">0:00 Computer vision in retail</option><option value="27.550">0:27 A Transferable Variant Signal That Grocery Retrieval Cannot Reach</option><option value="49.750">0:49 Matching a photo to a product</option><option value="84.740">1:24 The gap between five candidates and one</option><option value="109.400">1:49 Research questions</option><option value="122.560">2:02 Testing the frozen image features</option><option value="155.630">2:35 A control with shuffled labels</option><option value="176.930">2:56 How each variety differs from its brand</option><option value="205.840">3:25 Finding the shared directions</option><option value="226.420">3:46 Singular value decomposition</option><option value="258.210">4:18 Measuring a new brand</option><option value="291.280">4:51 Retrieval on new brands</option><option value="324.910">5:24 What the results mean for checkout</option></select></label><div class="film-links"><a href="assets/variant-explainer.mp4?v=a340a8d0fd" download>Download video</a><a href="assets/variant-explainer.en.vtt?v=8c20b1e9f3" download>English captions</a></div></div>
+          <details class="transcript"><summary>Read the transcript</summary><p><time>0:00</time> At a grocery store, a shopper picks one item from a shelf. Amazon&#x27;s Just Walk Out uses cameras and shelf sensors to keep track of what people take or put back. Retail can also be studied in a virtual store. Here a researcher moves through the Sari Sandbox simulation. Virtual try-on lets a shopper preview an item, such as glasses, on their own image.</p><p><time>0:27</time> A Transferable Variant Signal That Grocery Retrieval Cannot Reach. Emmanuel G. Maminta and Rowel O. Atienza, Artificial Intelligence Graduate Program, University of the Philippines Diliman. An oral presentation at the Asian Conference on Computer Vision in Osaka.</p><p><time>0:49</time> Our study asks how a checkout system identifies the exact product for a receipt. A model compares a camera photo with written catalog descriptions. This is called multimodal product retrieval. The model turns the photo and each description into lists of numbers. It scores each pair by how closely their directions line up. This can is Campbell&#x27;s Creamy Tomato. The model ranks Chicken Noodle first. It found the brand, but missed the flavor.</p><p><time>1:24</time> In earlier work, we tested 190 image and text encoders on GroceryVision. For SigLIP2 at 384 pixels, the correct product appeared in the first five choices 17.5 percentage points more often than it ranked first. A shortlist can contain the right answer while the receipt still lists the wrong item.</p><p><time>1:49</time> When the model chooses the wrong flavor, do its image measurements still tell the two flavors apart? And can the differences learned from some brands help identify products from a new brand?</p><p><time>2:02</time> First, we freeze the image encoder. Its measurements of a photo stay fixed. We train a small classifier, called a linear probe, to distinguish varieties within one brand. Here the varieties are almonds. On separate photos, SigLIP2 features give 97.1 percent balanced accuracy. Each variety counts equally within its brand. So the image features retain distinctions that the comparison with text can miss.</p><p><time>2:35</time> We make a second version of the training set. The photos stay in place. Shuffle the variety names within the brand. Each name still appears twice here. The test photo keeps its correct label. We will fit the directions again using the shuffled training groups, then compare the results.</p><p><time>2:56</time> Start with the correct names. Imagine one dot for each photo, placed according to the features of that image. Average the dots for each product. Then find the center of the products in each brand. An arrow from that center to a product shows how the variety differs from its brand. Each arrow becomes a row of a table. Each column corresponds to one image feature.</p><p><time>3:25</time> Imagine turning a ruler through the center of the arrows. Drop each tip straight down onto the ruler. Some angles spread the marks apart more than others. Keep the direction with the greatest spread. The next direction captures the most remaining variation at a right angle to the first.</p><p><time>3:46</time> Singular value decomposition finds these directions in the full table. The first matrix is called U. Each column gives the weights for one direction. A plus or minus sign tells which way each variety lies. Sigma gives the strength of that direction. Each row of V transpose gives the direction in the original image features. We keep the strongest 64 directions. Together they form the variant subspace.</p><p><time>4:18</time> We learned those directions from the training brands. Starbucks was absent. We project the photo and each description onto those directions. That means measuring both with the same rulers. We draw the arrows the same length, then compare their angles. Ten test photos show Sumatra coffee. Their average image vector scores highest against the Sumatra description. Using the directions fitted with shuffled names, the same average ranks Pike Place first.</p><p><time>4:51</time> We repeat the experiment ten times. Each time we fit the directions on one set of brands and test on others. For SigLIP2, correct labels improve the first choice by 13.6 percentage points over shuffled labels across all 409 descriptions. When every candidate belongs to the correct brand, the gain is 3.9 points. So most of the gain comes from fewer matches to the wrong brand. The full, original embedding still gives the highest retrieval accuracy.</p><p><time>5:24</time> The shopper chose a particular flavor. The receipt needs to name that variety. Our probe showed that image features could tell varieties apart. On new brands, the learned directions mostly corrected brand mistakes. A useful visual representation preserves the difference between two products. To identify the exact item, the comparison with text must use that difference too.</p></details>
+          <details id="film-sources" class="film-sources">
+            <summary>Film sources and credits</summary>
+            <dl>
+              <dt>Automated checkout</dt>
+              <dd>Amazon describes how cameras and shelf sensors associate items with a shopper’s cart. Andy Li photographed the ceiling cameras at an Amazon Go store in 2018. <a href="https://www.justwalkout.com/how-it-works">Just Walk Out</a>. <a href="https://commons.wikimedia.org/wiki/File:Ceiling_of_Amazon_Go.jpg">Camera photograph (CC0)</a>.</dd>
+              <dt>A virtual grocery store</dt>
+              <dd>The store walkthrough is an excerpt from Gajo et al.’s Sari Sandbox, a research environment presented at the 2025 ICCV Workshop on RetailVision. <a href="https://sarisandbox.github.io/">Sari Sandbox</a>. <a href="https://github.com/upeee/sari-sandbox-env/blob/7e1098569015d121ac9e80c79cefce5f58e80306/Images/Store1.gif">Original walkthrough</a>, trimmed and resized under the <a href="assets/licenses/sari-sandbox-apache-2.0.txt">Apache License 2.0</a>.</dd>
+              <dt>Virtual eyewear try-on</dt>
+              <dd>Warby Parker’s virtual try-on previews eyeglasses on a shopper’s face. For the film, we illustrate the technique by tracking a moving portrait by Andy Barbour. The model is <em>Sunglasses Khronos</em> by Eric Chadwick, © 2024 Darmstadt Graphics Group GmbH, adapted for fit, materials, and lighting. <a href="https://www.warbyparker.com/learn/customized-eyewear-every-face-shape">Warby Parker Virtual Try-On</a>. <a href="https://www.pexels.com/video/woman-looking-at-camera-and-smiling-close-up-5336524/">Original portrait</a> (<a href="https://www.pexels.com/license/">Pexels license</a>). <a href="https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/SunglassesKhronos">3D model</a> (<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>).</dd>
+              <dt>Shopping and receipt footage</dt>
+              <dd>Kampus Production filmed the shoppers <a href="https://www.pexels.com/video/couple-entering-a-grocery-store-8420587/">entering the store</a>, <a href="https://www.pexels.com/video/an-elderly-woman-carrying-a-grocery-basket-8420786/">selecting groceries</a>, and <a href="https://www.pexels.com/video/man-carrying-groceries-while-woman-using-smartphone-8421645/">outside with their purchases</a>. They also filmed <a href="https://www.pexels.com/video/a-cashier-giving-the-receipt-6683955/">a cashier handing over a receipt</a>. Shelf inspection was filmed by <a href="https://www.pexels.com/video/woman-choosing-and-comparing-products-in-a-store-5103996/">Gustavo Fring</a> and the receipt close-up by <a href="https://www.pexels.com/video/a-person-reading-a-receipt-attached-to-a-paper-bag-13433110/">Mizuno K</a>. <a href="https://www.pexels.com/license/">Pexels license</a>.</dd>
+              <dt>Research and product photographs</dt>
+              <dd>The catalog rankings, classification results, and transfer experiments come from this paper. The earlier retrieval study measured how often the correct description appeared among the first five candidates. <a href="assets/paper.pdf">ACCV paper</a>. <a href="assets/supplement.pdf">Supplementary experiments</a>. <a href="#ref-matters">Earlier retrieval study</a>. <a href="https://grocery-vision.github.io/past_challenge/iccv2025.html">GroceryVision product photographs</a>, resized under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.</dd>
+            </dl>
+          </details>
         </figure>
       </section>
 
       <section id="pipeline" class="section">
-        <div class="reading"><h2>How does a photo become a catalog match?</h2>
-          <p>A vision-language model such as SigLIP2 has two encoders. Each turns its input into a list of numbers called a <em>vector</em>. The store can encode its descriptions in advance. When a photo arrives, the model compares the direction of its vector with the direction of each description’s vector. This measure of alignment is <em>cosine similarity</em>. The closest direction gets first place. In the GroceryVision experiment, we prepared a description for each product from its catalog fields and one example photo. At retrieval time the candidates are texts. <a class="ref" href="#ref-clip" aria-label="Reference 3, CLIP">[3]</a> <a class="ref" href="#ref-siglip" aria-label="Reference 4, SigLIP 2">[4]</a></p>
+        <div class="reading"><h2>How image-to-text retrieval ranks catalog entries</h2>
+          <p>A vision-language model such as SigLIP2 encodes the query image and each catalog description as vectors in a shared feature space. The text vectors can be computed in advance. At retrieval time, the model ranks descriptions by <em>cosine similarity</em>, which measures the alignment between the image vector and each text vector. The highest-scoring description is the prediction. For GroceryVision, we prepared one description per product from its catalog fields and one example photograph. <a class="ref" href="#ref-clip" aria-label="Reference 3, CLIP">[3]</a> <a class="ref" href="#ref-siglip" aria-label="Reference 4, SigLIP 2">[4]</a></p>
         </div>
         <figure class="pipeline" aria-label="The two-encoder grocery retrieval pipeline">
           <div class="pipeline-graph">
@@ -166,23 +181,23 @@
             <svg class="pipe-join" viewBox="0 0 400 37" preserveAspectRatio="none" aria-hidden="true"><path d="M100 0v12q0 4 4 4h92q4 0 4 4v13 M300 0v12q0 4-4 4h-92q-4 0-4 4 M196 28l4 5 4-5" fill="none" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>
             <button class="pipe-node pipe-score" type="button" data-pipe="score" aria-controls="pipe-detail" aria-pressed="true">Rank descriptions by <strong>cosine similarity</strong></button>
             <span class="pipe-stem single" aria-hidden="true"></span>
-            <button class="pipe-node pipe-match" type="button" data-pipe="match" aria-controls="pipe-detail" aria-pressed="false">First match <strong>Chicken Noodle</strong></button>
+            <button class="pipe-node pipe-match" type="button" data-pipe="match" aria-controls="pipe-detail" aria-pressed="false">Top-ranked entry <strong>Chicken Noodle</strong></button>
           </div>
-          <figcaption><span>Click a stage to inspect it.</span> <span id="pipe-detail" aria-live="polite">Each image and text vector has unit length. Their dot product gives the cosine score used to rank the catalog.</span></figcaption>
+          <figcaption><span>Select a stage for details.</span> <span id="pipe-detail" aria-live="polite">For unit-length image and text vectors, the dot product equals their cosine similarity.</span></figcaption>
         </figure>
       </section>
 
       <section id="probe" class="section">
-        <div class="reading"><h2>Can the image features identify the variant?</h2>
-          <p>To find out, we took the catalog text out of the experiment. We passed labeled photos from one brand through the frozen image encoder. Using six photos per variant, we trained a <em>linear probe</em>, a classifier that learns one weighted sum of the image features per variant. On a fresh photo, the variant with the highest score is its prediction. Only the classifier learns weights. <a class="ref" href="#ref-probe" aria-label="Reference 5, linear classifier probes">[5]</a></p>
-          <p>Try the test on three varieties of Blue Diamond almonds. With <em>shuffled labels</em>, we randomly reassign the variety names among the training photos, preserving six of each name, and fit a second classifier. The twelve test photos and their correct answers stay the same.</p>
+        <div class="reading"><h2>Variant classification from frozen image features</h2>
+          <p>We train a separate <em>linear probe</em> for each brand. This classifier uses a weighted sum of frozen image features to assign a score to each variant. We fit the classifier on six labeled photos per variant and predict the highest-scoring variant on held-out photos of the same products. The image encoder remains fixed throughout, and the probe uses only image features. <a class="ref" href="#ref-probe" aria-label="Reference 5, linear classifier probes">[5]</a></p>
+          <p>The example below compares two classifiers on three varieties of Blue Diamond almonds. One uses the original variety labels. For the control with <em>shuffled labels</em>, we randomly reassign the variety labels among the 18 training photos, retaining six examples per variety, and fit a second classifier. Both classifiers are evaluated on the same twelve test photos with their original labels.</p>
         </div>
         <figure id="probe-demo" class="probe-demo" aria-labelledby="probe-caption">
-          <figcaption id="probe-caption"><strong>What can a classifier learn from these labels?</strong> A worked example with real GroceryVision photos and frozen SigLIP2 image features.</figcaption>
+          <figcaption id="probe-caption"><strong>Effect of training labels on variant classification.</strong> Predictions use frozen SigLIP2 features from GroceryVision photos.</figcaption>
           <fieldset class="probe-labels"><legend>Training photo labels</legend><div class="switch">
             <label><input type="radio" name="probe-fit" value="0" checked><span>Original labels</span></label><label><input type="radio" name="probe-fit" value="1"><span>Shuffled labels</span></label></div></fieldset>
           <div class="probe-layout">
-            <div><h3>Fit on 18 photos</h3><p class="probe-hint">Each row carries the name used to train the classifier.</p><div id="probe-training">
+            <div><h3>Training set (18 photos)</h3><p class="probe-hint">Each row groups photos by their assigned training label.</p><div id="probe-training">
                 <div class="probe-row"><p>Smokehouse</p><div>
                   <img src="assets/probe/041570015902_21.webp" loading="lazy" width="80" height="62" alt="Training photo of Smokehouse almonds">
                   <img src="assets/probe/041570015902_1.webp" loading="lazy" width="80" height="62" alt="Training photo of Smokehouse almonds">
@@ -204,26 +219,26 @@
                   <img src="assets/probe/041570055373_15.webp" loading="lazy" width="80" height="62" alt="Training photo of Wasabi &amp; Soy Sauce almonds">
                   <img src="assets/probe/041570055373_5.webp" loading="lazy" width="80" height="62" alt="Training photo of Wasabi &amp; Soy Sauce almonds">
                   <img src="assets/probe/041570055373_34.webp" loading="lazy" width="80" height="62" alt="Training photo of Wasabi &amp; Soy Sauce almonds"></div></div></div></div>
-            <div><h3>Test on a different photo</h3><div class="probe-test"><img id="probe-photo" src="assets/probe/041570015902_18.webp" alt="Test photograph of Blue Diamond Smokehouse almonds" width="400" height="300">
+            <div><h3>Prediction on a held-out photo</h3><div class="probe-test"><img id="probe-photo" src="assets/probe/041570015902_18.webp" alt="Test photograph of Blue Diamond Smokehouse almonds" width="400" height="300">
               <div><p class="probe-key">Photographed variety</p><p id="probe-actual">Smokehouse</p><p class="probe-key">Classifier’s prediction</p><p id="probe-prediction" aria-live="polite">Smokehouse</p></div></div>
               <div class="photo-pager"><button class="angle" type="button" id="probe-prev" aria-label="Previous test photograph"><svg aria-hidden="true"><use href="#prev-icon"></use></svg></button><span id="probe-count">Photo 1 of 12</span><button class="angle" type="button" id="probe-next" aria-label="Next test photograph"><svg aria-hidden="true"><use href="#next-icon"></use></svg></button></div>
             </div>
           </div>
-          <p class="figure-note" id="probe-result" aria-live="polite">With the original labels the classifier identifies all 12 test photos. With shuffled labels it identifies 5 of 12.</p>
-          <details class="probe-method"><summary>How we fitted this example</summary><p>We used ten photos of each variety and set aside four from each before training. We standardized the frozen image features using the 18 training photos, then fitted multinomial logistic regression. The second fit uses exactly the same photo vectors after a single shuffle of the training labels. The twelve predictions above illustrate the procedure for one brand. Table 1 reports the larger experiment across brands and three training runs.</p></details>
+          <p class="figure-note" id="probe-result" aria-live="polite">The classifier predicts the correct variety for 12 of 12 test photos with original labels and 5 of 12 with shuffled labels.</p>
+          <details class="probe-method"><summary>Probe fitting and evaluation</summary><p>For each variety we used six photos for training and four for testing. We used the training set to standardize the features, then fitted multinomial logistic regression with either the original labels or one random permutation of those labels. This example illustrates the procedure for one brand. Table 1 reports the benchmark results across brands and three runs.</p></details>
         </figure>
-        <div class="reading"><p>Across the study, the SigLIP2 probe reached <strong>97.1% balanced accuracy</strong>. We calculated the fraction correct for each variant, averaged within each brand, then averaged across brands. The checkout model’s <strong>81.3% Recall@1</strong> answers a harder question. It must rank the correct description first in the entire catalog, using text and without being told the brand. The probe tells us that variant information is available in the image. It leaves open how much of it a store could use on a brand it has never trained on. <a href="assets/paper.pdf">Paper, Table 1</a>.</p></div>
+        <div class="reading"><p>The SigLIP2 probe achieved <strong>97.1% balanced accuracy</strong>. We calculated accuracy separately for each variant, averaged across variants within each brand, and then averaged across brands. Frozen SigLIP2 achieved <strong>81.3% Recall@1</strong> in the retrieval task, the proportion of photos for which the correct catalog description ranked first. The probe classifies variants of a known brand using labeled examples. The retriever must select a description from the full catalog. High probe accuracy establishes that the image features contain information about variant identity. <a href="assets/paper.pdf">Paper, Table 1</a>.</p></div>
       </section>
 
       <section id="transfer" class="section">
         <h2>What is subspace transfer?</h2>
-        <p class="lead">We wanted to learn something about <em>how variants differ</em> that might apply to another brand. For each training product we averaged its photo vectors. Then we subtracted the average of the variants belonging to its brand. What remains for each product is its departure from its own brand’s center. Pool those differences across brands and some directions account for more of the variation than others. The space spanned by the leading directions is our <em>variant subspace</em>.</p>
-        <p class="lead">To test <em>transfer</em>, we fix those directions and use them to measure both a photograph from a new brand and the catalog descriptions it could match. No photo of that brand helped choose the directions. The <em>rank</em> is simply how many directions we keep. Rotate the view below and follow the four steps. <a href="assets/paper.pdf">Paper, §4.2</a>.</p>
+        <p class="lead">To learn visual differences shared across brands, we first average the normalized image features for each product. Within each training brand, we compute the mean of these product averages and subtract it from each product vector. Each centered vector describes how one variant differs from the average for its brand. We pool the centered vectors across training brands and identify the directions along which they vary most. These directions span the <em>variant subspace</em>.</p>
+        <p class="lead">We test <em>subspace transfer</em> by applying these same directions to a brand whose photos were excluded from the fit. We project its query image and the candidate catalog descriptions onto the subspace, normalize the projected vectors, and rank descriptions by cosine similarity. The <em>rank</em> is the number of directions retained. <a href="assets/paper.pdf">Paper, §4.2</a>.</p>
         <div class="geometry">
           <div class="step-bar" role="tablist" aria-label="Steps of subspace transfer">
-            <button type="button" role="tab" id="step-0" aria-controls="geometry-stage" aria-selected="true">Average photos</button>
+            <button type="button" role="tab" id="step-0" aria-controls="geometry-stage" aria-selected="true">Average image features</button>
             <button type="button" role="tab" id="step-1" aria-controls="geometry-stage" aria-selected="false" tabindex="-1">Center each brand</button>
-            <button type="button" role="tab" id="step-2" aria-controls="geometry-stage" aria-selected="false" tabindex="-1">Fit the axes</button>
+            <button type="button" role="tab" id="step-2" aria-controls="geometry-stage" aria-selected="false" tabindex="-1">Estimate directions</button>
             <button type="button" role="tab" id="step-3" aria-controls="geometry-stage" aria-selected="false" tabindex="-1">Transfer</button>
           </div>
           <div class="geometry-stage" id="geometry-stage" role="tabpanel" aria-labelledby="step-0">
@@ -234,62 +249,62 @@
               </svg>
               <div class="orbit-controls"><small id="orbit-help">Drag to rotate, or use the arrow keys.</small><button id="reset-view" type="button">Reset view</button></div>
             </div>
-            <div class="step-copy"><h3 id="step-title">One point per product</h3><p id="step-body">The dots are individual store photos of Blue Diamond and Ocean Spray products. The larger marks are the means for the six variants, three per brand.</p>
+            <div class="step-copy"><h3 id="step-title">Mean image features per product</h3><p id="step-body">Each small mark represents a store photograph. A larger mark denotes the mean feature vector for one variant. The two brands each contribute three variants.</p>
               <label class="select-label held-out-choice" hidden for="transfer-product">New product<select id="transfer-product"><option>Breakfast Blend</option><option selected>Sumatra</option><option>Pike Place</option></select></label>
               <div class="camera-control" id="camera-control"><label for="view-angle">Viewing angle</label><input id="view-angle" type="range" min="5" max="80" value="29" aria-valuetext="29 degrees above the plane"><output for="view-angle" id="angle-value">29°</output></div>
               <div class="step-pager"><button class="angle" id="step-back" type="button" disabled aria-label="Previous step"><svg aria-hidden="true"><use href="#prev-icon"></use></svg></button><span id="step-count">1 of 4</span><button class="angle" id="step-next" type="button" aria-label="Next step"><svg aria-hidden="true"><use href="#next-icon"></use></svg></button></div>
             </div>
           </div>
         </div>
-        <p class="geometry-note">The display uses three coordinates of the original 1,536. Two are the leading directions learned in the experiment. The third separates the two training brands shown here. The flat plane illustrates what projection keeps.</p>
-        <details class="factorization" id="svd"><summary>What do <i>U</i>, <i>Σ</i>, and <i>V</i> represent here?</summary>
-          <p>Stack the centered product vectors into a matrix <i>D</i>. Each row represents one training variant. Each column is a coordinate of the frozen image encoder. A singular value decomposition writes this matrix as</p>
+        <p class="geometry-note">The plot shows three directions in the original 1,536-dimensional feature space. Two are the leading directions of the fitted subspace. The third displays separation between the two training brands. The plane represents the two leading directions.</p>
+        <details class="factorization" id="svd"><summary>Interpretation of <i>U</i>, <i>Σ</i>, and <i>V</i></summary>
+          <p>Let <i>D</i> contain one centered training variant per row and one image feature coordinate per column. Its singular value decomposition is</p>
           <p class="matrix-equation" aria-label="D equals U times Sigma times V transpose"><i>D</i> = <i>U</i> <i>Σ</i> <i>V</i><sup>T</sup>.</p>
-          <dl><dt><i>V</i></dt><dd>Each column is a direction in the original feature space shared by photos and catalog text. These are the axes we can take to a new brand.</dd><dt><i>Σ</i></dt><dd>Each diagonal value measures how much the training variants vary along its direction. The largest values come first.</dd><dt><i>U</i></dt><dd>Each row belongs to a training variant. It gives that variant’s signed weights along the directions. Multiplying by <i>Σ</i> gives the variant’s actual coordinates relative to its brand’s center.</dd></dl>
-          <p>Keeping the first <i>k</i> columns of <i>V</i> gives a rank-<i>k</i> subspace. We project a new photo vector and every catalog text vector directly onto those columns, without subtracting a training mean. We then give each projection unit length and compare the directions. <a href="assets/supplement.pdf">Supplement, §S2</a>.</p>
+          <dl><dt><i>V</i></dt><dd>The columns are orthogonal directions in the original feature space. We use the same directions to project images and text for a new brand.</dd><dt><i>Σ</i></dt><dd>The diagonal contains the singular values in descending order. A larger value indicates more variation along the corresponding direction.</dd><dt><i>U</i></dt><dd>Each row gives a training variant’s signed weights along the directions. The corresponding row of <i>UΣ</i> gives its coordinates relative to its brand mean.</dd></dl>
+          <p>The first <i>k</i> columns of <i>V</i> define the rank-<i>k</i> subspace. At test time we project the original image and text vectors directly onto these directions, without subtracting a training mean. We normalize each projected vector to unit length before computing cosine similarity. <a href="assets/supplement.pdf">Supplement, §S2</a>.</p>
         </details>
-        <noscript><p>After averaging each variant, subtract its brand’s mean, fit the leading singular directions, and use the same projection for new images and all catalog texts. Normalize both before taking the cosine.</p></noscript>
+        <noscript><p>The four steps are averaging the image features for each variant, centering the variants within each training brand, estimating the leading singular directions, and projecting new images and catalog text onto those directions.</p></noscript>
       </section>
 
       <section id="retrieval" class="section">
-        <h2>Can the directions distinguish three roasts of coffee?</h2>
-        <p class="lead">Suppose the checkout has already identified the brand. What information is left to choose the roast? In this trial, Starbucks was one of the brands set aside for testing. We learned the directions from other brands, then used them to rank descriptions for each coffee photo. For the control, we shuffled variant labels among the training photos of each brand and learned a fresh set of directions. The photos, brands, and number of examples per variant stayed the same.</p>
+        <h2>Within-brand retrieval of coffee variants</h2>
+        <p class="lead">This example isolates the distinction between three coffee roasts of the same brand. In this trial we fitted the subspace using brands other than Starbucks. We then ranked descriptions for each Starbucks test image. The control uses the same training photos with variant labels randomly reassigned within each brand, preserving the number of examples per variant. Compare the rankings with either the three roast descriptions or the full catalog.</p>
 
         <div class="retrieval-demo" id="retrieval-demo">
           <div class="demo-controls">
-            <fieldset class="fit-control"><legend>Training labels for the directions</legend><div class="switch">
+            <fieldset class="fit-control"><legend>Labels used to fit the subspace</legend><div class="switch">
               <label><input type="radio" name="fit" value="0" checked><span>Original labels</span></label>
               <label><input type="radio" name="fit" value="1"><span>Shuffled within brand</span></label>
             </div></fieldset>
             <label class="select-label" for="demo-gallery">Catalog<select id="demo-gallery"><option value="brand">3 Starbucks descriptions</option><option value="all">All 409 descriptions</option></select></label>
-            <label class="select-label" for="demo-rank">Directions to keep<select id="demo-rank"><option>16</option><option>32</option><option selected>64</option><option>128</option></select></label>
+            <label class="select-label" for="demo-rank">Number of directions<select id="demo-rank"><option>16</option><option>32</option><option selected>64</option><option>128</option></select></label>
           </div>
           <div class="reader">
             <div class="query">
               <label class="select-label" for="demo-variant">Photographed product<select id="demo-variant"><option>Breakfast Blend</option><option selected>Sumatra</option><option>Pike Place</option></select></label>
               <div class="query-print"><img id="query-photo" src="assets/photos/762111622914_18.webp" width="380" height="285" alt="GroceryVision store photograph of Starbucks Sumatra."><div id="contact-sheet" hidden></div></div>
               <div class="photo-pager"><button type="button" class="angle" id="photo-back" aria-label="Previous photograph"><svg aria-hidden="true"><use href="#prev-icon"></use></svg></button><span id="photo-count">Photo 1 of 10</span><button type="button" class="angle" id="photo-next" aria-label="Next photograph"><svg aria-hidden="true"><use href="#next-icon"></use></svg></button></div>
-              <label class="mean-query"><input id="average-photos" type="checkbox">Average the 10 photos, as in Figure 2</label>
+              <label class="mean-query"><input id="average-photos" type="checkbox">Average the 10 image vectors (Figure 2)</label>
             </div>
             <div class="ranking">
               <h3>Ranked descriptions</h3><p class="rank-summary" id="rank-summary" aria-live="polite">Sumatra ranks first among three descriptions for this photo.</p>
-              <div class="row-key"><span id="catalog-key">Catalog match</span><span>Cosine ↑</span></div>
+              <div class="row-key"><span id="catalog-key">Catalog match</span><span>Cosine similarity ↑</span></div>
               <ol id="ranked-list" class="ranked-list"><li>Sumatra <span>0.4415</span></li><li>Breakfast Blend <span>0.4398</span></li><li>Pike Place <span>0.4091</span></li></ol>
-              <details class="wording"><summary>Read the top catalog description</summary><p id="top-wording">The product is a white bag of Starbucks Sumatra coffee featuring a green logo and a dark label with gold text.</p></details>
+              <details class="wording"><summary>View the top-ranked description</summary><p id="top-wording">The product is a white bag of Starbucks Sumatra coffee featuring a green logo and a dark label with gold text.</p></details>
             </div>
           </div>
-          <p id="demo-note" class="figure-note">With 64 directions and only the three roasts in the catalog, the original labels give 29 correct matches in 30 photos. The displayed shuffle gives 16. We chose this example because it had the largest gain within one brand among the eligible cases. The results below include every eligible test brand. <a href="assets/paper.pdf">Paper, Figure 2</a>.</p>
+          <p id="demo-note" class="figure-note">With 64 directions and three candidate descriptions, the subspace fitted with original labels retrieved the correct roast for 29 of 30 photos. The displayed shuffled-label fit retrieved 16 of 30 correctly. This example had the largest within-brand gain among the cases eligible for Figure 2. The aggregate results include all eligible test brands. <a href="assets/paper.pdf">Paper, Figure 2</a>.</p>
           <noscript><p>Enable JavaScript to change the photo, label assignment, projection rank, or catalog.</p></noscript>
         </div>
       </section>
 
       <section id="results" class="section">
-        <h2>What carries over to a new brand?</h2>
-        <p class="lead">If we tell the system which brand is in the photo, can it still choose the right product? To find out, we ranked the same photos twice. First, every description in the catalog could win. Then we gave the model the correct brand and asked it to choose among that brand’s products.</p>
-        <p class="lead">We repeated the experiment ten times, changing which brands we learned from each time. Each <em>brand split</em> puts whole brands in three groups. One group supplies training photos, one is reserved for choosing model settings, and one supplies the test photos. All variants of a brand stay together within a trial. In the subspace comparison, every test photo belongs to a brand that supplied no photos for learning the directions.</p>
-        <p class="lead">If the variant names taught us nothing, randomly reassigning them among the training photos of each brand should have made little difference. We kept 64 directions in both versions. In all nine models, the correct names helped more test photos find the right description on average. For the two models we examined closely, giving the system the brand name removed about seven tenths of that advantage. SigLIP2’s gain fell from 13.6 to 3.9 percentage points. MobileCLIP’s fell from 4.5 to 1.2. <a href="assets/paper.pdf">Paper, Figure 3</a>. <a class="ref" href="#ref-mobileclip" aria-label="Reference 6, MobileCLIP">[6]</a></p>
+        <h2>Subspace transfer to new brands</h2>
+        <p class="lead">To distinguish improvements in brand identification from improvements in variant identification, we evaluated the same test photos under two conditions. In the first, each photo was compared with all catalog descriptions. In the second, the candidate descriptions were limited to products of the correct brand, so retrieval depended on distinguishing variants within that brand.</p>
+        <p class="lead">Each <em>brand split</em> assigns entire brands to training, validation, and test sets. All variants of a brand stay in the same set within a trial. Training brands supply the photos used to fit the subspace, validation brands are reserved for model selection, and test brands supply the queries used to measure transfer. We evaluated ten such assignments.</p>
+        <p class="lead">At rank 64, all nine models achieved higher average Recall@1 with original variant labels than with labels randomly reassigned within each training brand. Restricting the catalog to the correct brand reduced this advantage by about 70% on the two models analyzed in detail. For SigLIP2, the gain decreased from 13.6 to 3.9 percentage points. For MobileCLIP, it decreased from 4.5 to 1.2 points. <a href="assets/paper.pdf">Paper, Figure 3</a>. <a class="ref" href="#ref-mobileclip" aria-label="Reference 6, MobileCLIP">[6]</a></p>
         <figure class="catalog-finding" aria-labelledby="finding-title" aria-describedby="finding-note">
-          <h3 id="finding-title">Most of the gain comes from telling brands apart</h3>
+          <h3 id="finding-title">Most of the retrieval gain comes from fewer cross-brand errors</h3>
           <p class="finding-unit">Gain in Recall@1 over shuffled variant labels (percentage points)</p>
           <div class="finding-plot">
             <div class="finding-row" role="group" aria-labelledby="finding-siglip">
@@ -316,18 +331,18 @@
               <div class="finding-axis"><span>0</span><span>5</span><span>10</span><span>15</span></div>
             </div>
           </div>
-          <figcaption id="finding-note">Each pair uses the same test photos. When the catalog contains only the photographed brand, the model must distinguish its variants. Both models gain less in this setting. Each point averages ten trials with 64 directions. Within the correct brand, original labels improved accuracy in nine of ten trials for SigLIP2 and seven of ten for MobileCLIP. The latter difference was inconclusive in a two-sided sign test (<i>p</i> = 0.34). <a href="assets/supplement.pdf">Supplement, Table S4</a>.</figcaption>
+          <figcaption id="finding-note">Filled markers represent retrieval across the full catalog. Open markers restrict the same queries to descriptions from the correct brand. Each value is the mean gain over shuffled labels across ten trials with 64 directions. Within the correct brand, the gain was positive in nine of ten trials for SigLIP2 and seven of ten for MobileCLIP. The latter difference was inconclusive in a two-sided sign test (<i>p</i> = 0.34). <a href="assets/supplement.pdf">Supplement, Table S4</a>.</figcaption>
         </figure>
-        <div class="reading"><p>How can a direction learned from variants end up helping with brands? Subtracting a brand’s average removes its position from the training data. A direction along which its products vary can still be one along which two other brands differ. The catalog comparison tells us which mistakes the directions help correct. Assigning a specific meaning, such as package color, to an individual direction would require further evidence. <a href="assets/paper.pdf">Paper, §4.2</a>.</p></div>
-        <div class="reading rank-intro"><h3>How many directions does retrieval need?</h3><p>Choose a model and the number of directions it can use. The first two rows compare how we grouped the same training photos. The third uses directions chosen at random. The last lets the model use all its original coordinates. Keeping more directions improves retrieval in this range, but the complete vector still gives the highest accuracy.</p></div>
+        <div class="reading"><p>Centering the training features removes each brand’s mean from the subspace fit. A direction that distinguishes variants of one brand can also separate products from different brands at test time. The comparison of candidate sets measures these two contributions. It does not identify the visual attribute, such as package color, associated with a particular direction. <a href="assets/paper.pdf">Paper, §4.2</a>.</p></div>
+        <div class="reading rank-intro"><h3>Effect of subspace rank on retrieval</h3><p>For each model and rank, the table compares directions estimated from original labels, directions estimated from shuffled labels, and randomly chosen directions. The full frozen feature vector provides a reference. Retrieval accuracy increases with rank from 16 to 128 for both models. The full vector achieves the highest Recall@1 in each comparison.</p></div>
         <div class="sweep">
           <div class="sweep-controls">
             <label class="select-label" for="sweep-model">Image and text model<select id="sweep-model"><option>SigLIP2-gopt-384</option><option>MobileCLIP-B</option></select></label>
-            <fieldset><legend>Directions to keep (rank)</legend><div class="switch rank-switch">
+            <fieldset><legend>Number of directions (rank)</legend><div class="switch rank-switch">
               <label><input type="radio" name="sweep-rank" value="16"><span>16</span></label><label><input type="radio" name="sweep-rank" value="32"><span>32</span></label><label><input type="radio" name="sweep-rank" value="64" checked><span>64</span></label><label><input type="radio" name="sweep-rank" value="128"><span>128</span></label>
             </div></fieldset>
           </div>
-          <table class="sweep-table"><caption>How often the right description ranks first among 409 products. The test photos come from brands with at least two products. Values are averages over the ten trials.</caption>
+          <table class="sweep-table"><caption>Recall@1 among 409 catalog descriptions, averaged over ten trials. Test photos come from brands with at least two variants.</caption>
             <thead><tr><th scope="col">Features used for matching</th><th scope="col">Correct first match (Recall@1) ↑</th></tr></thead>
             <tbody>
               <tr class="chosen"><th scope="row">Directions from original variant labels</th><td><div class="measure"><i style="--value:51.7%"></i><span>51.7%</span></div></td></tr>
@@ -336,15 +351,15 @@
               <tr><th scope="row">All original model features</th><td><div class="measure"><i style="--value:73.6%"></i><span>73.6%</span></div></td></tr>
             </tbody>
           </table>
-          <p id="sweep-summary" class="figure-note" aria-live="polite">With 64 directions, the correct description comes first for 51.7% of photos with original labels and 38.1% with shuffled labels.</p>
+          <p id="sweep-summary" class="figure-note" aria-live="polite">At rank 64, SigLIP2-gopt-384 achieves 51.7% Recall@1 with original variant labels and 38.1% with shuffled labels.</p>
         </div>
-        <div class="reading rank-intro"><h3>Does better retrieval on familiar brands carry over?</h3></div>
-        <p class="lead small-lead">A learned linear map raised SigLIP2’s first-choice accuracy on familiar brands from 81.3% to 98.9%. Applied to new brands, that same map lowered accuracy from 78.7% to 58.3%. Updating all the image encoder’s weights (<em>fine-tuning</em>) also depended on the size of the training updates, or <em>learning rate</em>. A smaller update worked better on new brands. ProxyNCA, which learns a representative vector for each training product, improved on the frozen model at both rates shown. <a class="ref" href="#ref-proxynca" aria-label="Reference 7, ProxyNCA">[7]</a></p>
-        <table class="adaptation"><caption>Correct first match for SigLIP2, averaged across ten trials. This test includes brands with a single product, so the frozen baseline uses a broader set of photos than the directions table above.</caption>
+        <div class="reading rank-intro"><h3>Generalization after fine-tuning</h3></div>
+        <p class="lead small-lead">A linear map fitted to image features from training brands increased SigLIP2’s Recall@1 on those brands from 81.3% to 98.9%. On new brands it reduced Recall@1 from 78.7% to 58.3%. When we fine-tuned the full image encoder, performance on new brands depended on the <em>learning rate</em>, which controls the size of the weight updates. Recall@1 exceeded the frozen baseline at the lower rate and fell below it at the higher rate. ProxyNCA, which learns a representative vector for each training product, exceeded the baseline at both rates. <a class="ref" href="#ref-proxynca" aria-label="Reference 7, ProxyNCA">[7]</a></p>
+        <table class="adaptation"><caption>SigLIP2 Recall@1 averaged over ten trials. This evaluation includes brands with a single product, so it uses a broader set of test photos than the subspace experiment.</caption>
           <thead><tr><th scope="col">Image model</th><th scope="col">Learning rate</th><th scope="col">Brands used for training<br>Recall@1 ↑</th><th scope="col">Brands set aside for testing<br>Recall@1 ↑</th></tr></thead>
           <tbody>
             <tr><th scope="row">Frozen SigLIP2</th><td>—</td><td>81.3%</td><td>78.7%</td></tr>
-            <tr><th scope="row">Linear map (GA)</th><td>—</td><td>98.9%</td><td>58.3%</td></tr>
+            <tr><th scope="row">Linear image feature map (GA)</th><td>—</td><td>98.9%</td><td>58.3%</td></tr>
             <tr><th scope="row">Full fine-tuning</th><td>5 × 10<sup>−5</sup></td><td>99.6%</td><td>72.1%</td></tr>
             <tr><th scope="row">Full fine-tuning</th><td>2 × 10<sup>−5</sup></td><td>98.1%</td><td>83.9%</td></tr>
             <tr><th scope="row">ProxyNCA</th><td>5 × 10<sup>−5</sup></td><td>90.5%</td><td>84.5%</td></tr>
@@ -355,8 +370,8 @@
       </section>
 
       <section id="conclusion" class="section reading">
-        <h2>What this means for checkout</h2>
-        <p>When a checkout confuses two soups, it is worth testing what the image features retain before retraining the encoder. The probe could read differences that image-to-text retrieval missed. The text side offers a clue. In one SigLIP2 trial, descriptions from the same brand pointed in much more similar directions than descriptions from different brands (mean cosine similarity 0.733 versus 0.465). Two descriptions can therefore compete closely even when the photo contains the detail that distinguishes them. For a store adding new products, the decisive test is whether the model can still choose the right flavor, size, or package after the brand is already known. <a href="assets/paper.pdf">Paper, §4.2</a>.</p>
+        <h2>Implications for grocery retrieval</h2>
+        <p>An image-to-text retrieval error can occur even when a linear classifier distinguishes variants using the same image features. The catalog text vectors also show limited separation between variants. In the first SigLIP2 trial, mean cosine similarity between descriptions was 0.733 within a brand and 0.465 across brands. Closely aligned descriptions can receive similar scores for the same image. The transfer experiment also shows why catalog-wide accuracy alone is insufficient to assess variant recognition. Evaluating retrieval within the correct brand isolates the distinction between products that share a brand but differ in flavor, size, or packaging. <a href="assets/paper.pdf">Paper, §4.2</a>.</p>
       </section>
 
       <section id="references" class="section reading references">
@@ -385,7 +400,7 @@
       </section>
     </main>
     <footer>
-      <p>Product photographs from <a href="https://grocery-vision.github.io/past_challenge/iccv2025.html">GroceryVision, Track 2</a>, resized for display under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. The recorded grasp in the 3D viewer comes from DexYCB. <a class="ref" href="#ref-dexycb" aria-label="Reference 8, DexYCB">[8]</a> Grocery aisle footage in the film by <a href="https://www.pexels.com/video/woman-choosing-and-comparing-products-in-a-store-5103996/">Gustavo Fring</a>, under the <a href="https://www.pexels.com/license/">Pexels license</a>. Marks from <a href="https://accv2026.org/">ACCV 2026</a> and the <a href="https://facultymanual.upd.edu.ph/?id=1&amp;p=topic">UP Diliman Faculty Manual</a>.</p>
+      <p>Product photographs from <a href="https://grocery-vision.github.io/past_challenge/iccv2025.html">GroceryVision, Track 2</a>, resized for display under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. The 3D viewer uses a grasp sequence from the DexYCB dataset. <a class="ref" href="#ref-dexycb" aria-label="Reference 8, DexYCB">[8]</a> Institutional and conference marks from <a href="https://accv2026.org/">ACCV 2026</a> and the <a href="https://facultymanual.upd.edu.ph/?id=1&amp;p=topic">UP Diliman Faculty Manual</a>.</p>
     </footer>
   </div>
 </body>

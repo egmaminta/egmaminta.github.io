@@ -1,28 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.633
+00:00:00.000 --> 00:00:27.550
+Computer vision in retail
+
+00:00:27.550 --> 00:00:49.750
 A Transferable Variant Signal That Grocery Retrieval Cannot Reach
 
-00:00:04.633 --> 00:00:17.185
-What belongs on the receipt?
+00:00:49.750 --> 00:01:24.740
+Matching a photo to a product
 
-00:00:17.185 --> 00:00:30.506
-Where did the flavor go?
+00:01:24.740 --> 00:01:49.400
+The gap between five candidates and one
 
-00:00:30.506 --> 00:00:51.951
-A readout for frozen features
+00:01:49.400 --> 00:02:02.560
+Research questions
 
-00:00:51.951 --> 00:01:07.576
-One row for each variant
+00:02:02.560 --> 00:02:35.630
+Testing the frozen image features
 
-00:01:07.576 --> 00:01:23.901
-Reading the singular value decomposition
+00:02:35.630 --> 00:02:56.930
+A control with shuffled labels
 
-00:01:23.901 --> 00:01:39.825
-A brand the fit has never seen
+00:02:56.930 --> 00:03:25.840
+How each variety differs from its brand
 
-00:01:39.825 --> 00:01:51.716
-Shuffling the training labels
+00:03:25.840 --> 00:03:46.420
+Finding the shared directions
 
-00:01:51.716 --> 00:02:11.858
-How much transfers?
+00:03:46.420 --> 00:04:18.210
+Singular value decomposition
+
+00:04:18.210 --> 00:04:51.280
+Measuring a new brand
+
+00:04:51.280 --> 00:05:24.910
+Retrieval on new brands
+
+00:05:24.910 --> 00:05:54.060
+What the results mean for checkout

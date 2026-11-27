@@ -9,10 +9,10 @@ const product = document.querySelector("#transfer-product");
 const tau = Math.PI / 180;
 const colors = ["#121212", "#606060"];
 const steps = [
-  ["One point per product", "The small marks are store photos. Average the ten photos of each product to get a larger mark. The circle and square symbols distinguish the two brands."],
-  ["Measure from each brand’s center", "The arrows start at each brand’s average product. Subtract that center from its product vectors. Now both brands share an origin, and each arrow shows a difference within a brand."],
-  ["Find the directions of variation", "Each dot is a product measured from its brand’s center. The decomposition gives each product’s weights (U), the strength of each direction (Σ), and the directions in the encoder’s coordinates (V). The plane shows the two strongest. The experiment keeps 64."],
-  ["Use the directions on a new brand", "Project a coffee photo and its description onto the same axes. The solid lines show which components survive the projection. Switch roasts to compare. The directions were learned entirely from other brands."]
+  ["Mean image features per product", "Each small mark represents one store photograph. Each large mark represents the mean feature vector for ten photographs of one product. Circles and squares distinguish the two brands."],
+  ["Center each product on its brand mean", "Subtract the mean product vector for each brand from each of its product vectors. Both brand means are now at the origin. Each arrow shows how one variant differs from its brand mean."],
+  ["Estimate the directions of greatest variation", "Each dot represents a centered product vector. The singular value decomposition gives the signed weights for each product (U), the singular values (Σ), and the directions in feature space (V). The plane shows the first two directions. The main experiment retains 64."],
+  ["Project a product from a new brand", "The solid lines show the projections of a coffee image and its catalog description onto the same two axes. The axes were estimated from other brands. Select a roast to compare the projected vectors."]
 ];
 let data, centroids, centers, active = 0, yaw = 33, elevation = 29, queued = false;
 let centerProgress = 0, shiftAnimation = 0;

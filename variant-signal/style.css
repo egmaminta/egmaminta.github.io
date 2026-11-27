@@ -271,10 +271,13 @@ footer p + p { margin-top: .55rem; }
 .film-tools label { max-width: 100%; min-width: 0; display: flex; align-items: center; gap: 7px; font-size: .9rem; }
 .film-tools select { max-width: 255px; }
 .film-tools .film-links { margin: 0; }
-.transcript { margin-top: 12px; font-size: .91rem; }
-.transcript summary { text-decoration: underline; text-underline-offset: 3px; }
+.transcript, .film-sources { margin-top: 12px; font-size: .91rem; }
+.transcript summary, .film-sources summary { width: fit-content; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .transcript p { margin: 7px 0; max-width: 75ch; }
 .transcript time { font-variant-numeric: tabular-nums; font-weight: 600; margin-right: 5px; }
+.film-sources dl { max-width: 68ch; margin: 12px 0; }
+.film-sources dt { margin-top: 12px; font-weight: 600; }
+.film-sources dd { margin: 3px 0 0; }
 @media (max-width: 480px) {
   .film-tools label { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; width: 100%; gap: 2px; }
   #film-chapter { min-width: 0; width: 100%; text-overflow: ellipsis; }

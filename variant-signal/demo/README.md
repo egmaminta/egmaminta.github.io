@@ -1,6 +1,6 @@
 # Subspace transfer on a held-out brand
 
-This is the retrieval experiment on the [ACCV 2026 paper page](https://egmaminta.github.io/variant-signal/#retrieval) for *A Transferable Variant Signal That Grocery Retrieval Cannot Reach*, by Emmanuel G. Maminta and Rowel O. Atienza. The [paper](https://egmaminta.github.io/variant-signal/assets/paper.pdf) describes the brand splits and the [OpenMPR repository](https://github.com/upeee/openmpr) provides the grocery retrieval benchmark code.
+This is the retrieval experiment on the [ACCV 2026 paper page](https://egmaminta.github.io/variant-signal/#retrieval) for *A Transferable Variant Signal That Grocery Retrieval Cannot Reach*, by Emmanuel G. Maminta and Rowel O. Atienza. The [paper](https://egmaminta.github.io/variant-signal/assets/paper.pdf) describes how brands were assigned to training and testing and the [OpenMPR repository](https://github.com/upeee/openmpr) provides the grocery retrieval benchmark code.
 
 ## Reproducing the interactive scores
 
@@ -22,12 +22,12 @@ cosines = v[30:] @ v[query]
 print(catalog["products"][int(np.argmax(cosines))]["description"])
 ```
 
-At rank 64 the true-label fit retrieves 29 of 30 within Starbucks and the displayed shuffled fit retrieves 16. The matrices in [fig-examples.csv](fig-examples.csv) score each normalized **mean** of ten projected photos against the three texts. The browser starts with an **individual** photo. Select “Average the 10 photos, as in Figure 2” at rank 64 with the three Starbucks descriptions to reproduce each published row. The supplement documents this brand’s selection as the largest within-brand gain among the eligible examples.
+At rank 64, the subspace fitted with original labels retrieves the correct Starbucks roast for 29 of 30 photos. The displayed shuffled-label fit retrieves 16 of 30 correctly. The matrices in [fig-examples.csv](fig-examples.csv) score each normalized **mean** of ten projected photos against the three texts. The browser starts with an **individual** photo. Select “Average the 10 image vectors (Figure 2)” at rank 64 with the three Starbucks descriptions to reproduce each published row. The supplement documents this brand’s selection as the largest within-brand gain among the eligible examples.
 
-[supp-fig-transfer-panel.csv](supp-fig-transfer-panel.csv) contains the ten-draw results used in the rank sweep. [tab-panel.csv](tab-panel.csv) contains the fine-tuning comparison.
+[supp-fig-transfer-panel.csv](supp-fig-transfer-panel.csv) contains the results across ten brand splits used to compare subspace ranks. [tab-panel.csv](tab-panel.csv) contains the fine-tuning comparison.
 
-## Reading the linear probe example
+## Linear probe example
 
-The [linear probe](https://egmaminta.github.io/variant-signal/#probe) uses the pooled SigLIP2 image features of 30 GroceryVision photographs of Blue Diamond almonds. Each of the three varieties supplies six training photos and four test photos. We shuffle the ten indices of each variety, in sorted SKU order, with a single NumPy default generator seeded with 0. We fit a standard scaler on the training features and a multinomial logistic regression with L2 regularization, C = 1, and the L-BFGS solver. A second fit uses the same training features and a permutation of their labels from a generator seeded with 12345. Both fits predict the same twelve test photos. The original labels yield twelve correct predictions and the shuffled labels yield five. The splits, original and shuffled assignments, and both predictions for each test photo are recorded in [probe.json](probe.json). Table 1 of the paper reports the separate benchmark results averaged over brands and three runs.
+The [linear probe](https://egmaminta.github.io/variant-signal/#probe) uses the pooled SigLIP2 image features of 30 GroceryVision photographs of Blue Diamond almonds. Each of the three varieties supplies six training photos and four test photos. We shuffle the ten indices of each variety, in sorted SKU order, with a single NumPy default generator seeded with 0. We fit a standard scaler on the training features and a multinomial logistic regression with L2 regularization, C = 1, and the L-BFGS solver. A second fit uses the same training features and a permutation of their labels from a generator seeded with 12345. Both classifiers predict the variety for each of the same twelve test photos. The original labels yield twelve correct predictions and the shuffled labels yield five. The splits, original and shuffled assignments, and both predictions for each test photo are recorded in [probe.json](probe.json). Table 1 of the paper reports the separate benchmark results averaged over brands and three runs.
 
 Photographs are from [GroceryVision Track 2](https://grocery-vision.github.io/past_challenge/iccv2025.html) under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) and have been resized for display.
