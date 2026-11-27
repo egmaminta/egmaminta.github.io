@@ -1,4 +1,4 @@
-// The simulated pickup and the recorded GroceryVision retrieval example are distinct views.
+// The rendered shelf, recorded DexYCB pickup and GroceryVision retrieval examples have separate sources.
 const products = [
   {
     key: "tomato",
@@ -51,18 +51,23 @@ const asset = (path) => new URL("./assets/" + path, import.meta.url).href;
 
 async function install(root) {
   root.innerHTML = `
-    <div class="vs3d-stage"><img class="vs3d-poster" width="1140" height="530" alt="A rendered grocery aisle with a shopper, shelves of soup and coffee, and an overhead camera."></div>
+    <div class="vs3d-tabs" role="group" aria-label="Checkout demonstration">
+      <button type="button" class="vs3d-tab" data-view="shelf" aria-pressed="true" aria-controls="vs3d-shelf">Explore the shelf</button>
+      <button type="button" class="vs3d-tab" data-view="pickup" aria-pressed="false" aria-controls="vs3d-pickup">Watch a real pickup</button>
+    </div>
+    <div id="vs3d-shelf"><div class="vs3d-stage"><img class="vs3d-poster" width="1140" height="530" alt="A grocery shelf stocked with soup and coffee, viewed from the checkout aisle."></div>
     <div class="vs3d-controls">
       <label>Product<select class="vs3d-product"></select></label>
       <label>View<select class="vs3d-view"><option value="aisle">Store aisle</option><option value="shelf">Product shelf</option><option value="camera">Shelf camera</option></select></label>
-      <button type="button" class="vs3d-capture">Pick up and photograph</button>
+      <button type="button" class="vs3d-capture">Photograph the product</button>
     </div>
-    <p class="vs3d-help">Choose a product on the shelf or in the menu. Drag to look around. With the aisle focused, use the arrow keys to turn or zoom and Enter to photograph the pickup.</p>
+    <p class="vs3d-help">Choose a product on the shelf or in the menu. Drag to look around. Use the arrow keys to turn or zoom and Enter to photograph the product.</p>
     <p class="vs3d-status" role="status"></p>
     <div class="vs3d-record" hidden>
       <figure><img class="vs3d-query" alt=""><figcaption></figcaption></figure>
       <div><h3>Frozen model’s catalog ranking</h3><p class="vs3d-finding"></p><table><thead></thead><tbody></tbody></table><details class="vs3d-inspection"><summary>About this ranking</summary><p></p></details></div>
-    </div>`;
+    </div><details class="vs3d-credits"><summary>Image credits</summary><p>Campbell’s and Starbucks labels are cropped from GroceryVision photographs. Shelf stock uses scans from the <a href="https://ycb-benchmarks.s3.amazonaws.com/index.html">YCB Object and Model Set</a>. The interior photograph and wood texture are from <a href="https://polyhaven.com/">Poly Haven</a>. <a href="assets/store-3d/credits.txt">Sources and licenses</a>.</p></details></div>
+    <div id="vs3d-pickup" hidden></div>`;
   const get = (selector) => root.querySelector(selector);
   const stage = get(".vs3d-stage"),
     poster = get(".vs3d-poster"),
@@ -87,14 +92,12 @@ async function install(root) {
     revealed = true;
     capture.disabled = false;
     view.disabled = !display;
-    capture.textContent = display ? "Replay pickup" : "Show recorded match";
+    capture.textContent = display ? "Photograph again" : "Show recorded match";
     status.textContent = "Recorded match for " + entry.truth + ".";
     get(".vs3d-query").src = asset(entry.photo);
     get(".vs3d-query").alt = "GroceryVision photograph of " + entry.truth;
     get("figcaption").textContent =
-      "The aisle simulates pickup. This GroceryVision photo of " +
-      entry.truth +
-      " is the query.";
+      "GroceryVision query photograph of " + entry.truth + ".";
     get(".vs3d-finding").textContent = entry.explanation;
     get(".vs3d-inspection p").textContent = entry.source;
     get("details").open = false;
@@ -153,7 +156,7 @@ async function install(root) {
     capture.disabled = false;
     capture.textContent =
       display || waitingForScene
-        ? "Pick up and photograph"
+        ? "Photograph the product"
         : "Show recorded match";
     record.hidden = true;
     status.textContent = fromShelf ? products[index].truth + " selected." : "";
@@ -172,16 +175,29 @@ async function install(root) {
     busy = false;
     capture.textContent = "Show recorded match";
   }
+  let recorded;
+  const tabs = [...root.querySelectorAll(".vs3d-tab")];
+  tabs.forEach((button) =>
+    button.addEventListener("click", () => {
+      const usePickup = button.dataset.view === "pickup";
+      tabs.forEach((tab) =>
+        tab.setAttribute("aria-pressed", String(button === tab)),
+      );
+      get("#vs3d-shelf").hidden = usePickup;
+      get("#vs3d-pickup").hidden = !usePickup;
+      if (usePickup) {
+        if (!recorded) recorded = installRecording(get("#vs3d-pickup"));
+        recorded.open();
+      } else recorded?.pause();
+    }),
+  );
   capture.addEventListener("click", photograph);
   product.addEventListener("change", () => choose(Number(product.value)));
   view.addEventListener("change", () => display?.setView(view.value));
   async function start() {
     try {
-      const [T, shop] = await Promise.all([
-        import("../shelftaught/three-r180/three.module.min.js"),
-        import("../shelftaught/shoppers.js"),
-      ]);
-      display = buildScene(T, shop.makeShopper, stage, {
+      const T = await import("../shelftaught/three-r180/three.module.min.js");
+      display = buildScene(T, stage, {
         onSelect: (i) => choose(i, true),
         onCapture: photograph,
         onFallback: unavailable,
@@ -189,7 +205,7 @@ async function install(root) {
       display.select(current, view.value);
       poster.hidden = true;
       waitingForScene = false;
-      if (revealed) capture.textContent = "Replay pickup";
+      if (revealed) capture.textContent = "Photograph again";
     } catch {
       unavailable();
     }
@@ -208,7 +224,467 @@ async function install(root) {
   } else start();
 }
 
-function buildScene(T, makeShopper, stage, hooks) {
+function installRecording(panel) {
+  panel.innerHTML = `<div class="vs3d-footage">
+    <figure><div class="vs3d-movie"><video class="vs3d-main-film" muted playsinline preload="metadata" aria-label="Recorded hand reaching for a coffee can, grasping it and lifting it off a table"></video></div><figcaption class="vs3d-camera-name">Side camera</figcaption></figure>
+    <figure class="vs3d-second-angle"><div class="vs3d-movie"><video class="vs3d-second-film" muted playsinline preload="metadata" aria-label="Synchronized second camera angle of the same pickup"></video></div><figcaption class="vs3d-second-name">Overhead camera</figcaption></figure>
+  </div>
+  <div class="vs3d-controls vs3d-playback"><button class="vs3d-play" type="button">Play pickup</button>
+    <label class="vs3d-time-label">Frame <output class="vs3d-time" for="vs3d-time-bar">1 of 72</output><input type="range" class="vs3d-scrub" id="vs3d-time-bar" min="0" max="71" value="0" step="1"></label>
+    <label>Camera<select class="vs3d-camera"><option value="side">Side</option><option value="above">Overhead</option><option value="front">Front</option></select></label>
+  </div>
+  <div class="vs3d-moments" role="group" aria-label="Jump to a moment in the pickup"><button type="button" data-frame="18">Reach</button><button type="button" data-frame="32">Grip</button><button type="button" data-frame="43">Lift</button><button type="button" data-frame="62">Hold</button></div>
+  <p class="vs3d-help vs3d-record-help">A participant picks up a coffee can. The cameras recorded the same hand at the same instant. Drag the frame slider or change cameras to follow the fingers around the label.</p>
+  <p class="vs3d-credit">Coffee-can pickup from <a href="https://dex-ycb.github.io/">DexYCB (Chao et al.)</a>, licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Playback is at half speed. The catalog rankings on the shelf use photographs from GroceryVision.</p>`;
+  const main = panel.querySelector(".vs3d-main-film"),
+    other = panel.querySelector(".vs3d-second-film");
+  const select = panel.querySelector(".vs3d-camera"),
+    play = panel.querySelector(".vs3d-play");
+  const scrub = panel.querySelector(".vs3d-scrub"),
+    counter = panel.querySelector(".vs3d-time");
+  const titles = {
+    side: "Side camera",
+    above: "Overhead camera",
+    front: "Front camera",
+  };
+  const companion = { side: "above", above: "side", front: "above" };
+  const secondVisible = matchMedia("(min-width: 641px)");
+  const cameras = fetch(asset("store-3d/pickup-cameras.json"))
+    .then((r) => {
+      if (!r.ok) throw new Error("Camera data unavailable");
+      return r.json();
+    })
+    .catch(() => []);
+  const depthCache = new Map();
+  let generation = 0,
+    shown = 32,
+    playing = false,
+    angle,
+    depthView;
+  let frameRequest, callbackKind;
+  const setTime = (v, n) => {
+    if (v.readyState < 1) return;
+    if (v === main && v.requestVideoFrameCallback)
+      v.requestVideoFrameCallback((_, info) => {
+        if (!playing && Math.abs(info.mediaTime - shown / 30) < 0.04)
+          depthView?.frame(shown);
+      });
+    v.currentTime = n / 30 + 0.001;
+  };
+  function progress(n) {
+    shown = Math.max(0, Math.min(71, n));
+    scrub.value = String(shown);
+    scrub.setAttribute("aria-valuetext", `Frame ${shown + 1} of 72`);
+    counter.value = `${shown + 1} of 72`;
+    depthView?.frame(shown);
+  }
+  function endFrameCallback() {
+    if (frameRequest !== undefined) {
+      if (callbackKind === "video") main.cancelVideoFrameCallback(frameRequest);
+      else cancelAnimationFrame(frameRequest);
+      frameRequest = undefined;
+    }
+  }
+  function watch() {
+    endFrameCallback();
+    if (!playing) return;
+    const tick = (now, info) => {
+      frameRequest = undefined;
+      if (!playing) return;
+      const time = info ? info.mediaTime : main.currentTime;
+      progress(Math.floor(time * 30 + 0.005));
+      if (
+        secondVisible.matches &&
+        other.readyState >= 2 &&
+        Math.abs(other.currentTime - main.currentTime) > 0.075
+      )
+        other.currentTime = main.currentTime;
+      watch();
+    };
+    callbackKind = main.requestVideoFrameCallback ? "video" : "raf";
+    frameRequest =
+      callbackKind === "video"
+        ? main.requestVideoFrameCallback(tick)
+        : requestAnimationFrame(tick);
+  }
+  function pause() {
+    playing = false;
+    main.pause();
+    other.pause();
+    endFrameCallback();
+    play.textContent = shown >= 70 ? "Replay pickup" : "Play pickup";
+  }
+  function seek(n) {
+    pause();
+    progress(n);
+    setTime(main, n);
+    setTime(other, n);
+  }
+  async function run() {
+    if (playing) {
+      pause();
+      return;
+    }
+    if (
+      shown >= 70 ||
+      (shown === 32 &&
+        play.textContent === "Play pickup" &&
+        !panel.dataset.explored)
+    )
+      seek(0);
+    panel.dataset.explored = "true";
+    main.playbackRate = other.playbackRate = 0.5;
+    try {
+      await main.play();
+      playing = true;
+      play.textContent = "Pause";
+      if (secondVisible.matches && other.readyState >= 1) {
+        other.currentTime = main.currentTime;
+        other.play().catch(() => {});
+      }
+      watch();
+    } catch {
+      pause();
+    }
+  }
+  const filmURLs = new Map();
+  async function loadVideo(video, name) {
+    video.dataset.angle = name;
+    video.poster = asset(`store-3d/pickup-${name}.webp`);
+    if (!filmURLs.has(name)) {
+      const url = asset(`store-3d/pickup-${name}.mp4`);
+      filmURLs.set(
+        name,
+        fetch(url)
+          .then(async (response) => {
+            if (!response.ok) throw new Error("Recording unavailable");
+            return URL.createObjectURL(await response.blob());
+          })
+          .catch(() => url),
+      );
+    }
+    const url = await filmURLs.get(name);
+    if (video.dataset.angle !== name) return;
+    video.addEventListener("loadedmetadata", () => setTime(video, shown), {
+      once: true,
+    });
+    video.src = url;
+    video.load();
+  }
+  async function chooseCamera(name) {
+    pause();
+    angle = name;
+    const token = ++generation;
+    depthView?.hide();
+    panel.querySelector(".vs3d-camera-name").textContent = titles[name];
+    panel.querySelector(".vs3d-second-name").textContent =
+      titles[companion[name]];
+    loadVideo(main, name);
+    if (secondVisible.matches) loadVideo(other, companion[name]);
+    if (!window.DecompressionStream) return;
+    try {
+      const specs = await cameras,
+        spec = specs.find((x) => x.name === name);
+      if (!spec || token !== generation) return;
+      if (!depthCache.has(name))
+        depthCache.set(
+          name,
+          fetch(asset(`store-3d/pickup-${name}.depth.gz`)).then(async (r) => {
+            if (!r.ok) throw new Error("Depth data unavailable");
+            const payload = new Uint8Array(await r.arrayBuffer());
+            let depth = payload;
+            if (payload[0] === 0x1f && payload[1] === 0x8b) {
+              const stream = new Blob([payload])
+                .stream()
+                .pipeThrough(new DecompressionStream("gzip"));
+              depth = new Uint8Array(await new Response(stream).arrayBuffer());
+            }
+            const stride = spec.grid[0] * spec.grid[1];
+            if (depth.length !== stride * spec.count)
+              throw new Error("Incomplete depth capture");
+            for (let i = stride; i < depth.length; i++)
+              depth[i] += depth[i - stride];
+            return depth;
+          }),
+        );
+      const [T, depth] = await Promise.all([
+        import("../shelftaught/three-r180/three.module.min.js"),
+        depthCache.get(name),
+      ]);
+      if (token !== generation) return;
+      if (!depthView)
+        depthView = makeDepthView(T, main, panel.querySelector(".vs3d-movie"));
+      depthView.camera(spec, depth);
+      depthView.frame(shown);
+      panel.querySelector(".vs3d-record-help").textContent =
+        "A participant picks up a coffee can. Drag the first view sideways to move around the hand using the recorded depth. Pause or use the frame slider to inspect the grip from another camera.";
+    } catch {
+      /* The original color recordings remain usable without the depth viewer. */
+    }
+  }
+  main.addEventListener("seeked", () => {
+    if (!playing) depthView?.frame(shown);
+  });
+  main.addEventListener("loadeddata", () => depthView?.frame(shown));
+  other.addEventListener("loadeddata", () => {
+    if (playing && secondVisible.matches) {
+      other.playbackRate = main.playbackRate;
+      other.currentTime = main.currentTime;
+      other.play().catch(() => {});
+    }
+  });
+  main.addEventListener("ended", () => {
+    progress(71);
+    pause();
+    setTime(other, 71);
+  });
+  select.addEventListener("change", () => {
+    panel.dataset.explored = "true";
+    chooseCamera(select.value);
+  });
+  play.addEventListener("click", run);
+  scrub.addEventListener("input", () => {
+    panel.dataset.explored = "true";
+    seek(Number(scrub.value));
+  });
+  panel.querySelectorAll("[data-frame]").forEach((b) =>
+    b.addEventListener("click", () => {
+      panel.dataset.explored = "true";
+      seek(Number(b.dataset.frame));
+    }),
+  );
+  secondVisible.addEventListener("change", () => {
+    if (secondVisible.matches && angle) {
+      loadVideo(other, companion[angle]);
+    } else other.pause();
+  });
+  progress(shown);
+  return {
+    pause,
+    open() {
+      if (!angle) chooseCamera(select.value);
+      else depthView?.frame(shown);
+    },
+  };
+}
+
+// Reproject each color pixel along the calibrated camera ray by its measured depth.
+// The backplate fills small disocclusions at the edges of the recorded viewpoint.
+function makeDepthView(T, video, container) {
+  const canvas = document.createElement("canvas");
+  const gl = canvas.getContext("webgl2", {
+    alpha: false,
+    antialias: false,
+    powerPreference: "low-power",
+  });
+  if (!gl) throw new Error("3D graphics unavailable");
+  const renderer = new T.WebGLRenderer({
+    canvas,
+    context: gl,
+    antialias: false,
+  });
+  renderer.setPixelRatio(Math.min(1.75, devicePixelRatio || 1));
+  renderer.outputColorSpace = T.SRGBColorSpace;
+  const camera = new T.PerspectiveCamera(),
+    scene = new T.Scene(),
+    movie = new T.VideoTexture(video);
+  movie.colorSpace = T.SRGBColorSpace;
+  const material = new T.MeshBasicMaterial({
+    map: movie,
+    side: T.DoubleSide,
+    toneMapped: false,
+  });
+  const mesh = new T.Mesh(new T.BufferGeometry(), material);
+  mesh.frustumCulled = false;
+  scene.add(mesh);
+  scene.background = movie;
+  canvas.tabIndex = 0;
+  canvas.hidden = true;
+  canvas.setAttribute(
+    "aria-label",
+    "Recorded pickup in 3D. Drag or use the arrow keys to change the viewpoint. Press Home to return to the camera.",
+  );
+  container.append(canvas);
+  let spec,
+    bytes,
+    xyz,
+    xy,
+    indices,
+    rendered = -1,
+    shiftX = 0,
+    shiftY = 0,
+    lost = false,
+    alive = false;
+  function draw() {
+    if (!alive || lost || video.readyState < 2 || !container.clientWidth)
+      return;
+    const w = container.clientWidth,
+      h = container.clientHeight;
+    if (
+      renderer.domElement.width !== Math.floor(w * renderer.getPixelRatio()) ||
+      renderer.domElement.height !== Math.floor(h * renderer.getPixelRatio())
+    )
+      renderer.setSize(w, h, false);
+    camera.position.set(shiftX, shiftY, 0);
+    camera.lookAt(0, 0, -0.94);
+    renderer.render(scene, camera);
+    canvas.hidden = false;
+  }
+  function setCamera(meta, data) {
+    spec = meta;
+    bytes = data;
+    rendered = -1;
+    shiftX = shiftY = 0;
+    alive = true;
+    const [w, h] = spec.grid,
+      count = w * h,
+      uv = new Float32Array(count * 2);
+    xyz = new Float32Array(count * 3);
+    xy = new Float32Array(count * 2);
+    indices = new Uint16Array((w - 1) * (h - 1) * 6);
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        const i = y * w + x,
+          u = x / (w - 1),
+          v = y / (h - 1);
+        uv[i * 2] = u;
+        uv[i * 2 + 1] = 1 - v;
+        xy[i * 2] = (u * spec.width - spec.cx) / spec.fx;
+        xy[i * 2 + 1] = (spec.cy - v * spec.height) / spec.fy;
+      }
+    const geometry = new T.BufferGeometry();
+    geometry.setAttribute(
+      "position",
+      new T.BufferAttribute(xyz, 3).setUsage(T.DynamicDrawUsage),
+    );
+    geometry.setAttribute("uv", new T.BufferAttribute(uv, 2));
+    geometry.setIndex(
+      new T.BufferAttribute(indices, 1).setUsage(T.DynamicDrawUsage),
+    );
+    mesh.geometry.dispose();
+    mesh.geometry = geometry;
+    const near = 0.08;
+    camera.projectionMatrix.makePerspective(
+      (-spec.cx * near) / spec.fx,
+      ((spec.width - spec.cx) * near) / spec.fx,
+      (spec.cy * near) / spec.fy,
+      (-(spec.height - spec.cy) * near) / spec.fy,
+      near,
+      4,
+    );
+    camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+  }
+  function frame(n) {
+    if (!alive || !spec || lost) return;
+    if (n !== rendered) {
+      const [w, h] = spec.grid,
+        count = w * h,
+        depth = bytes.subarray(n * count, (n + 1) * count);
+      for (let i = 0; i < count; i++) {
+        const z = spec.near + spec.unit * depth[i];
+        xyz[3 * i] = xy[2 * i] * z;
+        xyz[3 * i + 1] = xy[2 * i + 1] * z;
+        xyz[3 * i + 2] = -z;
+      }
+      let j = 0;
+      for (let y = 0; y < h - 1; y++)
+        for (let x = 0; x < w - 1; x++) {
+          const a = y * w + x,
+            b = a + 1,
+            c = a + w,
+            d = c + 1;
+          if (
+            Math.max(depth[a], depth[b], depth[c]) -
+              Math.min(depth[a], depth[b], depth[c]) <
+            10
+          ) {
+            indices[j++] = a;
+            indices[j++] = c;
+            indices[j++] = b;
+          }
+          if (
+            Math.max(depth[d], depth[b], depth[c]) -
+              Math.min(depth[d], depth[b], depth[c]) <
+            10
+          ) {
+            indices[j++] = b;
+            indices[j++] = c;
+            indices[j++] = d;
+          }
+        }
+      mesh.geometry.attributes.position.needsUpdate = true;
+      mesh.geometry.index.needsUpdate = true;
+      mesh.geometry.setDrawRange(0, j);
+      rendered = n;
+    }
+    movie.needsUpdate = true;
+    draw();
+  }
+  function offset(dx, dy) {
+    shiftX = Math.max(-0.045, Math.min(0.045, shiftX + dx));
+    shiftY = Math.max(-0.025, Math.min(0.025, shiftY + dy));
+    draw();
+  }
+  let drag;
+  canvas.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!drag || drag.id !== e.pointerId) return;
+    offset((drag.x - e.clientX) * 0.00038, (e.clientY - drag.y) * 0.00032);
+    drag.x = e.clientX;
+    drag.y = e.clientY;
+  });
+  canvas.addEventListener("lostpointercapture", () => {
+    drag = null;
+  });
+  canvas.addEventListener("pointerup", (e) => {
+    if (canvas.hasPointerCapture(e.pointerId))
+      canvas.releasePointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("keydown", (e) => {
+    switch (e.key) {
+      case "ArrowLeft":
+        offset(-0.012, 0);
+        break;
+      case "ArrowRight":
+        offset(0.012, 0);
+        break;
+      case "ArrowUp":
+        offset(0, 0.008);
+        break;
+      case "ArrowDown":
+        offset(0, -0.008);
+        break;
+      case "Home":
+        shiftX = shiftY = 0;
+        draw();
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+  });
+  canvas.addEventListener("webglcontextlost", (e) => {
+    e.preventDefault();
+    lost = true;
+    alive = false;
+    canvas.hidden = true;
+  });
+  new ResizeObserver(draw).observe(container);
+  return {
+    camera: setCamera,
+    frame,
+    hide() {
+      alive = false;
+      canvas.hidden = true;
+    },
+  };
+}
+
+function buildScene(T, stage, hooks) {
   const canvas = document.createElement("canvas");
   const settings = {
     antialias: true,
@@ -228,7 +704,7 @@ function buildScene(T, makeShopper, stage, hooks) {
   renderer.shadowMap.type = T.PCFSoftShadowMap;
   renderer.outputColorSpace = T.SRGBColorSpace;
   renderer.toneMapping = T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 0.98;
   stage.append(canvas);
   const scene = new T.Scene();
   scene.background = new T.Color("#eeeae2");
@@ -239,7 +715,6 @@ function buildScene(T, makeShopper, stage, hooks) {
   scene.add(solid);
   const boxGeo = new T.BoxGeometry(1, 1, 1);
   const cylGeo = new T.CylinderGeometry(1, 1, 1, 24);
-  const sphereGeo = new T.SphereGeometry(1, 16, 12);
   const planeGeo = new T.PlaneGeometry(1, 1);
   const tone = (color, options = {}) =>
     new T.MeshStandardMaterial({ color, roughness: 0.75, ...options });
@@ -296,6 +771,33 @@ function buildScene(T, makeShopper, stage, hooks) {
   function graphic(w, h, paint) {
     return tone("#ffffff", { map: texture(w, h, paint), roughness: 0.9 });
   }
+  let assetsReady = false;
+  const loader = new T.TextureLoader();
+  function photographedLabel(filename) {
+    const map = loader.load(asset("store-3d/" + filename), () => {
+      if (assetsReady) schedule();
+    });
+    map.colorSpace = T.SRGBColorSpace;
+    map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    return tone("#ffffff", { map, roughness: 0.62 });
+  }
+  const interior = loader.load(asset("store-3d/shop-interior.webp"), () => {
+    if (assetsReady) schedule();
+  });
+  interior.colorSpace = T.SRGBColorSpace;
+  interior.mapping = T.EquirectangularReflectionMapping;
+  scene.environment = interior;
+  scene.environmentIntensity = 0.68;
+  scene.background = interior;
+  scene.backgroundBlurriness = 0.025;
+  scene.backgroundRotation.y = 1.72;
+  scene.environmentRotation.y = 1.72;
+  const wood = loader.load(asset("store-3d/shelf-wood.webp"), () => {
+    if (assetsReady) schedule();
+  });
+  wood.colorSpace = T.SRGBColorSpace;
+  oak.map = wood;
+  oak.color.set("#e0d4bb");
   const labelCache = new Map();
   function sign(text, bg, ink, width = 768, height = 112) {
     const key = [text, bg, ink, width, height].join("|");
@@ -354,12 +856,11 @@ function buildScene(T, makeShopper, stage, hooks) {
   );
   floor.rotation.x = -Math.PI / 2;
   block(solid, tone("#e1dcd0"), 0, -0.075, 0, 10, 0.15, 10);
-  block(solid, tone("#ede9df"), 0, 1.6, -1.59, 8, 3.2, 0.12);
-  block(solid, steel, 0, 0.07, -1.5, 8, 0.13, 0.05);
+  block(solid, tone("#d8d6cf"), -0.23, 1.04, -1.46, 3.68, 2.08, 0.085);
   const green = tone("#617d6e"),
     greenDeep = tone("#335245");
-  block(solid, white, -0.15, 2.23, -1.43, 6.6, 0.08, 0.13);
-  block(solid, oak, -0.15, 2.18, -1.46, 6.6, 0.045, 0.13);
+  block(solid, white, -0.15, 2.23, -1.43, 3.7, 0.08, 0.13);
+  block(solid, oak, -0.15, 2.18, -1.46, 3.7, 0.045, 0.13);
 
   const backBoard = graphic(512, 256, (c, w, h) => {
     c.fillStyle = "#dddcd1";
@@ -424,241 +925,16 @@ function buildScene(T, makeShopper, stage, hooks) {
   for (const x of [-0.68, 1.38])
     block(solid, brass, x, 1.936, -1.262, 0.012, 0.15, 0.009);
 
-  // A glazed shopfront and a second gondola put the working bay in an aisle.
-  const windowFrame = tone("#72796b"),
-    outdoor = tone("#d1dddd"),
-    leaf = tone("#839e78");
-  block(solid, white, -2.78, 0.47, -1.42, 1.31, 0.94, 0.15);
-  block(solid, outdoor, -2.78, 1.72, -1.5, 1.33, 1.65, 0.04);
-  for (const py of [1.31, 1.43, 1.59, 1.5, 1.39]) {
-    const x = -3.36 + random() * 1.16;
-    mesh(solid, sphereGeo, leaf, x, py, -1.455, 0.23, 0.19, 0.025);
-  }
-  for (const x of [-3.47, -2.84, -2.13])
-    block(solid, windowFrame, x, 1.76, -1.4, 0.038, 1.75, 0.08);
-  for (const y of [0.93, 1.79, 2.61])
-    block(solid, windowFrame, -2.8, y, -1.4, 1.38, 0.037, 0.08);
-  block(solid, oak, -2.8, 0.92, -1.32, 1.41, 0.05, 0.22);
-
   // Printed label art repeats around tins. Each coffee sack has shoulder folds and a crimp.
-  const designs = {
-    tomato: {
-      kind: "cup",
-      brand: "Campbell’s",
-      name: "Creamy Tomato",
-      top: "#a91f27",
-      bottom: "#f1e1b5",
-      accent: "#ce592d",
-    },
-    noodle: {
-      kind: "tin",
-      brand: "Campbell’s",
-      name: "Chicken Noodle",
-      top: "#ae2528",
-      bottom: "#f4e3ac",
-      accent: "#d1a347",
-    },
-    sumatra: {
-      kind: "bag",
-      brand: "STARBUCKS",
-      name: "SUMATRA",
-      top: "#27372d",
-      bottom: "#f3f0df",
-      accent: "#b99a58",
-    },
-    breakfast: {
-      kind: "bag",
-      brand: "STARBUCKS",
-      name: "BREAKFAST BLEND",
-      top: "#c8773e",
-      bottom: "#f4f0df",
-      accent: "#f0d783",
-    },
-    pike: {
-      kind: "bag",
-      brand: "STARBUCKS",
-      name: "PIKE PLACE",
-      top: "#785237",
-      bottom: "#f4eedc",
-      accent: "#dbc780",
-    },
-    chickpea: {
-      kind: "tin",
-      brand: "PANTRY",
-      name: "Chickpeas",
-      top: "#637c6a",
-      bottom: "#efe5c7",
-      accent: "#bfa269",
-    },
-    corn: {
-      kind: "tin",
-      brand: "PANTRY",
-      name: "Sweet Corn",
-      top: "#c1a549",
-      bottom: "#f1e8c5",
-      accent: "#84a062",
-    },
-    oat: {
-      kind: "box",
-      brand: "MILLHOUSE",
-      name: "Rolled Oats",
-      top: "#b36e43",
-      bottom: "#f2e2bd",
-      accent: "#b09052",
-    },
-    wheat: {
-      kind: "box",
-      brand: "FIELD & GRAIN",
-      name: "Whole Wheat",
-      top: "#658176",
-      bottom: "#ebe5c7",
-      accent: "#b6a65b",
-    },
-    crackers: {
-      kind: "box",
-      brand: "STONE MILL",
-      name: "Crackers",
-      top: "#9f4a40",
-      bottom: "#ecdac1",
-      accent: "#c3aa53",
-    },
-    tea: {
-      kind: "box",
-      brand: "LEAF",
-      name: "Green Tea",
-      top: "#74967a",
-      bottom: "#eef0db",
-      accent: "#677b46",
-    },
-    farro: {
-      kind: "box",
-      brand: "GRAINS",
-      name: "Farro",
-      top: "#7785a0",
-      bottom: "#e8e2cc",
-      accent: "#a59b6a",
-    },
-  };
   const wrappers = {};
-  function packArt(d) {
-    const bag = d.kind === "bag",
-      tin = d.kind === "cup" || d.kind === "tin";
-    const width = tin ? 768 : 256,
-      h = 320;
-    return graphic(width, h, (c, w, H) => {
-      c.fillStyle = d.bottom;
-      c.fillRect(0, 0, w, H);
-      c.fillStyle = d.top;
-      if (bag) {
-        c.fillRect(0, 144, w, 145);
-        c.fillStyle = "#e6e3d7";
-        c.fillRect(0, 0, w, 18);
-        c.fillStyle = "#3d6353";
-        c.beginPath();
-        c.arc(w / 2, 87, 30, 0, 2 * Math.PI);
-        c.fill();
-        c.fillStyle = "#f0f0db";
-        c.font = "bold 34px Georgia,serif";
-        c.textAlign = "center";
-        c.fillText("S", w / 2, 100);
-        c.fillStyle = "#264e3e";
-        c.font = "bold 16px Arial,sans-serif";
-        c.fillText(d.brand, w / 2, 134, w - 16);
-        c.fillStyle = d.accent;
-        c.save();
-        c.translate(w / 2, 188);
-        for (let n = 0; n < 17; n++) {
-          c.rotate((2 * Math.PI) / 17);
-          c.fillRect(-1, 17, 2, 18);
-        }
-        c.restore();
-        c.fillStyle = "#fff7e3";
-        c.font = "bold 25px Georgia,serif";
-        c.fillText(d.name, w / 2, 236, w - 20);
-        c.font = "12px Arial,sans-serif";
-        c.fillText("GROUND COFFEE", w / 2, 262);
-      } else if (tin) {
-        c.fillRect(0, 0, w, H * 0.54);
-        c.fillStyle = d.accent;
-        c.fillRect(0, H * 0.53, w, 8);
-        for (const x of [w * 0.25, w * 0.75]) {
-          c.textAlign = "center";
-          c.fillStyle = "#fff6e4";
-          c.font = "italic bold 50px Georgia,serif";
-          c.fillText(d.brand, x, H * 0.33, w * 0.43);
-          c.fillStyle = "#a08145";
-          c.beginPath();
-          c.arc(x, H * 0.56, 16, 0, 7);
-          c.fill();
-          c.strokeStyle = "#dac386";
-          c.lineWidth = 3;
-          c.stroke();
-          c.fillStyle = "#312d29";
-          c.font = "bold 26px Georgia,serif";
-          c.fillText(d.name, x, H * 0.72, w * 0.44);
-          c.fillStyle = "#d6bb8d";
-          c.beginPath();
-          c.ellipse(x, H * 0.86, 42, 14, 0, 0, 7);
-          c.fill();
-          c.fillStyle = "#eee7ca";
-          c.beginPath();
-          c.ellipse(x, H * 0.85, 41, 11, 0, 0, 7);
-          c.fill();
-          c.fillStyle = d.accent;
-          c.beginPath();
-          c.ellipse(x, H * 0.844, 35, 8, 0, 0, 7);
-          c.fill();
-          c.fillStyle = d.kind === "cup" ? "#933f28" : "#c69b4b";
-          for (let i = 0; i < 10; i++) {
-            const a = i * 2.3;
-            c.fillRect(x + Math.sin(a) * 24, H * 0.84 + Math.cos(a) * 3, 4, 2);
-          }
-          c.fillStyle = "#75694e";
-          c.font = "9px Arial,sans-serif";
-          c.fillText("SOUP", x, H * 0.96);
-          c.fillStyle = "#544e42";
-          for (let k = 0; k < 13; k++)
-            c.fillRect(x + w * 0.21, H * 0.62 + k * 3, 14 + (k % 4) * 4, 1.3);
-          for (let k = 0; k < 15; k++)
-            c.fillRect(x + w * 0.23 + k * 1.6, H * 0.77, k % 2 ? 1 : 0.5, 15);
-        }
-      } else {
-        c.fillRect(0, 0, w, 50);
-        c.fillRect(0, 268, w, 52);
-        c.textAlign = "center";
-        c.fillStyle = "#fff8e5";
-        c.font = "bold 19px Arial,sans-serif";
-        c.fillText(d.brand, w / 2, 33, w - 18);
-        c.fillStyle = d.top;
-        c.font = "bold 38px Georgia,serif";
-        c.fillText(d.name, w / 2, 124, w - 21);
-        c.save();
-        c.translate(w / 2, 210);
-        c.strokeStyle = d.accent;
-        c.lineWidth = 3;
-        c.beginPath();
-        c.moveTo(0, 26);
-        c.lineTo(0, -47);
-        c.stroke();
-        for (let k = 0; k < 4; k++)
-          for (const dir of [-1, 1]) {
-            c.fillStyle = d.accent;
-            c.beginPath();
-            c.ellipse(dir * 11, 7 - k * 12, 15, 6, dir * -0.62, 0, 7);
-            c.fill();
-          }
-        c.restore();
-      }
-    });
-  }
-  for (const [key, d] of Object.entries(designs)) {
-    wrappers[key] = packArt(d);
-    if (d.kind === "cup" || d.kind === "tin") {
-      const map = wrappers[key].map;
-      map.wrapS = T.RepeatWrapping;
-      map.offset.x = 0.25;
-    }
-  }
+  for (const key of ["sumatra", "breakfast", "pike", "tomato", "noodle"])
+    wrappers[key] = photographedLabel(key + "-label.webp");
+  wrappers.crackers = wrappers.wheat = photographedLabel("crackers-label.webp");
+  wrappers.oat = photographedLabel("sugar-label.webp");
+  wrappers.tea = photographedLabel("pudding_box.webp");
+  wrappers.farro = photographedLabel("gelatin_box.webp");
+  wrappers.chickpea = photographedLabel("tuna_fish_can.webp");
+  wrappers.corn = photographedLabel("master_chef_can.webp");
   function bagGeometry() {
     // Four slightly tapered sections; side gussets and pinched top give a sack its shape.
     const positions = [],
@@ -719,18 +995,22 @@ function buildScene(T, makeShopper, stage, hooks) {
     cupGeo = new T.CylinderGeometry(0.102, 0.085, 0.186, 28, 1, true);
   const coffeeMats = {};
   for (const key of ["sumatra", "breakfast", "pike"])
-    coffeeMats[key] = [wrappers[key], paper];
-  const folded = tone("#d8d6c7"),
+    coffeeMats[key] = [
+      wrappers[key],
+      tone("#b3b4b0", { metalness: 0.31, roughness: 0.48 }),
+    ];
+  const folded = tone("#b8b9b6", { metalness: 0.38, roughness: 0.45 }),
     canLid = tone("#a9aaa1", { roughness: 0.38, metalness: 0.6 }),
     cupLid = tone("#982220");
   function makePack(parent, key, x, y, z, angle = 0) {
-    const d = designs[key],
-      g = new T.Group();
+    const bag = ["sumatra", "breakfast", "pike"].includes(key);
+    const tin = ["corn", "chickpea", "noodle", "tomato"].includes(key);
+    const g = new T.Group();
     parent.add(g);
     g.position.set(x, y, z);
     g.rotation.y = angle;
-    if (d.kind === "tin" || d.kind === "cup") {
-      const cup = d.kind === "cup",
+    if (tin) {
+      const cup = key === "tomato",
         rr = cup ? 0.102 : 0.079,
         H = cup ? 0.186 : 0.208;
       if (cup) mesh(g, cupGeo, wrappers[key], 0, H / 2, 0);
@@ -754,12 +1034,15 @@ function buildScene(T, makeShopper, stage, hooks) {
         0.008,
       );
       if (!cup) cylinder(g, canLid, 0, H + 0.006, 0, rr * 0.84, 0.003);
-    } else if (d.kind === "bag") {
+    } else if (bag) {
       mesh(g, bagGeo, coffeeMats[key], 0, 0, 0);
       block(g, folded, 0, 0.29, 0, 0.169, 0.009, 0.027);
     } else {
-      block(g, paper, 0, 0.145, 0, 0.166, 0.29, 0.083);
-      plane(g, wrappers[key], 0, 0.145, 0.042, 0.166, 0.29);
+      const small = key === "tea" || key === "farro";
+      const height = small ? 0.152 : key === "oat" ? 0.231 : 0.282;
+      const width = small ? 0.181 : 0.169;
+      block(g, paper, 0, height / 2, 0, width, height, 0.083);
+      plane(g, wrappers[key], 0, height / 2, 0.042, width, height);
     }
     return g;
   }
@@ -920,6 +1203,42 @@ function buildScene(T, makeShopper, stage, hooks) {
     // Shelf tags and the product directly above them share one selection target.
     shelfTag.userData.item = i;
   }
+  // A contact shadow anchors each foreground package to the metal tray.
+  const occlusion = texture(64, 64, (ctx, w, h) => {
+    const gradient = ctx.createRadialGradient(
+      w / 2,
+      h / 2,
+      2,
+      w / 2,
+      h / 2,
+      w / 2,
+    );
+    gradient.addColorStop(0, "rgba(20,18,16,.49)");
+    gradient.addColorStop(0.65, "rgba(23,21,17,.21)");
+    gradient.addColorStop(1, "rgba(22,20,18,0)");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, w, h);
+  });
+  const contactM = new T.MeshBasicMaterial({
+    map: occlusion,
+    transparent: true,
+    depthWrite: false,
+    toneMapped: false,
+  });
+  for (let level = 0; level < levels.length; level++)
+    for (let lane = 0; lane < 15; lane++) {
+      const shadow = plane(
+        solid,
+        contactM,
+        -1.86 + lane * 0.225,
+        levels[level] + 0.0251,
+        -0.85,
+        0.248,
+        0.23,
+      );
+      shadow.rotation.x = -Math.PI / 2;
+      shadow.receiveShadow = false;
+    }
   const pointer = new T.Group();
   scene.add(pointer);
   const pointerInk = tone("#292c27", { roughness: 0.6 });
@@ -964,37 +1283,6 @@ function buildScene(T, makeShopper, stage, hooks) {
   });
   plane(screenBody, till, 0, 0, 0.028, 0.435, 0.254);
   block(counter, glass, -0.15, 1.01, 0.07, 0.18, 0.011, 0.27);
-  // Low produce bins mark the other side of the shop without obstructing the camera.
-  const produce = new T.Group();
-  solid.add(produce);
-  produce.position.set(-2.61, 0, -0.56);
-  produce.rotation.y = 0.2;
-  block(produce, greenDeep, 0, 0.35, 0.0, 0.77, 0.7, 0.53);
-  const fruitMats = ["#a6543b", "#c87840", "#a2a258", "#d0a446"].map((c) =>
-    tone(c, { roughness: 0.76 }),
-  );
-  for (let tier = 0; tier < 2; tier++) {
-    const y = 0.72 + tier * 0.18,
-      z = 0.12 - tier * 0.32;
-    block(produce, oak, 0, y, z, 0.79, 0.07, 0.32);
-    for (const side of [-1, 1])
-      block(produce, oak, side * 0.388, y + 0.075, z, 0.024, 0.16, 0.33);
-    block(produce, oak, 0, y + 0.065, z + 0.14, 0.79, 0.075, 0.025);
-    for (let i = 0; i < 11; i++) {
-      const x = ((i % 6) - 2.5) * 0.104 + (random() - 0.5) * 0.026;
-      mesh(
-        produce,
-        sphereGeo,
-        fruitMats[(tier * 2 + (i % 2)) % 4],
-        x,
-        y + 0.071 + (i % 3) * 0.005,
-        z + (i < 6 ? 0.045 : -0.05),
-        0.057,
-        0.055,
-        0.058,
-      );
-    }
-  }
   const lens = v(1.48, 2.12, 0.4);
   const mount = new T.Group();
   solid.add(mount);
@@ -1037,10 +1325,9 @@ function buildScene(T, makeShopper, stage, hooks) {
     batch.receiveShadow = true;
     scene.add(batch);
   }
-  const shopper = makeShopper(scene, 0);
-  const hemi = new T.HemisphereLight("#fff7e8", "#c0c6bd", 1.55);
+  const hemi = new T.HemisphereLight("#f8f7ed", "#938d82", 0.95);
   scene.add(hemi);
-  const sun = new T.DirectionalLight("#fff2d9", 2.35);
+  const sun = new T.DirectionalLight("#fcf8ee", 1.55);
   sun.position.set(-3.6, 6.3, 3.1);
   sun.target.position.set(-0.3, 0.4, -0.83);
   sun.castShadow = true;
@@ -1056,7 +1343,7 @@ function buildScene(T, makeShopper, stage, hooks) {
     far: 13,
   });
   scene.add(sun, sun.target);
-  const fill = new T.DirectionalLight("#e6eeef", 0.72);
+  const fill = new T.DirectionalLight("#e7edf4", 0.55);
   fill.position.set(3, 3, 2);
   scene.add(fill);
 
@@ -1068,7 +1355,7 @@ function buildScene(T, makeShopper, stage, hooks) {
   const mix = (a, b, t) => a + (b - a) * t;
   let selected = 0,
     activeView = "aisle",
-    yaw = 0.37,
+    yaw = 0.24,
     pitch = 0.14,
     zoom = 1,
     progress = 0;
@@ -1087,40 +1374,8 @@ function buildScene(T, makeShopper, stage, hooks) {
       item.rotation.set(0, i === 0 ? 0.01 : -0.02, 0);
     }
   }
-  function pose(t) {
-    const item = hero[selected],
-      px = products[selected].x;
-    const reach = smooth(t / 0.44),
-      hold = smooth((t - 0.4) / 0.46);
-    item.position.set(
-      px + 0.015 * hold,
-      heroY + 0.118 * hold,
-      heroZ + 0.235 * hold,
-    );
-    item.rotation.set(-0.045 * hold, -0.085 * hold, -0.043 * hold);
-    shopper.root.position.set(px - 0.36, 0, -0.22);
-    shopper.root.rotation.y = 2.75;
-    shopper.root.updateMatrixWorld(true);
-    item.updateMatrixWorld(true);
-    const at = (x, y, z) => item.localToWorld(v(x, y, z));
-    const from = (x, y, z) => shopper.root.localToWorld(v(x, y, z));
-    // Approach the near side of the package before lifting it clear of the shelf.
-    const wrist = at(-0.071, selected === 0 ? 0.105 : 0.14, 0.049);
-    const right = from(-0.205, 0.89, 0.11).lerp(wrist, reach);
-    right.y += Math.sin(Math.PI * reach) * 0.065;
-    const support = smooth((t - 0.3) / 0.45);
-    const left = from(0.205, 0.91, 0.095).lerp(at(0.045, 0.01, 0.023), support);
-    const hip = v(0, 0.873 - 0.013 * reach, 0.012 * reach);
-    const feet = [v(-0.11, 0.085, 0.084), v(0.114, 0.085, -0.082)];
-    shopper.pose({
-      stance: { hip, ankles: feet, twist: -0.03 * reach },
-      lean: 0.028 + 0.055 * reach,
-      right,
-      left,
-      grasp: reach,
-    });
-    shopper.head.rotation.set(0.18 + 0.15 * reach, -0.16, 0);
-    pointer.position.set(px, heroY - 0.008, -0.69);
+  function placeMarker() {
+    pointer.position.set(products[selected].x, heroY - 0.008, -0.69);
   }
   function framing(mode) {
     if (mode === "camera") {
@@ -1137,10 +1392,10 @@ function buildScene(T, makeShopper, stage, hooks) {
     }
     const isShelf = mode === "shelf";
     const aspect = stage.clientWidth / Math.max(1, stage.clientHeight);
-    const radius = (isShelf ? 2.25 : 4.6) * zoom * (aspect < 1.5 ? 1.13 : 1);
+    const radius = (isShelf ? 1.65 : 3.97) * zoom * (aspect < 1.5 ? 1.13 : 1);
     goalAim.set(
-      isShelf ? products[selected].x - 0.05 : 0.1,
-      isShelf ? 1.2 : 1.16,
+      isShelf ? products[selected].x - 0.05 : -0.16,
+      isShelf ? 1.2 : 1.23,
       isShelf ? -0.93 : -1.0,
     );
     const elev = pitch + (isShelf ? 0.055 : 0.04);
@@ -1169,12 +1424,7 @@ function buildScene(T, makeShopper, stage, hooks) {
     frame = 0;
     if (lost) return;
     if (pickup) {
-      progress = Math.min(1, (time - pickup.since) / 2250);
-      pose(progress);
-      if (progress >= 0.53 && !pickup.moved) {
-        pickup.moved = true;
-        setView("camera", true);
-      }
+      progress = Math.min(1, (time - pickup.since) / 560);
     }
     const next = framing(activeView);
     if (transition) {
@@ -1199,7 +1449,7 @@ function buildScene(T, makeShopper, stage, hooks) {
   }
   function setView(mode, animate = true) {
     if (mode !== activeView) {
-      yaw = mode === "shelf" ? 0.18 : 0.37;
+      yaw = mode === "shelf" ? 0.14 : 0.24;
       pitch = 0.14;
       zoom = 1;
     }
@@ -1234,8 +1484,9 @@ function buildScene(T, makeShopper, stage, hooks) {
     { rootMargin: "170px" },
   );
   sight.observe(stage);
+  assetsReady = true;
   restPose();
-  pose(0);
+  placeMarker();
   resize();
   applyFrame(framing("aisle"));
   renderer.render(scene, camera);
@@ -1322,7 +1573,7 @@ function buildScene(T, makeShopper, stage, hooks) {
         schedule();
         break;
       case "Home":
-        yaw = activeView === "shelf" ? 0.18 : 0.37;
+        yaw = activeView === "shelf" ? 0.14 : 0.24;
         pitch = 0.14;
         zoom = 1;
         setView(activeView, true);
@@ -1350,24 +1601,23 @@ function buildScene(T, makeShopper, stage, hooks) {
       progress = 0;
       selected = index;
       restPose();
-      pose(0);
+      placeMarker();
       setView(mode, false);
     },
     setView,
     pickup(done) {
       transition = null;
       restPose();
-      pose(0);
+      placeMarker();
       if (reduced.matches) {
         progress = 1;
-        pose(1);
         setView("camera", false);
         done();
         schedule();
         return;
       }
-      setView("aisle", true);
-      pickup = { since: performance.now(), done, moved: false };
+      setView("camera", true);
+      pickup = { since: performance.now(), done };
       schedule();
     },
   };

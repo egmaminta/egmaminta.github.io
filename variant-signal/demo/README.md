@@ -26,4 +26,8 @@ At rank 64 the true-label fit retrieves 29 of 30 within Starbucks and the displa
 
 [supp-fig-transfer-panel.csv](supp-fig-transfer-panel.csv) contains the ten-draw results used in the rank sweep. [tab-panel.csv](tab-panel.csv) contains the fine-tuning comparison.
 
+## Reading the linear probe example
+
+The [linear probe](https://egmaminta.github.io/variant-signal/#probe) uses the pooled SigLIP2 image features of 30 GroceryVision photographs of Blue Diamond almonds. Each of the three varieties supplies six training photos and four test photos. We shuffle the ten indices of each variety, in sorted SKU order, with a single NumPy default generator seeded with 0. We fit a standard scaler on the training features and a multinomial logistic regression with L2 regularization, C = 1, and the L-BFGS solver. A second fit uses the same training features and a permutation of their labels from a generator seeded with 12345. Both fits predict the same twelve test photos. The original labels yield twelve correct predictions and the shuffled labels yield five. The splits, original and shuffled assignments, and both predictions for each test photo are recorded in [probe.json](probe.json). Table 1 of the paper reports the separate benchmark results averaged over brands and three runs.
+
 Photographs are from [GroceryVision Track 2](https://grocery-vision.github.io/past_challenge/iccv2025.html) under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) and have been resized for display.

@@ -1,0 +1,31 @@
+Recorded coffee-can pickup
+
+DexYCB (2021), by Yu-Wei Chao, Wei Yang, Yu Xiang, Pavlo Molchanov, Ankur Handa, Jonathan Tremblay, Yashraj S. Narang, Karl Van Wyk, Umar Iqbal, Stan Birchfield, Jan Kautz and Dieter Fox.
+https://dex-ycb.github.io/
+Creative Commons Attribution–NonCommercial 4.0 International (CC BY-NC 4.0).
+https://creativecommons.org/licenses/by-nc/4.0/
+
+The three clips, posters and depth sequences come from DexYCB subject 10, recording 20201022_110843, frames 0–71 inclusive. The views use cameras 932122061900 (side), 932122060861 (overhead) and 836212060125 (front). RGB frames were cropped, lightly brightened and encoded. Aligned depth was downsampled and quantized. The recording shows one participant lifting a Master Chef coffee can in the DexYCB laboratory. It illustrates a grasp, independently of the GroceryVision experiments.
+
+Shelf labels and query photographs
+
+GroceryVision Challenge, Multimodal Product Retrieval. The interactive shows the paper’s GroceryVision query and recorded model results. The photographed shelf labels are crops of these front-view files: 051000164612_5 (Creamy Tomato), 910007020325_72 (Chicken Noodle), 762111622914_73 (Sumatra), 762111206244_45 (Breakfast Blend), 762111795755_69 (Pike Place). Crops were perspective corrected for display on 3D packaging.
+https://grocery-vision.github.io/past_challenge/iccv2025.html
+
+Additional scanned grocery packages
+
+YCB Object and Model Set, by Berk Calli, Arjun Singh, Aaron Walsman, Siddhartha Srinivasa, Pieter Abbeel and Aaron M. Dollar. The selected textures were projected, cropped and resized from the Master Chef can, tuna can, cracker box, sugar box, gelatin box and pudding box scans.
+https://ycb-benchmarks.s3.amazonaws.com/index.html
+Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+
+Store materials
+
+Gear Store, photographed by Dimitrios Savva and processed by Jarod Guest, from Poly Haven. The panorama was tone-mapped and resized for the browser.
+https://polyhaven.com/a/gear_store
+Ash Veneer by Jenelle van Heerden, from Poly Haven. The color map was resized for the browser.
+https://polyhaven.com/a/ash_veneer
+Both assets are dedicated to the public domain under CC0 1.0.
+https://polyhaven.com/license
+
+The shelf, its furnishings and camera are a purpose-built 3D illustration. Three.js is distributed under the MIT license in the shared project library.

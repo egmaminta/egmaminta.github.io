@@ -1,0 +1,197 @@
+{
+  "names": [
+    "Smokehouse",
+    "Whole Natural",
+    "Wasabi & Soy Sauce"
+  ],
+  "training": [
+    {
+      "src": "assets/probe/041570015902_21.webp",
+      "variant": 0,
+      "shuffled": 2
+    },
+    {
+      "src": "assets/probe/041570015902_1.webp",
+      "variant": 0,
+      "shuffled": 2
+    },
+    {
+      "src": "assets/probe/041570015902_4.webp",
+      "variant": 0,
+      "shuffled": 1
+    },
+    {
+      "src": "assets/probe/041570015902_16.webp",
+      "variant": 0,
+      "shuffled": 1
+    },
+    {
+      "src": "assets/probe/041570015902_28.webp",
+      "variant": 0,
+      "shuffled": 2
+    },
+    {
+      "src": "assets/probe/041570015902_20.webp",
+      "variant": 0,
+      "shuffled": 1
+    },
+    {
+      "src": "assets/probe/041570054420_45.webp",
+      "variant": 1,
+      "shuffled": 1
+    },
+    {
+      "src": "assets/probe/041570054420_54.webp",
+      "variant": 1,
+      "shuffled": 0
+    },
+    {
+      "src": "assets/probe/041570054420_28.webp",
+      "variant": 1,
+      "shuffled": 0
+    },
+    {
+      "src": "assets/probe/041570054420_9.webp",
+      "variant": 1,
+      "shuffled": 0
+    },
+    {
+      "src": "assets/probe/041570054420_60.webp",
+      "variant": 1,
+      "shuffled": 1
+    },
+    {
+      "src": "assets/probe/041570054420_37.webp",
+      "variant": 1,
+      "shuffled": 0
+    },
+    {
+      "src": "assets/probe/041570055373_81.webp",
+      "variant": 2,
+      "shuffled": 1
+    },
+    {
+      "src": "assets/probe/041570055373_69.webp",
+      "variant": 2,
+      "shuffled": 2
+    },
+    {
+      "src": "assets/probe/041570055373_29.webp",
+      "variant": 2,
+      "shuffled": 2
+    },
+    {
+      "src": "assets/probe/041570055373_15.webp",
+      "variant": 2,
+      "shuffled": 0
+    },
+    {
+      "src": "assets/probe/041570055373_5.webp",
+      "variant": 2,
+      "shuffled": 0
+    },
+    {
+      "src": "assets/probe/041570055373_34.webp",
+      "variant": 2,
+      "shuffled": 2
+    }
+  ],
+  "test": [
+    {
+      "src": "assets/probe/041570015902_18.webp",
+      "variant": 0,
+      "predictions": [
+        0,
+        1
+      ]
+    },
+    {
+      "src": "assets/probe/041570015902_14.webp",
+      "variant": 0,
+      "predictions": [
+        0,
+        2
+      ]
+    },
+    {
+      "src": "assets/probe/041570015902_19.webp",
+      "variant": 0,
+      "predictions": [
+        0,
+        1
+      ]
+    },
+    {
+      "src": "assets/probe/041570015902_5.webp",
+      "variant": 0,
+      "predictions": [
+        0,
+        1
+      ]
+    },
+    {
+      "src": "assets/probe/041570054420_63.webp",
+      "variant": 1,
+      "predictions": [
+        1,
+        1
+      ]
+    },
+    {
+      "src": "assets/probe/041570054420_11.webp",
+      "variant": 1,
+      "predictions": [
+        1,
+        0
+      ]
+    },
+    {
+      "src": "assets/probe/041570054420_78.webp",
+      "variant": 1,
+      "predictions": [
+        1,
+        0
+      ]
+    },
+    {
+      "src": "assets/probe/041570054420_65.webp",
+      "variant": 1,
+      "predictions": [
+        1,
+        1
+      ]
+    },
+    {
+      "src": "assets/probe/041570055373_43.webp",
+      "variant": 2,
+      "predictions": [
+        2,
+        2
+      ]
+    },
+    {
+      "src": "assets/probe/041570055373_49.webp",
+      "variant": 2,
+      "predictions": [
+        2,
+        0
+      ]
+    },
+    {
+      "src": "assets/probe/041570055373_12.webp",
+      "variant": 2,
+      "predictions": [
+        2,
+        2
+      ]
+    },
+    {
+      "src": "assets/probe/041570055373_39.webp",
+      "variant": 2,
+      "predictions": [
+        2,
+        2
+      ]
+    }
+  ]
+}

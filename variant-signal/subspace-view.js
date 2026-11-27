@@ -9,10 +9,10 @@ const product = document.querySelector("#transfer-product");
 const tau = Math.PI / 180;
 const colors = ["#121212", "#606060"];
 const steps = [
-  ["One point per variant", "Each small mark is a store photo. The larger marks average the ten photos of each variant. Blue Diamond and Ocean Spray each contribute three variants in this view."],
-  ["Subtract each brand’s mean", "Take the mean of the three Blue Diamond variants and subtract it from each of them. Do the same for Ocean Spray. Both brands now share an origin. The arrows retain the differences within each brand."],
-  ["Fit the variant subspace", "Each dot is one centered variant from the training brands. A singular value decomposition finds the leading directions of these differences. The plane shows the first two. The main experiment keeps 64."],
-  ["Project a held-out product", "The fit used no Starbucks photos. The solid lines show a new image and its catalog text projected onto the same two axes. Retrieval normalizes the projected vectors and compares their directions. Try a different roast."]
+  ["One point per product", "The small marks are store photos. Average the ten photos of each product to get a larger mark. The circle and square symbols distinguish the two brands."],
+  ["Measure from each brand’s center", "The arrows start at each brand’s average product. Subtract that center from its product vectors. Now both brands share an origin, and each arrow shows a difference within a brand."],
+  ["Find the directions of variation", "Each dot is a product measured from its brand’s center. The decomposition gives each product’s weights (U), the strength of each direction (Σ), and the directions in the encoder’s coordinates (V). The plane shows the two strongest. The experiment keeps 64."],
+  ["Use the directions on a new brand", "Project a coffee photo and its description onto the same axes. The solid lines show which components survive the projection. Switch roasts to compare. The directions were learned entirely from other brands."]
 ];
 let data, centroids, centers, active = 0, yaw = 33, elevation = 29, queued = false;
 let centerProgress = 0, shiftAnimation = 0;

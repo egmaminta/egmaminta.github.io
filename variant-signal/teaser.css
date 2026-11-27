@@ -1,3 +1,5 @@
+/* Figure 2 teaser. Keep typography at normal tracking throughout. */
+.sumatra-teaser, .sumatra-teaser * { letter-spacing: normal; }
 .sumatra-teaser {
   margin: 1.65rem auto 0;
   color: #111;
@@ -20,7 +22,7 @@
   font-size: clamp(1.03rem, 1.5vw, 1.27rem);
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: -.022em;
+  letter-spacing: normal;
   text-align: left;
 }
 .sumatra-teaser .sumatra-ranks {
@@ -66,12 +68,12 @@
   content: counter(sumatra-rank);
   color: #555;
   font-weight: 400;
-  font-size: .81em;
+  font-size: .88em;
   font-variant-numeric: tabular-nums;
 }
 .sumatra-teaser .sumatra-rank-column data {
   font-variant-numeric: tabular-nums;
-  font-size: .92em;
+  font-size: .96em;
 }
 .sumatra-teaser .sumatra-target { color: #000; font-weight: 700; }
 .sumatra-teaser .sumatra-bridge { padding-top: var(--sumatra-head); }
@@ -106,4 +108,12 @@
   .sumatra-teaser .sumatra-rank-column li::before { grid-row: 1 / 3; }
   .sumatra-teaser .sumatra-rank-column data { grid-column: 2; }
   .sumatra-teaser figcaption { margin-top: .55rem; }
+}
+
+.sumatra-teaser .sumatra-source {
+  display: block;
+  margin-top: .42rem;
+  font-size: .9rem;
+  line-height: 1.48;
+  color: #464646;
 }

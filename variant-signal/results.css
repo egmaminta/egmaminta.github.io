@@ -1,0 +1,125 @@
+.catalog-finding {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 53rem;
+  margin: 2.1rem auto 2.4rem;
+  background: #fff;
+  color: #111;
+  font-family: inherit;
+  letter-spacing: normal;
+}
+.catalog-finding *, .catalog-finding *::before, .catalog-finding *::after {
+  box-sizing: border-box;
+  letter-spacing: normal;
+}
+.catalog-finding #finding-title {
+  margin: 0;
+  font-family: inherit;
+  font-size: clamp(1.12rem, 2vw, 1.42rem);
+  line-height: 1.32;
+  font-weight: 600;
+  text-align: left;
+}
+.catalog-finding .finding-unit {
+  margin: .45rem 0 1.1rem;
+  font-size: .95rem;
+  line-height: 1.45;
+  text-align: left;
+}
+.catalog-finding .finding-plot {
+  --model-col: clamp(8.5rem, 18%, 11.5rem);
+  --gap: clamp(.85rem, 2.4vw, 1.8rem);
+  font-variant-numeric: tabular-nums;
+  padding: .1rem .4rem 0 0;
+}
+.catalog-finding .finding-row,
+.catalog-finding .finding-axis-row {
+  display: grid;
+  grid-template-columns: var(--model-col) minmax(0, 1fr);
+  gap: var(--gap);
+}
+.catalog-finding .finding-model {
+  align-self: center;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+}
+.catalog-finding .finding-track {
+  position: relative;
+  height: 5.45rem;
+  margin: 0;
+  border-left: 1px solid #555;
+  border-right: 1px solid #ddd;
+  background-image: linear-gradient(to right, #dadada 1px, transparent 1px);
+  background-size: calc(100% / 3) 100%;
+}
+.catalog-finding .finding-line {
+  position: absolute;
+  top: 50%;
+  height: 1.5px;
+  left: var(--within);
+  width: calc(var(--full) - var(--within));
+  background: #222;
+  transform: translateY(-50%);
+}
+.catalog-finding .finding-mark {
+  position: absolute;
+  top: 50%;
+  width: .7rem;
+  height: .7rem;
+  border: 2px solid #111;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.catalog-finding .finding-own-mark { left: var(--within); background: white; }
+.catalog-finding .finding-all-mark { left: var(--full); background: #111; }
+.catalog-finding .finding-label {
+  position: absolute;
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: .45em;
+  width: max-content;
+  max-width: 100%;
+  font-size: .94rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.catalog-finding .finding-full { left: var(--full); bottom: calc(50% + .55rem); }
+.catalog-finding .finding-own { left: var(--within); top: calc(50% + .55rem); }
+.catalog-finding .finding-align-end { transform: translateX(-100%); }
+.catalog-finding .finding-label data { font-weight: 700; }
+.catalog-finding .finding-axis { grid-column: 2; position: relative; height: 1.68rem; border-top: 1px solid #555; }
+.catalog-finding .finding-axis span {
+  position: absolute;
+  top: .32rem;
+  font-size: .85rem;
+  line-height: 1.2;
+  transform: translateX(-50%);
+}
+.catalog-finding .finding-axis span:nth-child(1) { left: 0; transform: translateX(-.12em); }
+.catalog-finding .finding-axis span:nth-child(2) { left: calc(100% / 3); }
+.catalog-finding .finding-axis span:nth-child(3) { left: calc(200% / 3); }
+.catalog-finding .finding-axis span:nth-child(4) { right: 0; transform: translateX(.16em); }
+.catalog-finding figcaption {
+  margin: .9rem 0 0;
+  max-width: 76ch;
+  font-size: .94rem;
+  line-height: 1.55;
+  text-align: left;
+}
+.catalog-finding figcaption a { color: inherit; text-underline-offset: .13em; }
+@media (max-width: 620px) {
+  .catalog-finding .finding-plot { padding-left: .15rem; }
+  .catalog-finding .finding-row, .catalog-finding .finding-axis-row { display: block; }
+  .catalog-finding .finding-row + .finding-row { margin-top: 1rem; }
+  .catalog-finding .finding-model { margin: 0 0 .25rem; }
+  .catalog-finding .finding-track { height: 5rem; }
+  .catalog-finding .finding-label { font-size: .9rem; gap: .35em; }
+}
+@media print {
+  .catalog-finding { break-inside: avoid; }
+  .catalog-finding .finding-track, .catalog-finding .finding-line, .catalog-finding .finding-mark { print-color-adjust: exact; }
+}
