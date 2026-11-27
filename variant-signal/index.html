@@ -122,7 +122,7 @@
               </div>
             </div>
           </div>
-          <figcaption id="sumatra-figure-caption"><strong>All three catalog entries share the same brand.</strong> The ranking must therefore distinguish the roast. Sumatra ranks first when the subspace is fitted with the original variant labels. Pike Place ranks first after those labels are randomly reassigned within each training brand, preserving the number of photos per variant.<span class="sumatra-source">Scores are cosine similarities between the mean of ten projected Sumatra image vectors and each of the three text vectors. Both subspaces were fitted using other brands. <a href="assets/paper.pdf">Paper, Figure 2</a>. <a href="#retrieval">View rankings for individual photos</a>.</span></figcaption>
+          <figcaption id="sumatra-figure-caption"><strong>Variant labels from other brands helped identify the exact roast even when the brand was already known.</strong> Given three Starbucks descriptions, the model correctly identified 9 of 10 Sumatra photos. When we shuffled the labels within each training brand and fitted the subspace again using the same photos, the model ranked Pike Place first for all 10.<span class="sumatra-source">The scores shown compare the mean of the ten projected Sumatra photo vectors with each description by cosine similarity. This Starbucks example had the largest within-brand gain among the 28 cases considered for the figure. <a href="assets/paper.pdf">Paper, Figure 2</a>. <a href="#retrieval">View rankings for individual photos</a>.</span></figcaption>
         </figure>
       </section>
 
